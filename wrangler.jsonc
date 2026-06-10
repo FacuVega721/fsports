@@ -1,0 +1,13 @@
+{
+  // Configuración para desplegar FSports como sitio estático en Cloudflare.
+  // "assets" sirve la carpeta dist/ (lo que genera `npm run build`).
+  // "single-page-application" hace que cualquier ruta (ej: /f1) devuelva
+  // index.html, así el router de React funciona al recargar o entrar directo.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "fsports",
+  "compatibility_date": "2025-09-01",
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "single-page-application"
+  }
+}

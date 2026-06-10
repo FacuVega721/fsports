@@ -1,0 +1,9 @@
+.dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--red);
+  animation: live-pulse 1.6s ease-out infinite;
+  flex-shrink: 0;
+}

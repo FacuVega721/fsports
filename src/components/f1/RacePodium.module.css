@@ -1,0 +1,176 @@
+.seccion {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.header {
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.gp {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: clamp(20px, 4vw, 26px);
+  font-weight: 800;
+}
+
+.circuito {
+  font-size: 12.5px;
+  color: var(--text-dim);
+}
+
+.podio {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: var(--space-3);
+  padding: var(--space-5);
+  align-items: end;
+}
+
+.cajon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 3px;
+  padding: var(--space-4) var(--space-2);
+  border-radius: var(--radius);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-top-width: 3px;
+}
+
+/* Gradientes sobrios oro / plata / bronce, solo como luz superior */
+.oro {
+  border-top-color: var(--gold);
+  background: linear-gradient(180deg, rgba(212, 175, 106, 0.14), var(--surface) 55%);
+  box-shadow: var(--glow-gold);
+  padding-top: var(--space-6);
+  padding-bottom: var(--space-5);
+}
+
+.plata {
+  border-top-color: #b9bcc6;
+  background: linear-gradient(180deg, rgba(185, 188, 198, 0.1), var(--surface) 55%);
+}
+
+.bronce {
+  border-top-color: #b07a4f;
+  background: linear-gradient(180deg, rgba(176, 122, 79, 0.12), var(--surface) 55%);
+}
+
+.posicion {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 30px;
+  line-height: 1;
+  color: var(--text);
+}
+
+.oro .posicion {
+  color: var(--gold-bright);
+  font-size: 38px;
+}
+
+.piloto {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 1.2;
+}
+
+.equipo {
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+/* Tiempos SIEMPRE en mono */
+.tiempo {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--gold-bright);
+  margin-top: var(--space-1);
+}
+
+.tabla {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.tabla th {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  text-align: left;
+  padding: var(--space-2) var(--space-5);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.tabla td {
+  padding: var(--space-2) var(--space-5);
+  border-bottom: 1px solid var(--border);
+}
+
+.tabla tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.tabla tbody tr:hover {
+  background: var(--surface);
+}
+
+.colDerecha {
+  text-align: right !important;
+}
+
+.tablaPos {
+  font-family: var(--font-mono);
+  color: var(--text-faint);
+  font-size: 12px;
+  width: 32px;
+}
+
+.tablaPiloto {
+  font-weight: 500;
+}
+
+.tablaEquipo {
+  color: var(--text-faint);
+  font-size: 12px;
+}
+
+.tablaTiempo {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-dim);
+  text-align: right;
+  white-space: nowrap;
+}
+
+@media (max-width: 480px) {
+  .podio {
+    gap: var(--space-2);
+    padding: var(--space-4);
+  }
+
+  .piloto {
+    font-size: 12.5px;
+  }
+
+  .tiempo {
+    font-size: 10px;
+  }
+}

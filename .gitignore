@@ -1,0 +1,9 @@
+node_modules
+dist
+dev-dist
+.env.local
+*.local
+.DS_Store
+
+# Config local de preview (ruta de Node específica de la máquina)
+.claude/

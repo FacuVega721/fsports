@@ -1,0 +1,54 @@
+/* ============================================================
+   TOKENS DE DISEÑO DE FSPORTS — fuente única de verdad.
+   Cambiar un valor acá propaga a TODO el sitio.
+   Concepto: "broadcast premium nocturno" — oscuro, cinematográfico,
+   con un dorado que funciona como luz, no como adorno.
+   ============================================================ */
+
+:root {
+  /* ── Paleta (innegociable) ── */
+  --bg: #0a0a0c;
+  --bg-elevated: #131318;
+  --surface: #1a1a21;
+  --surface-hover: #22222b;
+  --border: #28282f;
+
+  --gold: #d4af6a;
+  --gold-bright: #e8c988;
+
+  --text: #f2f0ea;
+  --text-dim: #8a8a94;
+  --text-faint: #56565e;
+
+  --green: #4ade80;
+  --red: #ff4d4d;
+  --orange: #ff6b00; /* SOLO para el logo FSports */
+
+  /* ── Tipografía ── */
+  --font-display: 'Bricolage Grotesque', 'Inter', system-ui, sans-serif;
+  --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'Cascadia Mono', monospace;
+
+  /* ── Espaciado ── */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+
+  /* ── Formas y sombras ── */
+  --radius-sm: 6px;
+  --radius: 10px;
+  --radius-lg: 14px;
+
+  /* Signature: "scoreboard glow" — el resplandor de pantalla encendida */
+  --glow-gold: 0 0 0 1px rgba(212, 175, 106, 0.28), 0 4px 28px rgba(212, 175, 106, 0.1);
+  --glow-red: 0 0 0 1px rgba(255, 77, 77, 0.32), 0 4px 32px rgba(255, 77, 77, 0.12);
+  --shadow-card: 0 1px 0 rgba(255, 255, 255, 0.03) inset, 0 8px 24px rgba(0, 0, 0, 0.35);
+
+  /* ── Layout ── */
+  --maxw: 1200px;
+}

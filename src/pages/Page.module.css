@@ -1,0 +1,83 @@
+/* Layout compartido por las páginas Fútbol y F1 */
+
+.pagina {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  padding-top: var(--space-5);
+  padding-bottom: var(--space-8);
+  width: 100%;
+}
+
+/* Banner de sección con la textura signature */
+.banner {
+  background: linear-gradient(135deg, var(--surface) 0%, var(--bg-elevated) 70%);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6) var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  overflow: hidden;
+}
+
+.titulo {
+  font-size: clamp(30px, 7vw, 48px);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  line-height: 1;
+}
+
+.subtitulo {
+  font-size: 13.5px;
+  color: var(--text-dim);
+}
+
+/* Columna principal + lateral (mobile: apiladas, la tabla va al final) */
+.columnas {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.principal {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+}
+
+.conEspacio {
+  gap: var(--space-5);
+}
+
+.lateral {
+  min-width: 0;
+}
+
+/* Transición suave al cambiar de tab */
+.fade {
+  animation: fade-tab 0.25s ease;
+}
+
+@keyframes fade-tab {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (min-width: 900px) {
+  .columnas {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 340px;
+    align-items: start;
+  }
+
+  .lateral {
+    position: sticky;
+    top: 76px;
+  }
+}

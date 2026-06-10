@@ -1,0 +1,70 @@
+.card {
+  background: var(--surface);
+  border: 1px solid rgba(212, 175, 106, 0.25);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  box-shadow: var(--glow-gold);
+}
+
+.cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.cuenta {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--gold-bright);
+  background: rgba(212, 175, 106, 0.12);
+  border: 1px solid rgba(212, 175, 106, 0.28);
+  border-radius: 4px;
+  padding: 2px 8px;
+  white-space: nowrap;
+}
+
+.gp {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: clamp(20px, 4vw, 26px);
+  font-weight: 800;
+}
+
+.datos {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  font-size: 13px;
+  color: var(--text-dim);
+}
+
+.datos li {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.datos svg {
+  color: var(--text-faint);
+  flex-shrink: 0;
+}
+
+.hora {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--text);
+}
+
+.tz {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}

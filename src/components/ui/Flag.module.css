@@ -1,0 +1,24 @@
+.flag {
+  width: 21px;
+  height: 15.75px;
+  border-radius: 2px;
+  flex-shrink: 0;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+/* Respaldo si flag-icons no cargó: el código del país en mono */
+.fallback {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 21px;
+  height: 15.75px;
+  flex-shrink: 0;
+  border-radius: 2px;
+  background: var(--surface-hover);
+  color: var(--text-faint);
+  font-family: var(--font-mono);
+  font-size: 7px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}

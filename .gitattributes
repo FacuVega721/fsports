@@ -1,0 +1,2 @@
+# Normalizar saltos de línea: el repo guarda LF, el checkout local respeta la plataforma
+* text=auto eol=lf

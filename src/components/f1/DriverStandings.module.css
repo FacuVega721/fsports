@@ -1,0 +1,84 @@
+.seccion {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.vacio {
+  padding: var(--space-4);
+}
+
+.tabla {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.tabla th {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  text-align: left;
+  padding: var(--space-2) var(--space-4);
+  border-bottom: 1px solid var(--border);
+}
+
+.tabla td {
+  padding: var(--space-2) var(--space-4);
+  border-bottom: 1px solid var(--border);
+}
+
+.tabla tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.tabla tbody tr:hover {
+  background: var(--surface);
+}
+
+/* Los 3 primeros con un guiño dorado en la posición */
+.tabla tbody tr:nth-child(-n + 3) .pos {
+  color: var(--gold);
+  font-weight: 700;
+}
+
+.colDerecha {
+  text-align: right !important;
+}
+
+.pos {
+  font-family: var(--font-mono);
+  color: var(--text-faint);
+  font-size: 12px;
+  width: 32px;
+}
+
+.nombre {
+  font-weight: 500;
+}
+
+.detalle {
+  color: var(--text-faint);
+  font-size: 12px;
+}
+
+.pts {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--gold-bright);
+  text-align: right;
+  font-size: 12.5px;
+}

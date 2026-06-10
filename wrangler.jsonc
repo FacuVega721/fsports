@@ -1,13 +1,17 @@
 {
-  // Configuración para desplegar FSports como sitio estático en Cloudflare.
-  // "assets" sirve la carpeta dist/ (lo que genera `npm run build`).
-  // "single-page-application" hace que cualquier ruta (ej: /f1) devuelva
-  // index.html, así el router de React funciona al recargar o entrar directo.
+  // FSports en Cloudflare: un Worker que sirve el sitio estático (dist/) y
+  // hace de proxy a football-data.org en /api/football/* (ver worker/index.ts).
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "fsports",
+  "main": "worker/index.ts",
   "compatibility_date": "2025-09-01",
   "assets": {
     "directory": "./dist",
-    "not_found_handling": "single-page-application"
+    "binding": "ASSETS",
+    // Cualquier ruta sin archivo (ej: /f1) devuelve index.html → ruteo SPA.
+    "not_found_handling": "single-page-application",
+    // El Worker corre primero en TODAS las rutas, así /api/football no es
+    // capturado por el fallback SPA y llega al proxy.
+    "run_worker_first": true
   }
 }

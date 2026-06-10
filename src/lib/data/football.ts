@@ -1,4 +1,4 @@
-import { FOOTBALL_API_BASE, FOOTBALL_DATA_TOKEN } from '../config';
+import { FOOTBALL_API_BASE } from '../config';
 import { utcToArg } from '../time';
 import type { EstadoPartido, FasePartido, Match, StandingGroup } from '../types';
 
@@ -71,6 +71,8 @@ const PAIS_CODE: Record<string, string> = {
   'Saudi Arabia': 'sa', Iran: 'ir', Qatar: 'qa', Iraq: 'iq', Jordan: 'jo',
   Uzbekistan: 'uz', 'New Zealand': 'nz', 'Costa Rica': 'cr', Panama: 'pa',
   Honduras: 'hn', Jamaica: 'jm', Haiti: 'ht', Curacao: 'cw', 'Curaçao': 'cw',
+  'Bosnia-Herzegovina': 'ba', 'Cape Verde Islands': 'cv', 'Congo DR': 'cd',
+  'DR Congo': 'cd',
 };
 
 function codigoPais(team: FdTeam | undefined): string {
@@ -91,10 +93,10 @@ function estadoDesdeStatus(status: string | undefined): EstadoPartido {
   }
 }
 
-/** "GROUP_A" → "A" */
+/** "GROUP_A" o "Group A" → "A" (matches y standings usan formatos distintos) */
 function letraGrupo(group: string | undefined): string {
   if (!group) return '';
-  return group.replace(/^GROUP_/, '');
+  return group.replace(/^group[\s_]*/i, '').trim();
 }
 
 /** stage de football-data.org → nuestra fase del torneo */
@@ -118,9 +120,8 @@ function faseDesdeStage(stage: string | undefined): FasePartido {
 }
 
 async function fetchFd<T>(path: string): Promise<T> {
-  const res = await fetch(`${FOOTBALL_API_BASE}${path}`, {
-    headers: { 'X-Auth-Token': FOOTBALL_DATA_TOKEN },
-  });
+  // El token lo agrega el proxy (dev server de Vite o Worker), no el cliente.
+  const res = await fetch(`${FOOTBALL_API_BASE}${path}`);
   if (!res.ok) {
     throw new Error(`football-data.org respondió ${res.status} en ${path}`);
   }

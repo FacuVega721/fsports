@@ -1,9 +1,32 @@
-import { defineConfig } from 'vite';
+import { fileURLToPath } from 'node:url';
+import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 
-export default defineConfig({
-  plugins: [
+// Directorio de este archivo (la carpeta del proyecto), para leer .env.local
+// sin depender de desde dónde se ejecute el dev server.
+const projectDir = fileURLToPath(new URL('.', import.meta.url));
+
+export default defineConfig(({ mode }) => {
+  // Token solo para el proxy de desarrollo (sale de .env.local, no del bundle).
+  const env = loadEnv(mode, projectDir, '');
+  const token = env.VITE_FOOTBALL_DATA_TOKEN ?? '';
+
+  return {
+    // Proxy de desarrollo: el cliente pega a /api/football (mismo origen) y
+    // Vite reenvía a football-data.org agregando el token. Espeja lo que hace
+    // el Worker en producción, así no hay problemas de CORS en local.
+    server: {
+      proxy: {
+        '/api/football': {
+          target: 'https://api.football-data.org/v4',
+          changeOrigin: true,
+          rewrite: (p) => p.replace(/^\/api\/football/, ''),
+          headers: token ? { 'X-Auth-Token': token } : undefined,
+        },
+      },
+    },
+    plugins: [
     react(),
     VitePWA({
       registerType: 'autoUpdate',
@@ -24,5 +47,6 @@ export default defineConfig({
         ]
       }
     })
-  ]
+    ],
+  };
 });

@@ -58,13 +58,19 @@ export interface Team {
   grupo: string;
 }
 
-/** Una fila de la tabla de posiciones. */
+/** Una fila de la tabla de posiciones (con stats completas estilo Promiedos). */
 export interface StandingRow {
   pos: number;
   nombre: string;
   code: string;
-  pj: number;
-  pts: number;
+  pj: number; // partidos jugados
+  pts: number; // puntos
+  g: number; // ganados
+  e: number; // empatados
+  p: number; // perdidos
+  gf: number; // goles a favor
+  gc: number; // goles en contra
+  dif: number; // diferencia de gol
 }
 
 /** Tabla de posiciones de un grupo. */

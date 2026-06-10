@@ -58,7 +58,10 @@ const MATCHES: Match[] = [
   ...ELIMINATORIA_DEMO,
 ];
 
-const STANDINGS: StandingGroup[] = [
+// Filas base (sin las stats detalladas); se completan con derivarStats abajo.
+type FilaBase = { pos: number; nombre: string; code: string; pj: number; pts: number };
+
+const STANDINGS_RAW: Array<{ grupo: string; equipos: FilaBase[] }> = [
   {
     grupo: 'A',
     equipos: [
@@ -96,6 +99,19 @@ const STANDINGS: StandingGroup[] = [
     ],
   },
 ];
+
+// Deriva stats coherentes (G/E/P/GF/GC/DIF) a partir de pj y pts, solo para el demo.
+const STANDINGS: StandingGroup[] = STANDINGS_RAW.map((grupo) => ({
+  grupo: grupo.grupo,
+  equipos: grupo.equipos.map((f) => {
+    const g = f.pts === 3 ? 1 : 0;
+    const e = f.pts === 1 ? 1 : 0;
+    const p = f.pj - g - e;
+    const gf = g * 2 + e; // números plausibles de muestra
+    const gc = p * 2 + e;
+    return { ...f, g, e, p, gf, gc, dif: gf - gc };
+  }),
+}));
 
 const ULTIMA_CARRERA: LastRace = {
   gp: 'GP de Canadá',

@@ -55,6 +55,13 @@ export interface ManifestData {
         code?: string;
         pj?: number;   // partidos jugados
         pts?: number;  // puntos
+        // Opcionales (estilo tabla completa). Si no los cargás, quedan en 0.
+        g?: number;    // ganados
+        e?: number;    // empatados
+        p?: number;    // perdidos
+        gf?: number;   // goles a favor
+        gc?: number;   // goles en contra
+        dif?: number;  // diferencia (si no la ponés, se calcula gf - gc)
       }>;
     }>;
   };

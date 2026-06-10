@@ -66,13 +66,23 @@ function normalizarStandings(): StandingGroup[] {
   const grupos = Array.isArray(MANIFEST.futbol?.posiciones) ? MANIFEST.futbol.posiciones : [];
   return grupos.map((g, i) => ({
     grupo: texto(g?.grupo, `${i + 1}`),
-    equipos: (Array.isArray(g?.equipos) ? g.equipos : []).map((e, j) => ({
-      pos: numero(e?.pos, j + 1),
-      nombre: texto(e?.nombre, 'Equipo'),
-      code: texto(e?.code, '').toLowerCase(),
-      pj: numero(e?.pj, 0),
-      pts: numero(e?.pts, 0),
-    })),
+    equipos: (Array.isArray(g?.equipos) ? g.equipos : []).map((e, j) => {
+      const gf = numero(e?.gf, 0);
+      const gc = numero(e?.gc, 0);
+      return {
+        pos: numero(e?.pos, j + 1),
+        nombre: texto(e?.nombre, 'Equipo'),
+        code: texto(e?.code, '').toLowerCase(),
+        pj: numero(e?.pj, 0),
+        pts: numero(e?.pts, 0),
+        g: numero(e?.g, 0),
+        e: numero(e?.e, 0),
+        p: numero(e?.p, 0),
+        gf,
+        gc,
+        dif: numero(e?.dif, gf - gc),
+      };
+    }),
   }));
 }
 

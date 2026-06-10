@@ -1,4 +1,5 @@
 import { FOOTBALL_API_BASE } from '../config';
+import { nombreEspanol } from '../paises';
 import { utcToArg } from '../time';
 import type { EstadoPartido, FasePartido, Match, StandingGroup } from '../types';
 
@@ -45,6 +46,12 @@ interface FdStandingsTable {
     position?: number;
     playedGames?: number;
     points?: number;
+    won?: number;
+    draw?: number;
+    lost?: number;
+    goalsFor?: number;
+    goalsAgainst?: number;
+    goalDifference?: number;
     team?: FdTeam;
   }>;
 }
@@ -138,10 +145,10 @@ export async function getMatchesApi(): Promise<Match[]> {
       fecha,
       hora,
       estado: estadoDesdeStatus(m.status),
-      local: m.homeTeam?.name ?? 'Por definir',
+      local: m.homeTeam?.name ? nombreEspanol(m.homeTeam.name) : 'Por definir',
       localCode: codigoPais(m.homeTeam),
       golesLocal: m.score?.fullTime?.home ?? null,
-      visitante: m.awayTeam?.name ?? 'Por definir',
+      visitante: m.awayTeam?.name ? nombreEspanol(m.awayTeam.name) : 'Por definir',
       visitanteCode: codigoPais(m.awayTeam),
       golesVisitante: m.score?.fullTime?.away ?? null,
       grupo: letraGrupo(m.group),
@@ -161,10 +168,16 @@ export async function getStandingsApi(): Promise<StandingGroup[]> {
       grupo: letraGrupo(s.group),
       equipos: (Array.isArray(s.table) ? s.table : []).map((fila, j) => ({
         pos: fila.position ?? j + 1,
-        nombre: fila.team?.name ?? 'Equipo',
+        nombre: nombreEspanol(fila.team?.name) || 'Equipo',
         code: codigoPais(fila.team),
         pj: fila.playedGames ?? 0,
         pts: fila.points ?? 0,
+        g: fila.won ?? 0,
+        e: fila.draw ?? 0,
+        p: fila.lost ?? 0,
+        gf: fila.goalsFor ?? 0,
+        gc: fila.goalsAgainst ?? 0,
+        dif: fila.goalDifference ?? 0,
       })),
     }));
 }

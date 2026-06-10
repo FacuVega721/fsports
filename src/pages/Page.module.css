@@ -55,6 +55,13 @@
   min-width: 0;
 }
 
+/* Sección Fixture: sub-filtro + lista de partidos */
+.fixture {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
 /* Transición suave al cambiar de tab */
 .fade {
   animation: fade-tab 0.25s ease;

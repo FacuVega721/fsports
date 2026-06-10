@@ -1,6 +1,6 @@
 import { FOOTBALL_API_BASE, FOOTBALL_DATA_TOKEN } from '../config';
 import { utcToArg } from '../time';
-import type { EstadoPartido, Match, StandingGroup } from '../types';
+import type { EstadoPartido, FasePartido, Match, StandingGroup } from '../types';
 
 /**
  * Adaptador de football-data.org (v4) → tipos normalizados.
@@ -29,6 +29,7 @@ interface FdMatch {
   id?: number;
   utcDate?: string;
   status?: string;
+  stage?: string;
   group?: string;
   venue?: string;
   minute?: number;
@@ -96,6 +97,26 @@ function letraGrupo(group: string | undefined): string {
   return group.replace(/^GROUP_/, '');
 }
 
+/** stage de football-data.org → nuestra fase del torneo */
+function faseDesdeStage(stage: string | undefined): FasePartido {
+  switch (stage) {
+    case 'LAST_32':
+      return 'dieciseisavos';
+    case 'LAST_16':
+      return 'octavos';
+    case 'QUARTER_FINALS':
+      return 'cuartos';
+    case 'SEMI_FINALS':
+      return 'semifinal';
+    case 'THIRD_PLACE':
+      return 'tercer_puesto';
+    case 'FINAL':
+      return 'final';
+    default:
+      return 'grupos'; // GROUP_STAGE | LEAGUE_STAGE | etc.
+  }
+}
+
 async function fetchFd<T>(path: string): Promise<T> {
   const res = await fetch(`${FOOTBALL_API_BASE}${path}`, {
     headers: { 'X-Auth-Token': FOOTBALL_DATA_TOKEN },
@@ -123,6 +144,7 @@ export async function getMatchesApi(): Promise<Match[]> {
       visitanteCode: codigoPais(m.awayTeam),
       golesVisitante: m.score?.fullTime?.away ?? null,
       grupo: letraGrupo(m.group),
+      fase: faseDesdeStage(m.stage),
       estadio: m.venue ?? '',
       minuto: typeof m.minute === 'number' ? m.minute : null,
     };

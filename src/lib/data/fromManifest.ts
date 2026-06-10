@@ -4,6 +4,7 @@ import type {
   DataSource,
   DriverStanding,
   EstadoPartido,
+  FasePartido,
   LastRace,
   Match,
   NextRace,
@@ -33,6 +34,14 @@ function estado(v: unknown): EstadoPartido {
   return v === 'en_vivo' || v === 'finalizado' ? v : 'programado';
 }
 
+const FASES_VALIDAS: FasePartido[] = [
+  'grupos', 'dieciseisavos', 'octavos', 'cuartos', 'semifinal', 'tercer_puesto', 'final',
+];
+
+function fase(v: unknown): FasePartido {
+  return FASES_VALIDAS.includes(v as FasePartido) ? (v as FasePartido) : 'grupos';
+}
+
 function normalizarMatches(): Match[] {
   const partidos = Array.isArray(MANIFEST.futbol?.partidos) ? MANIFEST.futbol.partidos : [];
   return partidos.map((p, i) => ({
@@ -47,6 +56,7 @@ function normalizarMatches(): Match[] {
     visitanteCode: texto(p?.visitanteCode, '').toLowerCase(),
     golesVisitante: numeroONull(p?.golesVisitante),
     grupo: texto(p?.grupo, ''),
+    fase: fase(p?.fase),
     estadio: texto(p?.estadio, ''),
     minuto: numeroONull(p?.minuto),
   }));

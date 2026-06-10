@@ -11,6 +11,20 @@ export type DataMode = 'manual' | 'api' | 'demo';
 
 export type EstadoPartido = 'programado' | 'en_vivo' | 'finalizado';
 
+/**
+ * Fase del torneo. 'grupos' es la fase de grupos; el resto son rondas
+ * eliminatorias del Mundial 2026 (que arranca en dieciseisavos por tener
+ * 48 selecciones).
+ */
+export type FasePartido =
+  | 'grupos'
+  | 'dieciseisavos' // 32 equipos
+  | 'octavos' // 16 equipos
+  | 'cuartos' // 8 equipos
+  | 'semifinal' // 4 equipos
+  | 'tercer_puesto'
+  | 'final';
+
 /** Un partido de fútbol, ya normalizado y con horario en UTC-3 (Argentina). */
 export interface Match {
   id: string;
@@ -28,9 +42,20 @@ export interface Match {
   golesVisitante: number | null;
   /** Grupo del Mundial ("A", "B"...) o vacío si no aplica */
   grupo: string;
+  /** Fase del torneo (grupos por defecto, o ronda eliminatoria) */
+  fase: FasePartido;
   estadio: string;
   /** Minuto de juego, solo si está en vivo */
   minuto: number | null;
+}
+
+/** Una selección participante (para la sección PAÍSES). */
+export interface Team {
+  nombre: string;
+  /** Código ISO de 2 letras (o subdivisión: gb-eng) para la bandera */
+  code: string;
+  /** Grupo al que pertenece ("A", "B"...) */
+  grupo: string;
 }
 
 /** Una fila de la tabla de posiciones. */

@@ -1,0 +1,46 @@
+.cuadro {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.columna {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.cabecera {
+  padding: var(--space-3) var(--space-4);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  border-left: 3px solid var(--gold);
+}
+
+.partidos {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+/* Desktop: rondas lado a lado, como un cuadro de llaves */
+@media (min-width: 760px) {
+  .cuadro {
+    flex-direction: row;
+    gap: var(--space-4);
+    overflow-x: auto;
+    padding-bottom: var(--space-3);
+    scroll-snap-type: x proximity;
+  }
+
+  .columna {
+    flex: 0 0 300px;
+    scroll-snap-align: start;
+  }
+
+  /* La final y el tercer puesto, columnas más angostas y centradas verticalmente */
+  .columna:nth-last-child(-n + 2) {
+    justify-content: flex-start;
+  }
+}

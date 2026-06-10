@@ -22,7 +22,8 @@ function fechaRelativa(dias: number): string {
   return `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())}`;
 }
 
-const MATCHES: Match[] = [
+// Partidos de fase de grupos (la fase se agrega como 'grupos' más abajo)
+const GRUPOS_DEMO: Omit<Match, 'fase'>[] = [
   // ── Ayer: resultados ──
   { id: 'd1', fecha: fechaRelativa(-1), hora: '13:00', estado: 'finalizado', local: 'México', localCode: 'mx', golesLocal: 2, visitante: 'Sudáfrica', visitanteCode: 'za', golesVisitante: 0, grupo: 'A', estadio: 'Estadio Azteca', minuto: null },
   { id: 'd2', fecha: fechaRelativa(-1), hora: '16:00', estado: 'finalizado', local: 'Corea del Sur', localCode: 'kr', golesLocal: 1, visitante: 'Escocia', visitanteCode: 'gb-sct', golesVisitante: 1, grupo: 'A', estadio: 'Estadio Akron, Guadalajara', minuto: null },
@@ -39,6 +40,22 @@ const MATCHES: Match[] = [
   { id: 'd11', fecha: fechaRelativa(1), hora: '19:00', estado: 'programado', local: 'España', localCode: 'es', golesLocal: null, visitante: 'Uzbekistán', visitanteCode: 'uz', golesVisitante: null, grupo: 'F', estadio: 'NRG Stadium, Houston', minuto: null },
   { id: 'd12', fecha: fechaRelativa(2), hora: '16:00', estado: 'programado', local: 'Inglaterra', localCode: 'gb-eng', golesLocal: null, visitante: 'Jamaica', visitanteCode: 'jm', golesVisitante: null, grupo: 'G', estadio: 'Arrowhead Stadium, Kansas City', minuto: null },
   { id: 'd13', fecha: fechaRelativa(2), hora: '19:00', estado: 'programado', local: 'Alemania', localCode: 'de', golesLocal: null, visitante: 'Ecuador', visitanteCode: 'ec', golesVisitante: null, grupo: 'H', estadio: 'Mercedes-Benz Stadium, Atlanta', minuto: null },
+];
+
+// Partidos de eliminatoria de ejemplo (cada uno con su fase)
+const ELIMINATORIA_DEMO: Match[] = [
+  { id: 'k1', fecha: fechaRelativa(10), hora: '16:00', estado: 'programado', local: 'Argentina', localCode: 'ar', golesLocal: null, visitante: 'Suiza', visitanteCode: 'ch', golesVisitante: null, grupo: '', fase: 'dieciseisavos', estadio: 'Hard Rock Stadium, Miami', minuto: null },
+  { id: 'k2', fecha: fechaRelativa(10), hora: '20:00', estado: 'programado', local: 'Brasil', localCode: 'br', golesLocal: null, visitante: 'Corea del Sur', visitanteCode: 'kr', golesVisitante: null, grupo: '', fase: 'dieciseisavos', estadio: 'MetLife Stadium, Nueva York', minuto: null },
+  { id: 'k3', fecha: fechaRelativa(14), hora: '16:00', estado: 'programado', local: 'Argentina', localCode: 'ar', golesLocal: null, visitante: 'Países Bajos', visitanteCode: 'nl', golesVisitante: null, grupo: '', fase: 'octavos', estadio: 'AT&T Stadium, Dallas', minuto: null },
+  { id: 'k4', fecha: fechaRelativa(18), hora: '16:00', estado: 'programado', local: 'Argentina', localCode: 'ar', golesLocal: null, visitante: 'Francia', visitanteCode: 'fr', golesVisitante: null, grupo: '', fase: 'cuartos', estadio: 'SoFi Stadium, Los Ángeles', minuto: null },
+  { id: 'k5', fecha: fechaRelativa(22), hora: '16:00', estado: 'programado', local: 'Argentina', localCode: 'ar', golesLocal: null, visitante: 'España', visitanteCode: 'es', golesVisitante: null, grupo: '', fase: 'semifinal', estadio: 'MetLife Stadium, Nueva York', minuto: null },
+  { id: 'k6', fecha: fechaRelativa(25), hora: '16:00', estado: 'programado', local: 'Por definir', localCode: '', golesLocal: null, visitante: 'Por definir', visitanteCode: '', golesVisitante: null, grupo: '', fase: 'tercer_puesto', estadio: 'Estadio de Miami', minuto: null },
+  { id: 'k7', fecha: fechaRelativa(26), hora: '16:00', estado: 'programado', local: 'Por definir', localCode: '', golesLocal: null, visitante: 'Por definir', visitanteCode: '', golesVisitante: null, grupo: '', fase: 'final', estadio: 'MetLife Stadium, Nueva York', minuto: null },
+];
+
+const MATCHES: Match[] = [
+  ...GRUPOS_DEMO.map((m) => ({ ...m, fase: 'grupos' as const })),
+  ...ELIMINATORIA_DEMO,
 ];
 
 const STANDINGS: StandingGroup[] = [

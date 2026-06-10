@@ -41,6 +41,9 @@ export interface ManifestData {
       visitanteCode?: string;
       golesVisitante?: number | null;
       grupo?: string;      // "A", "B"... (vacío si no aplica)
+      // Fase del torneo. Si no la ponés, se asume "grupos". Para la eliminatoria:
+      // "dieciseisavos" | "octavos" | "cuartos" | "semifinal" | "tercer_puesto" | "final"
+      fase?: string;
       estadio?: string;
       minuto?: number | null; // solo para partidos en vivo
     }>;

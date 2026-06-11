@@ -154,6 +154,33 @@ h3 {
   }
 }
 
+/* Motion "broadcast": destello diagonal que barre headers/banners (motion streak) */
+@keyframes streak {
+  0% {
+    transform: translateX(-160%) skewX(-18deg);
+    opacity: 0;
+  }
+  18% {
+    opacity: 1;
+  }
+  40%,
+  100% {
+    transform: translateX(260%) skewX(-18deg);
+    opacity: 0;
+  }
+}
+
+/* Glow rojo "respirando" para tarjetas en vivo */
+@keyframes glow-breathe {
+  0%,
+  100% {
+    box-shadow: 0 0 0 1px rgba(255, 42, 42, 0.35), 0 0 22px rgba(255, 42, 42, 0.18);
+  }
+  50% {
+    box-shadow: 0 0 0 1px rgba(255, 42, 42, 0.6), 0 0 44px rgba(255, 42, 42, 0.42);
+  }
+}
+
 /* Accesibilidad: sin animaciones decorativas si el usuario lo pide.
    OJO: solo desactivamos animaciones de ENTRADA/decorativas —
    el contenido nunca queda oculto. */

@@ -19,8 +19,28 @@
   flex-direction: column;
   gap: var(--space-2);
   overflow: hidden;
+  position: relative;
   /* leve glow rojo de marca en el borde inferior */
   box-shadow: inset 0 -1px 0 rgba(255, 42, 42, 0.25);
+}
+
+/* Motion streak: destello blanco diagonal que cruza el banner cada tanto */
+.banner::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 35%;
+  background: linear-gradient(
+    100deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.07) 50%,
+    transparent 100%
+  );
+  pointer-events: none;
+  animation: streak 7s ease-in-out infinite;
+  animation-delay: 1.5s;
 }
 
 .titulo {

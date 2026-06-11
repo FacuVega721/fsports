@@ -20,15 +20,15 @@
   box-shadow: var(--glow-gold);
 }
 
-/* Signature: scoreboard glow — la tarjeta en vivo está "encendida" */
+/* Signature: scoreboard glow — la tarjeta en vivo está "encendida" y respira */
 .cardVivo {
-  border-color: rgba(255, 77, 77, 0.35);
+  border-color: rgba(255, 42, 42, 0.45);
   box-shadow: var(--glow-red);
+  animation: glow-breathe 2.4s ease-in-out infinite;
 }
 
 .cardVivo:hover {
-  border-color: rgba(255, 77, 77, 0.55);
-  box-shadow: var(--glow-red);
+  border-color: rgba(255, 42, 42, 0.7);
 }
 
 .estado {

@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { BracketView } from '../components/football/BracketView';
 import { KnockoutBracket } from '../components/football/KnockoutBracket';
 import { MatchList } from '../components/football/MatchList';
 import { StandingsTable } from '../components/football/StandingsTable';
@@ -16,6 +17,7 @@ import styles from './Page.module.css';
 
 type Seccion = 'grupos' | 'eliminatoria' | 'paises' | 'fixture';
 type TabFixture = 'hoy' | 'resultados' | 'proximos';
+type VistaElim = 'cuadro' | 'listado';
 
 const MENSAJES_VACIO: Record<TabFixture, { titulo: string; detalle: string }> = {
   hoy: {
@@ -53,6 +55,7 @@ function filtrarFixture(matches: Match[], tab: TabFixture): Match[] {
 export default function FootballPage() {
   const [seccion, setSeccion] = useState<Seccion>('grupos');
   const [tabFixture, setTabFixture] = useState<TabFixture>('hoy');
+  const [vistaElim, setVistaElim] = useState<VistaElim>('cuadro');
   const [paisSel, setPaisSel] = useState<string | null>(null);
   const matches = useMatches();
   const standings = useStandings();
@@ -121,7 +124,24 @@ export default function FootballPage() {
           ) : matches.isError ? (
             <ErrorState onRetry={() => matches.refetch()} />
           ) : (
-            <KnockoutBracket matches={eliminatoria} />
+            <div className={styles.fixture}>
+              <Tabs
+                label="Vista de eliminatoria"
+                tabs={[
+                  { id: 'cuadro', label: 'Cuadro' },
+                  { id: 'listado', label: 'Listado' },
+                ]}
+                active={vistaElim}
+                onChange={(id) => setVistaElim(id as VistaElim)}
+              />
+              <div key={vistaElim} className={styles.fade}>
+                {vistaElim === 'cuadro' ? (
+                  <BracketView matches={eliminatoria} />
+                ) : (
+                  <KnockoutBracket matches={eliminatoria} />
+                )}
+              </div>
+            </div>
           ))}
 
         {/* ─── PAÍSES ─── */}

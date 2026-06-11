@@ -33,19 +33,6 @@ export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
 
-    // Diagnóstico: dice si el Worker ve el token (sin revelarlo). Borrar luego.
-    if (url.pathname === '/api/health') {
-      const tk = resolverToken(env);
-      return new Response(
-        JSON.stringify({
-          hasToken: tk.length > 0,
-          tokenLen: tk.length,
-          fuente: (env.FOOTBALL_DATA_TOKEN ?? '').length > 0 ? 'runtime' : 'build',
-        }),
-        { headers: { 'content-type': 'application/json' } },
-      );
-    }
-
     if (url.pathname.startsWith(PREFIX)) {
       const upstreamPath = url.pathname.slice(PREFIX.length) || '/';
       const target = `${FOOTBALL_BASE}${upstreamPath}${url.search}`;

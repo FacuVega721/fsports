@@ -58,6 +58,13 @@
   color: var(--text-faint);
 }
 
+.entretiempo {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--brand-bright);
+}
+
 .vivoLabel {
   display: inline-flex;
   align-items: center;

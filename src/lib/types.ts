@@ -9,7 +9,7 @@
 
 export type DataMode = 'manual' | 'api' | 'demo';
 
-export type EstadoPartido = 'programado' | 'en_vivo' | 'finalizado';
+export type EstadoPartido = 'programado' | 'en_vivo' | 'entretiempo' | 'finalizado';
 
 /**
  * Fase del torneo. 'grupos' es la fase de grupos; el resto son rondas

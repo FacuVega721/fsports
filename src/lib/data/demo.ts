@@ -33,7 +33,7 @@ const GRUPOS_DEMO: Omit<Match, 'fase' | 'ciudad' | 'tv'>[] = [
   // ── Hoy: en vivo + programados + un final temprano ──
   { id: 'd4', fecha: fechaRelativa(0), hora: '10:00', estado: 'finalizado', local: 'Suiza', localCode: 'ch', golesLocal: 2, visitante: 'Gales', visitanteCode: 'gb-wls', golesVisitante: 2, grupo: 'B', estadio: 'Lincoln Financial Field, Filadelfia', minuto: null },
   { id: 'd5', fecha: fechaRelativa(0), hora: '13:00', estado: 'en_vivo', local: 'Brasil', localCode: 'br', golesLocal: 1, visitante: 'Marruecos', visitanteCode: 'ma', golesVisitante: 0, grupo: 'C', estadio: 'MetLife Stadium, Nueva York', minuto: 67 },
-  { id: 'd6', fecha: fechaRelativa(0), hora: '16:00', estado: 'en_vivo', local: 'Estados Unidos', localCode: 'us', golesLocal: 0, visitante: 'Paraguay', visitanteCode: 'py', golesVisitante: 1, grupo: 'D', estadio: 'SoFi Stadium, Los Ángeles', minuto: 12 },
+  { id: 'd6', fecha: fechaRelativa(0), hora: '16:00', estado: 'entretiempo', local: 'Estados Unidos', localCode: 'us', golesLocal: 0, visitante: 'Paraguay', visitanteCode: 'py', golesVisitante: 1, grupo: 'D', estadio: 'SoFi Stadium, Los Ángeles', minuto: 45 },
   { id: 'd7', fecha: fechaRelativa(0), hora: '19:00', estado: 'programado', local: 'Japón', localCode: 'jp', golesLocal: null, visitante: 'Túnez', visitanteCode: 'tn', golesVisitante: null, grupo: 'C', estadio: 'AT&T Stadium, Dallas', minuto: null },
   { id: 'd8', fecha: fechaRelativa(0), hora: '22:00', estado: 'programado', local: 'Países Bajos', localCode: 'nl', golesLocal: null, visitante: 'Costa Rica', visitanteCode: 'cr', golesVisitante: null, grupo: 'D', estadio: 'Levi’s Stadium, San Francisco', minuto: null },
   // ── Mañana y pasado: próximos ──

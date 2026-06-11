@@ -39,7 +39,9 @@ function filtrarFixture(matches: Match[], tab: TabFixture): Match[] {
   switch (tab) {
     case 'hoy':
       return matches
-        .filter((m) => m.fecha === hoy || m.estado === 'en_vivo')
+        .filter(
+          (m) => m.fecha === hoy || m.estado === 'en_vivo' || m.estado === 'entretiempo',
+        )
         .sort((a, b) => a.hora.localeCompare(b.hora));
     case 'resultados':
       return matches

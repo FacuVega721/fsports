@@ -14,10 +14,12 @@ interface MatchCardProps {
 
 export function MatchCard({ match, index = 0 }: MatchCardProps) {
   const enVivo = match.estado === 'en_vivo';
+  const entretiempo = match.estado === 'entretiempo';
   const finalizado = match.estado === 'finalizado';
-  const conMarcador = enVivo || finalizado;
+  const enJuego = enVivo || entretiempo; // partido en curso (encendido)
+  const conMarcador = enJuego || finalizado;
 
-  const claseCard = enVivo ? `${styles.card} ${styles.cardVivo}` : styles.card;
+  const claseCard = enJuego ? `${styles.card} ${styles.cardVivo}` : styles.card;
 
   const sede = [match.estadio, match.ciudad].filter(Boolean).join(', ');
   const meta = [match.grupo ? `Grupo ${match.grupo}` : '', sede]
@@ -35,6 +37,10 @@ export function MatchCard({ match, index = 0 }: MatchCardProps) {
             </span>
             <span className={styles.minuto}>{match.minuto !== null ? `${match.minuto}’` : ''}</span>
           </>
+        ) : entretiempo ? (
+          <span className={styles.entretiempo} title="Entretiempo">
+            ENT
+          </span>
         ) : finalizado ? (
           <span className={styles.fin}>FIN</span>
         ) : (
@@ -47,7 +53,7 @@ export function MatchCard({ match, index = 0 }: MatchCardProps) {
           <Flag code={match.localCode} title={match.local} />
           <span className={styles.nombre}>{match.local}</span>
           {conMarcador && (
-            <span className={enVivo ? `${styles.goles} ${styles.golesVivo}` : styles.goles}>
+            <span className={enJuego ? `${styles.goles} ${styles.golesVivo}` : styles.goles}>
               {match.golesLocal ?? '-'}
             </span>
           )}
@@ -56,7 +62,7 @@ export function MatchCard({ match, index = 0 }: MatchCardProps) {
           <Flag code={match.visitanteCode} title={match.visitante} />
           <span className={styles.nombre}>{match.visitante}</span>
           {conMarcador && (
-            <span className={enVivo ? `${styles.goles} ${styles.golesVivo}` : styles.goles}>
+            <span className={enJuego ? `${styles.goles} ${styles.golesVivo}` : styles.goles}>
               {match.golesVisitante ?? '-'}
             </span>
           )}

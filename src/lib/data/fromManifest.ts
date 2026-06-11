@@ -32,7 +32,7 @@ function numeroONull(v: unknown): number | null {
 }
 
 function estado(v: unknown): EstadoPartido {
-  return v === 'en_vivo' || v === 'finalizado' ? v : 'programado';
+  return v === 'en_vivo' || v === 'entretiempo' || v === 'finalizado' ? v : 'programado';
 }
 
 const FASES_VALIDAS: FasePartido[] = [

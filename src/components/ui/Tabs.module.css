@@ -33,3 +33,17 @@
   color: #fff;
   box-shadow: 0 0 18px rgba(255, 42, 42, 0.35);
 }
+
+/* Mobile: tabs más compactas para que entren las 4 secciones sin cortarse */
+@media (max-width: 480px) {
+  .tabs {
+    gap: 2px;
+    padding: 3px;
+  }
+
+  .tab {
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    padding: 7px 9px;
+  }
+}

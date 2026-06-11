@@ -99,9 +99,10 @@ function codigoPais(team: FdTeam | undefined): string {
 function estadoDesdeStatus(status: string | undefined): EstadoPartido {
   switch (status) {
     case 'IN_PLAY':
-    case 'PAUSED':
     case 'LIVE':
       return 'en_vivo';
+    case 'PAUSED':
+      return 'entretiempo'; // entretiempo / pausa
     case 'FINISHED':
       return 'finalizado';
     default:

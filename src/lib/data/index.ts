@@ -8,7 +8,7 @@ import {
   getF1LastApi,
   getF1NextApi,
 } from './f1';
-import { getMatchesApi, getStandingsApi } from './football';
+import { getMatchesApi, getStandingsApi, getTeamsApi } from './football';
 
 /**
  * Selector de modo de datos. ÚNICO punto donde se decide la fuente.
@@ -21,6 +21,7 @@ const apiSource: DataSource = {
   f1Temporada: String(new Date().getFullYear()),
   getMatches: getMatchesApi,
   getStandings: getStandingsApi,
+  getTeams: getTeamsApi,
   getF1Last: getF1LastApi,
   getF1Next: getF1NextApi,
   getF1Drivers: getF1DriversApi,

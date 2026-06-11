@@ -1,7 +1,15 @@
 import { FOOTBALL_API_BASE } from '../config';
 import { nombreEspanol } from '../paises';
 import { utcToArg } from '../time';
-import type { EstadoPartido, FasePartido, Match, StandingGroup } from '../types';
+import type {
+  EstadoPartido,
+  FasePartido,
+  Match,
+  Player,
+  Posicion,
+  StandingGroup,
+  TeamFull,
+} from '../types';
 
 /**
  * Adaptador de football-data.org (v4) → tipos normalizados.
@@ -155,6 +163,80 @@ export async function getMatchesApi(): Promise<Match[]> {
       fase: faseDesdeStage(m.stage),
       estadio: m.venue ?? '',
       minuto: typeof m.minute === 'number' ? m.minute : null,
+    };
+  });
+}
+
+/** Posición cruda de football-data.org → posición en español. */
+function traducirPosicion(pos: string | undefined): Posicion {
+  switch (pos) {
+    case 'Goalkeeper':
+      return 'Arquero';
+    case 'Defence':
+    case 'Defender':
+      return 'Defensor';
+    case 'Midfield':
+    case 'Midfielder':
+      return 'Mediocampista';
+    case 'Offence':
+    case 'Attacker':
+    case 'Forward':
+      return 'Delantero';
+    default:
+      return 'Otro';
+  }
+}
+
+/** Edad en años a partir de la fecha de nacimiento "YYYY-MM-DD". */
+function edadDesde(fechaNac: string | undefined): number | null {
+  if (!fechaNac) return null;
+  const d = new Date(fechaNac);
+  if (isNaN(d.getTime())) return null;
+  const hoy = new Date();
+  let edad = hoy.getUTCFullYear() - d.getUTCFullYear();
+  const m = hoy.getUTCMonth() - d.getUTCMonth();
+  if (m < 0 || (m === 0 && hoy.getUTCDate() < d.getUTCDate())) edad--;
+  return edad >= 0 && edad < 120 ? edad : null;
+}
+
+interface FdTeamFull {
+  id?: number;
+  name?: string;
+  tla?: string;
+  coach?: { name?: string };
+  squad?: Array<{ name?: string; position?: string; dateOfBirth?: string; nationality?: string }>;
+}
+
+export async function getTeamsApi(): Promise<TeamFull[]> {
+  // Dos fuentes: /teams trae plantel + DT; /standings da el grupo. Se cruzan por id.
+  const [teamsData, standingsData] = await Promise.all([
+    fetchFd<{ teams?: FdTeamFull[] }>('/competitions/WC/teams'),
+    fetchFd<{ standings?: FdStandingsTable[] }>('/competitions/WC/standings'),
+  ]);
+
+  const grupoPorId = new Map<number, string>();
+  for (const bloque of standingsData.standings ?? []) {
+    if (bloque.type && bloque.type !== 'TOTAL') continue;
+    for (const fila of bloque.table ?? []) {
+      const id = (fila.team as { id?: number } | undefined)?.id;
+      if (typeof id === 'number') grupoPorId.set(id, letraGrupo(bloque.group));
+    }
+  }
+
+  const teams = Array.isArray(teamsData.teams) ? teamsData.teams : [];
+  return teams.map((t) => {
+    const squad: Player[] = (Array.isArray(t.squad) ? t.squad : []).map((p) => ({
+      nombre: p.name ?? 'Jugador',
+      posicion: traducirPosicion(p.position),
+      edad: edadDesde(p.dateOfBirth),
+      nacionalidad: nombreEspanol(p.nationality),
+    }));
+    return {
+      nombre: nombreEspanol(t.name) || 'Equipo',
+      code: codigoPais({ name: t.name, tla: t.tla }),
+      grupo: typeof t.id === 'number' ? grupoPorId.get(t.id) ?? '' : '',
+      squad,
+      dt: t.coach?.name ?? '',
     };
   });
 }

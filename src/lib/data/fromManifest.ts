@@ -9,6 +9,7 @@ import type {
   Match,
   NextRace,
   StandingGroup,
+  TeamFull,
 } from '../types';
 
 /**
@@ -86,6 +87,19 @@ function normalizarStandings(): StandingGroup[] {
   }));
 }
 
+/** Países derivados de las posiciones del manifest (sin plantel: eso es solo de la API). */
+function normalizarTeams(): TeamFull[] {
+  return normalizarStandings().flatMap((g) =>
+    g.equipos.map((e) => ({
+      nombre: e.nombre,
+      code: e.code,
+      grupo: g.grupo,
+      squad: [],
+      dt: '',
+    })),
+  );
+}
+
 function normalizarUltimaCarrera(): LastRace | null {
   const c = MANIFEST.f1?.ultimaCarrera;
   if (!c) return null;
@@ -138,6 +152,7 @@ export const manifestSource: DataSource = {
   f1Temporada: texto(MANIFEST.f1?.temporada, ''),
   getMatches: async () => normalizarMatches(),
   getStandings: async () => normalizarStandings(),
+  getTeams: async () => normalizarTeams(),
   getF1Last: async () => normalizarUltimaCarrera(),
   getF1Next: async () => normalizarProximaCarrera(),
   getF1Drivers: async () => normalizarPilotos(),

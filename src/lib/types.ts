@@ -58,6 +58,25 @@ export interface Team {
   grupo: string;
 }
 
+/** Posición de un jugador, ya traducida al español. */
+export type Posicion = 'Arquero' | 'Defensor' | 'Mediocampista' | 'Delantero' | 'Otro';
+
+/** Un jugador del plantel. */
+export interface Player {
+  nombre: string;
+  posicion: Posicion;
+  /** Edad en años (calculada desde la fecha de nacimiento), o null si no hay dato */
+  edad: number | null;
+  nacionalidad: string;
+}
+
+/** Una selección con su plantel completo (jugadores + DT) para el detalle de país. */
+export interface TeamFull extends Team {
+  squad: Player[];
+  /** Nombre del director técnico, o '' si no hay dato */
+  dt: string;
+}
+
 /** Una fila de la tabla de posiciones (con stats completas estilo Promiedos). */
 export interface StandingRow {
   pos: number;
@@ -134,6 +153,7 @@ export interface DataSource {
   f1Temporada: string;
   getMatches(): Promise<Match[]>;
   getStandings(): Promise<StandingGroup[]>;
+  getTeams(): Promise<TeamFull[]>;
   getF1Last(): Promise<LastRace | null>;
   getF1Next(): Promise<NextRace | null>;
   getF1Drivers(): Promise<DriverStanding[]>;

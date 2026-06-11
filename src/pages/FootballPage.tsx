@@ -2,15 +2,16 @@ import { useMemo, useState } from 'react';
 import { KnockoutBracket } from '../components/football/KnockoutBracket';
 import { MatchList } from '../components/football/MatchList';
 import { StandingsTable } from '../components/football/StandingsTable';
+import { TeamDetail } from '../components/football/TeamDetail';
 import { TeamsGrid } from '../components/football/TeamsGrid';
 import { EmptyState } from '../components/ui/EmptyState';
 import { ErrorState } from '../components/ui/ErrorState';
 import { SkeletonCard } from '../components/ui/SkeletonCard';
 import { Tabs } from '../components/ui/Tabs';
-import { useMatches, useStandings } from '../hooks/useData';
+import { useMatches, useStandings, useTeams } from '../hooks/useData';
 import { dataSource } from '../lib/data';
 import { hoyArg } from '../lib/time';
-import type { Match, StandingGroup, Team } from '../lib/types';
+import type { Match } from '../lib/types';
 import styles from './Page.module.css';
 
 type Seccion = 'grupos' | 'eliminatoria' | 'paises' | 'fixture';
@@ -49,18 +50,13 @@ function filtrarFixture(matches: Match[], tab: TabFixture): Match[] {
   }
 }
 
-/** Deriva la lista de selecciones (sección PAÍSES) desde la tabla de posiciones. */
-function teamsDesdeStandings(standings: StandingGroup[]): Team[] {
-  return standings.flatMap((g) =>
-    g.equipos.map((e) => ({ nombre: e.nombre, code: e.code, grupo: g.grupo })),
-  );
-}
-
 export default function FootballPage() {
   const [seccion, setSeccion] = useState<Seccion>('grupos');
   const [tabFixture, setTabFixture] = useState<TabFixture>('hoy');
+  const [paisSel, setPaisSel] = useState<string | null>(null);
   const matches = useMatches();
   const standings = useStandings();
+  const teams = useTeams();
 
   const fixtureFiltrado = useMemo(
     () => filtrarFixture(matches.data ?? [], tabFixture),
@@ -70,9 +66,9 @@ export default function FootballPage() {
     () => (matches.data ?? []).filter((m) => m.fase !== 'grupos'),
     [matches.data],
   );
-  const teams = useMemo(
-    () => teamsDesdeStandings(standings.data ?? []),
-    [standings.data],
+  const teamSel = useMemo(
+    () => (teams.data ?? []).find((t) => t.nombre === paisSel) ?? null,
+    [teams.data, paisSel],
   );
 
   return (
@@ -130,15 +126,21 @@ export default function FootballPage() {
 
         {/* ─── PAÍSES ─── */}
         {seccion === 'paises' &&
-          (standings.isPending ? (
+          (teams.isPending ? (
             <SkeletonCard count={6} alto={180} />
-          ) : standings.isError ? (
+          ) : teams.isError ? (
             <ErrorState
               titulo="Selecciones no disponibles"
-              onRetry={() => standings.refetch()}
+              onRetry={() => teams.refetch()}
+            />
+          ) : teamSel ? (
+            <TeamDetail
+              team={teamSel}
+              matches={matches.data ?? []}
+              onBack={() => setPaisSel(null)}
             />
           ) : (
-            <TeamsGrid teams={teams} />
+            <TeamsGrid teams={teams.data ?? []} onSelect={setPaisSel} />
           ))}
 
         {/* ─── FIXTURE ─── */}

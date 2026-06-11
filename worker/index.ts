@@ -13,6 +13,8 @@
  *   FOOTBALL_DATA_TOKEN
  */
 
+import { BUILD_TOKEN } from './token.generated';
+
 interface Env {
   ASSETS: { fetch: (request: Request) => Promise<Response> };
   FOOTBALL_DATA_TOKEN?: string;
@@ -21,15 +23,25 @@ interface Env {
 const FOOTBALL_BASE = 'https://api.football-data.org/v4';
 const PREFIX = '/api/football';
 
+/** Token: primero el secret de runtime; si no, el inyectado en build. */
+function resolverToken(env: Env): string {
+  const rt = env.FOOTBALL_DATA_TOKEN ?? '';
+  return rt.length > 0 ? rt : BUILD_TOKEN;
+}
+
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
 
     // Diagnóstico: dice si el Worker ve el token (sin revelarlo). Borrar luego.
     if (url.pathname === '/api/health') {
-      const tk = env.FOOTBALL_DATA_TOKEN ?? '';
+      const tk = resolverToken(env);
       return new Response(
-        JSON.stringify({ hasToken: tk.length > 0, tokenLen: tk.length }),
+        JSON.stringify({
+          hasToken: tk.length > 0,
+          tokenLen: tk.length,
+          fuente: (env.FOOTBALL_DATA_TOKEN ?? '').length > 0 ? 'runtime' : 'build',
+        }),
         { headers: { 'content-type': 'application/json' } },
       );
     }
@@ -39,7 +51,7 @@ export default {
       const target = `${FOOTBALL_BASE}${upstreamPath}${url.search}`;
       try {
         const upstream = await fetch(target, {
-          headers: { 'X-Auth-Token': env.FOOTBALL_DATA_TOKEN ?? '' },
+          headers: { 'X-Auth-Token': resolverToken(env) },
         });
         // Reenviamos el cuerpo y el status; cacheamos 60s (respeta el límite
         // de 10 req/min de football-data.org).

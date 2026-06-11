@@ -31,6 +31,14 @@ export function useStandings() {
   });
 }
 
+export function useTeams() {
+  return useQuery({
+    queryKey: ['teams', DATA_MODE],
+    queryFn: () => dataSource.getTeams(),
+    staleTime: esApi ? CINCO_MINUTOS : Infinity,
+  });
+}
+
 export function useF1Last() {
   return useQuery({
     queryKey: ['f1-last', DATA_MODE],

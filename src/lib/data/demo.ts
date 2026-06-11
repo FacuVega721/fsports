@@ -6,7 +6,9 @@ import type {
   LastRace,
   Match,
   NextRace,
+  Player,
   StandingGroup,
+  TeamFull,
 } from '../types';
 
 /**
@@ -113,6 +115,32 @@ const STANDINGS: StandingGroup[] = STANDINGS_RAW.map((grupo) => ({
   }),
 }));
 
+// Plantel de muestra (solo Argentina) para ver la sección en modo demo.
+const PLANTEL_ARG: Player[] = [
+  { nombre: 'Emiliano Martínez', posicion: 'Arquero', edad: 33, nacionalidad: 'Argentina' },
+  { nombre: 'Gerónimo Rulli', posicion: 'Arquero', edad: 34, nacionalidad: 'Argentina' },
+  { nombre: 'Nahuel Molina', posicion: 'Defensor', edad: 28, nacionalidad: 'Argentina' },
+  { nombre: 'Cristian Romero', posicion: 'Defensor', edad: 28, nacionalidad: 'Argentina' },
+  { nombre: 'Nicolás Otamendi', posicion: 'Defensor', edad: 38, nacionalidad: 'Argentina' },
+  { nombre: 'Nicolás Tagliafico', posicion: 'Defensor', edad: 33, nacionalidad: 'Argentina' },
+  { nombre: 'Rodrigo De Paul', posicion: 'Mediocampista', edad: 32, nacionalidad: 'Argentina' },
+  { nombre: 'Enzo Fernández', posicion: 'Mediocampista', edad: 25, nacionalidad: 'Argentina' },
+  { nombre: 'Alexis Mac Allister', posicion: 'Mediocampista', edad: 27, nacionalidad: 'Argentina' },
+  { nombre: 'Lionel Messi', posicion: 'Delantero', edad: 38, nacionalidad: 'Argentina' },
+  { nombre: 'Julián Álvarez', posicion: 'Delantero', edad: 26, nacionalidad: 'Argentina' },
+  { nombre: 'Lautaro Martínez', posicion: 'Delantero', edad: 28, nacionalidad: 'Argentina' },
+];
+
+const TEAMS: TeamFull[] = STANDINGS.flatMap((g) =>
+  g.equipos.map((e) => ({
+    nombre: e.nombre,
+    code: e.code,
+    grupo: g.grupo,
+    squad: e.nombre === 'Argentina' ? PLANTEL_ARG : [],
+    dt: e.nombre === 'Argentina' ? 'Lionel Scaloni' : '',
+  })),
+);
+
 const ULTIMA_CARRERA: LastRace = {
   gp: 'GP de Canadá',
   code: 'ca',
@@ -167,6 +195,7 @@ export const demoSource: DataSource = {
   f1Temporada: '2026',
   getMatches: async () => MATCHES,
   getStandings: async () => STANDINGS,
+  getTeams: async () => TEAMS,
   getF1Last: async () => ULTIMA_CARRERA,
   getF1Next: async () => PROXIMA_CARRERA,
   getF1Drivers: async () => PILOTOS,

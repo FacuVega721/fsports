@@ -1,4 +1,5 @@
 import type { CSSProperties } from 'react';
+import { ChevronRight } from 'lucide-react';
 import type { Team } from '../../lib/types';
 import { EmptyState } from '../ui/EmptyState';
 import { Flag } from '../ui/Flag';
@@ -6,10 +7,12 @@ import styles from './TeamsGrid.module.css';
 
 interface TeamsGridProps {
   teams: Team[];
+  /** Al hacer clic en un país (para abrir su detalle) */
+  onSelect?: (nombre: string) => void;
 }
 
 /** Selecciones participantes, agrupadas por grupo del Mundial. */
-export function TeamsGrid({ teams }: TeamsGridProps) {
+export function TeamsGrid({ teams, onSelect }: TeamsGridProps) {
   if (teams.length === 0) {
     return (
       <EmptyState
@@ -48,9 +51,16 @@ export function TeamsGrid({ teams }: TeamsGridProps) {
             </header>
             <ul className={styles.lista}>
               {equipos.map((t) => (
-                <li key={`${grupo}-${t.nombre}`} className={styles.pais}>
-                  <Flag code={t.code} title={t.nombre} />
-                  <span className={styles.nombre}>{t.nombre}</span>
+                <li key={`${grupo}-${t.nombre}`}>
+                  <button
+                    type="button"
+                    className={styles.pais}
+                    onClick={() => onSelect?.(t.nombre)}
+                  >
+                    <Flag code={t.code} title={t.nombre} />
+                    <span className={styles.nombre}>{t.nombre}</span>
+                    <ChevronRight size={15} className={styles.chevron} aria-hidden="true" />
+                  </button>
                 </li>
               ))}
             </ul>

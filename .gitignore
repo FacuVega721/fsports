@@ -7,3 +7,6 @@ dev-dist
 
 # Config local de preview (ruta de Node específica de la máquina)
 .claude/
+
+# Token inyectado en build (nunca se commitea)
+worker/token.generated.ts

@@ -45,17 +45,31 @@
   display: flex;
   align-items: center;
   gap: var(--space-3);
+  width: 100%;
+  text-align: left;
   padding: var(--space-2) var(--space-4);
   border-bottom: 1px solid var(--border);
   transition: background 0.15s ease;
 }
 
-.pais:last-child {
+.lista li:last-child .pais {
   border-bottom: none;
 }
 
 .pais:hover {
   background: var(--surface);
+}
+
+.pais:hover .chevron {
+  color: var(--gold);
+  transform: translateX(2px);
+}
+
+.chevron {
+  margin-left: auto;
+  color: var(--text-faint);
+  flex-shrink: 0;
+  transition: color 0.15s ease, transform 0.15s ease;
 }
 
 .nombre {

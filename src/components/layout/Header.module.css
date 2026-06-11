@@ -44,7 +44,7 @@
 
 .activo,
 .activo:hover {
-  color: var(--gold-bright);
-  background: var(--surface);
-  box-shadow: 0 0 0 1px rgba(212, 175, 106, 0.2);
+  color: #fff;
+  background: var(--brand);
+  box-shadow: 0 0 18px rgba(255, 42, 42, 0.35);
 }

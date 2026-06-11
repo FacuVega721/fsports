@@ -7,7 +7,7 @@ export function Footer() {
       <div className={`container ${styles.inner}`}>
         <div className={styles.marca}>
           <Logo />
-          <p className={styles.tagline}>Fútbol y Fórmula 1, con otro estilo.</p>
+          <p className={styles.tagline}>Fanáticos del deporte.</p>
         </div>
         <div className={styles.notas}>
           <p>Todos los horarios en hora argentina (UTC-3).</p>

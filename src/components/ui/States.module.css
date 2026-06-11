@@ -37,18 +37,21 @@
   margin-top: var(--space-3);
   padding: 9px 18px;
   border-radius: var(--radius-sm);
-  border: 1px solid rgba(212, 175, 106, 0.4);
-  color: var(--gold-bright);
-  font-family: var(--font-mono);
+  border: none;
+  background: var(--brand);
+  color: #fff;
+  font-family: var(--font-body);
+  font-weight: 600;
   font-size: 12px;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  transition: background 0.18s ease, box-shadow 0.18s ease;
+  transition: background 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
 }
 
 .reintentar:hover {
-  background: rgba(212, 175, 106, 0.08);
-  box-shadow: var(--glow-gold);
+  background: var(--brand-bright);
+  box-shadow: 0 0 28px rgba(255, 42, 42, 0.45);
+  transform: translateY(-1px);
 }
 
 .skeletons {

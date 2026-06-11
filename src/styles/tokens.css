@@ -1,47 +1,53 @@
 /* ============================================================
    TOKENS DE DISEÑO DE FSPORTS — fuente única de verdad.
-   Cambiar un valor acá propaga a TODO el sitio.
-   Concepto: identidad de marca FSports — negro + ROJO + blanco,
-   deportivo y agresivo, sobre una base oscura premium.
+   Alineado al BRAND TOOLKIT & VISUAL IDENTITY SYSTEM v1.0.
+   Concepto: deportivo premium, broadcast moderno, esports —
+   negro carbón + ROJO de marca + blanco, glow rojo, glossy.
 
-   NOTA: por compatibilidad, las variables históricas --gold/--gold-bright/
-   --glow-gold ahora apuntan al ROJO DE MARCA (acento principal). Los alias
-   --brand/--brand-bright son los nombres "correctos" para código nuevo.
+   NOTA: las variables históricas --gold/--gold-bright/--glow-gold
+   apuntan al ROJO DE MARCA (acento principal) por compatibilidad.
+   Para código nuevo usar --brand / --brand-bright.
    ============================================================ */
 
 :root {
-  /* ── Base oscura ── */
-  --bg: #0a0a0c;
-  --bg-elevated: #131317;
-  --surface: #1a1a1f;
-  --surface-hover: #232329;
-  --border: #2a2a31;
+  /* ── Base oscura (Carbon Black) ── */
+  --bg: #0a0a0a;
+  --bg-elevated: #121214;
+  --surface: #18181b;
+  --surface-hover: #212126;
+  --border: #2a2a30;
 
-  /* ── Rojo de marca (acento principal) ── */
-  --brand: #ed1c24;
-  --brand-bright: #ff3b42;
-  --gold: var(--brand); /* compat: antes dorado, ahora rojo de marca */
+  /* ── Rojos de marca ── */
+  --brand: #d50000; /* FSports Red — primario */
+  --brand-bright: #ff2a2a; /* Electric Red — glow / highlights */
+  --crimson: #650000; /* Deep Crimson — sombras, gradientes oscuros */
+  --gold: var(--brand); /* compat */
   --gold-bright: var(--brand-bright);
 
-  /* ── Texto (blanco limpio, sin tinte cálido) ── */
-  --text: #f4f5f7;
-  --text-dim: #9595a0;
-  --text-faint: #5c5c66;
+  /* ── Neutros ── */
+  --text: #ffffff; /* Pure White — titulares, logo */
+  --text-dim: #b4b4bc;
+  --text-faint: #6a6a73;
+  --steel: #d9d9d9; /* Steel Silver — detalles metálicos, bordes glossy */
 
   /* ── Funcionales ── */
-  --green: #3fd178; /* victoria / clasifica */
-  --red: #f5333f; /* EN VIVO (rojo brillante, con pulso para distinguir) */
-  --orange: #ff6b00; /* reservado (no se usa en el logo nuevo) */
+  --green: #2fd672; /* victoria / clasifica */
+  --red: #ff2a2a; /* EN VIVO (Electric Red, con pulso) */
+  --orange: #ff6b00; /* reservado */
 
-  /* ── Medallas (SOLO podio F1, no son color de marca) ── */
+  /* ── Medallas (SOLO podio F1) ── */
   --medal-gold: #e8c466;
   --medal-silver: #c2c5cf;
   --medal-bronze: #c0814f;
 
+  /* ── Gradientes oficiales ── */
+  --grad-primary: radial-gradient(circle, #ff2a2a 0%, #d50000 45%, #7a0000 100%);
+  --grad-dark: linear-gradient(180deg, #0a0a0a 0%, #650000 100%);
+
   /* ── Tipografía ── */
-  --font-brand: 'Saira Condensed', 'Inter', system-ui, sans-serif; /* logo / display deportivo */
-  --font-display: 'Bricolage Grotesque', 'Inter', system-ui, sans-serif;
-  --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-hero: 'Orbitron', 'Exo 2', system-ui, sans-serif; /* logo + titulares hero */
+  --font-display: 'Exo 2', 'Inter', system-ui, sans-serif; /* headings medianos */
+  --font-body: 'Exo 2', 'Inter', system-ui, -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, 'Cascadia Mono', monospace;
 
   /* ── Espaciado ── */
@@ -59,10 +65,10 @@
   --radius: 10px;
   --radius-lg: 14px;
 
-  /* Signature: "scoreboard glow" — resplandor de pantalla encendida (rojo de marca) */
-  --glow-gold: 0 0 0 1px rgba(237, 28, 36, 0.4), 0 4px 28px rgba(237, 28, 36, 0.16);
-  --glow-red: 0 0 0 1px rgba(245, 51, 63, 0.4), 0 4px 32px rgba(245, 51, 63, 0.18);
-  --shadow-card: 0 1px 0 rgba(255, 255, 255, 0.03) inset, 0 8px 24px rgba(0, 0, 0, 0.4);
+  /* Sombras y glow del toolkit */
+  --shadow-card: 0 10px 25px rgba(0, 0, 0, 0.45);
+  --glow-red: 0 0 0 1px rgba(255, 42, 42, 0.45), 0 0 40px rgba(255, 42, 42, 0.3);
+  --glow-gold: 0 0 0 1px rgba(213, 0, 0, 0.55), 0 0 36px rgba(255, 42, 42, 0.28); /* compat: glow rojo */
 
   /* ── Layout ── */
   --maxw: 1200px;

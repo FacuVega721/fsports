@@ -36,8 +36,8 @@ export default defineConfig(({ mode }) => {
         short_name: 'FSports',
         description: 'Fútbol y Fórmula 1, con otro estilo. Resultados al instante, con el sello de FSports.',
         lang: 'es',
-        theme_color: '#0A0A0C',
-        background_color: '#0A0A0C',
+        theme_color: '#0A0A0A',
+        background_color: '#0A0A0A',
         display: 'standalone',
         start_url: '/',
         icons: [

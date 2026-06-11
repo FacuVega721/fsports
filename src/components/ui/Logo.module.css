@@ -1,14 +1,20 @@
 .logo {
-  font-family: var(--font-brand);
+  font-family: var(--font-body); /* Exo 2 — itálica deportiva, como el wordmark oficial */
   font-weight: 800;
-  font-size: 26px;
+  font-style: italic;
+  font-size: 24px;
   line-height: 1;
-  letter-spacing: 0.01em;
-  color: var(--text);
+  letter-spacing: -0.01em;
   text-transform: none;
-  /* Inclinación agresiva del logo oficial (sin depender de una itálica real) */
-  transform: skewX(-9deg);
   display: inline-block;
   user-select: none;
   white-space: nowrap;
+
+  /* Acabado glossy: degradado blanco → plata sobre el texto */
+  background: linear-gradient(180deg, #ffffff 0%, #ffffff 48%, var(--steel) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  /* Profundidad 3D suave + leve glow rojo de marca (toolkit) */
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.5)) drop-shadow(0 0 9px rgba(255, 42, 42, 0.22));
 }

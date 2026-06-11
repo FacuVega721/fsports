@@ -87,6 +87,15 @@
   gap: var(--space-4);
 }
 
+/* Barra superior del fixture: filtros + botón copiar agenda */
+.fixtureToolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
 /* Transición suave al cambiar de tab */
 .fade {
   animation: fade-tab 0.25s ease;

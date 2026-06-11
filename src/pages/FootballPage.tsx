@@ -5,12 +5,14 @@ import { MatchList } from '../components/football/MatchList';
 import { StandingsTable } from '../components/football/StandingsTable';
 import { TeamDetail } from '../components/football/TeamDetail';
 import { TeamsGrid } from '../components/football/TeamsGrid';
+import { CopyButton } from '../components/ui/CopyButton';
 import { EmptyState } from '../components/ui/EmptyState';
 import { ErrorState } from '../components/ui/ErrorState';
 import { SkeletonCard } from '../components/ui/SkeletonCard';
 import { Tabs } from '../components/ui/Tabs';
 import { useMatches, useStandings, useTeams } from '../hooks/useData';
 import { dataSource } from '../lib/data';
+import { postAgenda } from '../lib/social';
 import { hoyArg } from '../lib/time';
 import type { Match } from '../lib/types';
 import styles from './Page.module.css';
@@ -169,16 +171,24 @@ export default function FootballPage() {
         {/* ─── FIXTURE ─── */}
         {seccion === 'fixture' && (
           <div className={styles.fixture}>
-            <Tabs
-              label="Filtro de partidos"
-              tabs={[
-                { id: 'hoy', label: 'Hoy' },
-                { id: 'resultados', label: 'Resultados' },
-                { id: 'proximos', label: 'Próximos' },
-              ]}
-              active={tabFixture}
-              onChange={(id) => setTabFixture(id as TabFixture)}
-            />
+            <div className={styles.fixtureToolbar}>
+              <Tabs
+                label="Filtro de partidos"
+                tabs={[
+                  { id: 'hoy', label: 'Hoy' },
+                  { id: 'resultados', label: 'Resultados' },
+                  { id: 'proximos', label: 'Próximos' },
+                ]}
+                active={tabFixture}
+                onChange={(id) => setTabFixture(id as TabFixture)}
+              />
+              {tabFixture !== 'resultados' && fixtureFiltrado.length > 0 && (
+                <CopyButton
+                  text={postAgenda(fixtureFiltrado, tabFixture === 'hoy')}
+                  label="Copiar agenda"
+                />
+              )}
+            </div>
             <div key={tabFixture} className={styles.fade}>
               {matches.isPending ? (
                 <SkeletonCard count={4} alto={92} />

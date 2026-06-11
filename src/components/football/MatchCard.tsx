@@ -1,7 +1,9 @@
 import type { CSSProperties } from 'react';
 import { Tv } from 'lucide-react';
 import { CANALES } from '../../data/sedes';
+import { postFinal } from '../../lib/social';
 import type { Match } from '../../lib/types';
+import { CopyButton } from '../ui/CopyButton';
 import { Flag } from '../ui/Flag';
 import { LiveDot } from '../ui/LiveDot';
 import styles from './MatchCard.module.css';
@@ -69,7 +71,14 @@ export function MatchCard({ match, index = 0 }: MatchCardProps) {
         </div>
       </div>
 
-      {meta && <p className={styles.meta}>{meta}</p>}
+      {(meta || finalizado) && (
+        <div className={styles.metaRow}>
+          {meta && <p className={styles.meta}>{meta}</p>}
+          {finalizado && (
+            <CopyButton iconOnly text={postFinal(match)} label="Copiar resultado para X" />
+          )}
+        </div>
+      )}
 
       {match.tv.length > 0 && (
         <div className={styles.tv}>

@@ -53,7 +53,7 @@ function filtrarFixture(matches: Match[], tab: TabFixture): Match[] {
 }
 
 export default function FootballPage() {
-  const [seccion, setSeccion] = useState<Seccion>('grupos');
+  const [seccion, setSeccion] = useState<Seccion>('fixture');
   const [tabFixture, setTabFixture] = useState<TabFixture>('hoy');
   const [vistaElim, setVistaElim] = useState<VistaElim>('cuadro');
   const [paisSel, setPaisSel] = useState<string | null>(null);
@@ -81,18 +81,19 @@ export default function FootballPage() {
         <span className="kicker">Fútbol · Mundial</span>
         <h1 className={styles.titulo}>{dataSource.futbolTitulo}</h1>
         <p className={styles.subtitulo}>
-          Grupos, fixture, eliminatoria y selecciones — hora argentina (UTC-3).
+          La agenda del Mundial: fixture, grupos, eliminatoria y selecciones — hora
+          argentina (UTC-3).
         </p>
       </section>
 
-      {/* Navegación entre las 4 secciones */}
+      {/* Navegación entre las 4 secciones (la agenda/fixture primero) */}
       <Tabs
         label="Secciones del Mundial"
         tabs={[
+          { id: 'fixture', label: 'Fixture' },
           { id: 'grupos', label: 'Grupos' },
           { id: 'eliminatoria', label: 'Eliminatoria' },
           { id: 'paises', label: 'Países' },
-          { id: 'fixture', label: 'Fixture' },
         ]}
         active={seccion}
         onChange={(id) => setSeccion(id as Seccion)}

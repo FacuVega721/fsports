@@ -48,23 +48,23 @@
   border-top-width: 3px;
 }
 
-/* Gradientes sobrios oro / plata / bronce, solo como luz superior */
+/* Gradientes sobrios oro / plata / bronce de MEDALLA (no rojo de marca) */
 .oro {
-  border-top-color: var(--gold);
-  background: linear-gradient(180deg, rgba(212, 175, 106, 0.14), var(--surface) 55%);
-  box-shadow: var(--glow-gold);
+  border-top-color: var(--medal-gold);
+  background: linear-gradient(180deg, rgba(232, 196, 102, 0.16), var(--surface) 55%);
+  box-shadow: 0 0 0 1px rgba(232, 196, 102, 0.3), 0 4px 28px rgba(232, 196, 102, 0.12);
   padding-top: var(--space-6);
   padding-bottom: var(--space-5);
 }
 
 .plata {
-  border-top-color: #b9bcc6;
-  background: linear-gradient(180deg, rgba(185, 188, 198, 0.1), var(--surface) 55%);
+  border-top-color: var(--medal-silver);
+  background: linear-gradient(180deg, rgba(194, 197, 207, 0.1), var(--surface) 55%);
 }
 
 .bronce {
-  border-top-color: #b07a4f;
-  background: linear-gradient(180deg, rgba(176, 122, 79, 0.12), var(--surface) 55%);
+  border-top-color: var(--medal-bronze);
+  background: linear-gradient(180deg, rgba(192, 129, 79, 0.12), var(--surface) 55%);
 }
 
 .posicion {
@@ -76,7 +76,7 @@
 }
 
 .oro .posicion {
-  color: var(--gold-bright);
+  color: var(--medal-gold);
   font-size: 38px;
 }
 

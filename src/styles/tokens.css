@@ -1,30 +1,45 @@
 /* ============================================================
    TOKENS DE DISEÑO DE FSPORTS — fuente única de verdad.
    Cambiar un valor acá propaga a TODO el sitio.
-   Concepto: "broadcast premium nocturno" — oscuro, cinematográfico,
-   con un dorado que funciona como luz, no como adorno.
+   Concepto: identidad de marca FSports — negro + ROJO + blanco,
+   deportivo y agresivo, sobre una base oscura premium.
+
+   NOTA: por compatibilidad, las variables históricas --gold/--gold-bright/
+   --glow-gold ahora apuntan al ROJO DE MARCA (acento principal). Los alias
+   --brand/--brand-bright son los nombres "correctos" para código nuevo.
    ============================================================ */
 
 :root {
-  /* ── Paleta (innegociable) ── */
+  /* ── Base oscura ── */
   --bg: #0a0a0c;
-  --bg-elevated: #131318;
-  --surface: #1a1a21;
-  --surface-hover: #22222b;
-  --border: #28282f;
+  --bg-elevated: #131317;
+  --surface: #1a1a1f;
+  --surface-hover: #232329;
+  --border: #2a2a31;
 
-  --gold: #d4af6a;
-  --gold-bright: #e8c988;
+  /* ── Rojo de marca (acento principal) ── */
+  --brand: #ed1c24;
+  --brand-bright: #ff3b42;
+  --gold: var(--brand); /* compat: antes dorado, ahora rojo de marca */
+  --gold-bright: var(--brand-bright);
 
-  --text: #f2f0ea;
-  --text-dim: #8a8a94;
-  --text-faint: #56565e;
+  /* ── Texto (blanco limpio, sin tinte cálido) ── */
+  --text: #f4f5f7;
+  --text-dim: #9595a0;
+  --text-faint: #5c5c66;
 
-  --green: #4ade80;
-  --red: #ff4d4d;
-  --orange: #ff6b00; /* SOLO para el logo FSports */
+  /* ── Funcionales ── */
+  --green: #3fd178; /* victoria / clasifica */
+  --red: #f5333f; /* EN VIVO (rojo brillante, con pulso para distinguir) */
+  --orange: #ff6b00; /* reservado (no se usa en el logo nuevo) */
+
+  /* ── Medallas (SOLO podio F1, no son color de marca) ── */
+  --medal-gold: #e8c466;
+  --medal-silver: #c2c5cf;
+  --medal-bronze: #c0814f;
 
   /* ── Tipografía ── */
+  --font-brand: 'Saira Condensed', 'Inter', system-ui, sans-serif; /* logo / display deportivo */
   --font-display: 'Bricolage Grotesque', 'Inter', system-ui, sans-serif;
   --font-body: 'Inter', system-ui, -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, 'Cascadia Mono', monospace;
@@ -44,10 +59,10 @@
   --radius: 10px;
   --radius-lg: 14px;
 
-  /* Signature: "scoreboard glow" — el resplandor de pantalla encendida */
-  --glow-gold: 0 0 0 1px rgba(212, 175, 106, 0.28), 0 4px 28px rgba(212, 175, 106, 0.1);
-  --glow-red: 0 0 0 1px rgba(255, 77, 77, 0.32), 0 4px 32px rgba(255, 77, 77, 0.12);
-  --shadow-card: 0 1px 0 rgba(255, 255, 255, 0.03) inset, 0 8px 24px rgba(0, 0, 0, 0.35);
+  /* Signature: "scoreboard glow" — resplandor de pantalla encendida (rojo de marca) */
+  --glow-gold: 0 0 0 1px rgba(237, 28, 36, 0.4), 0 4px 28px rgba(237, 28, 36, 0.16);
+  --glow-red: 0 0 0 1px rgba(245, 51, 63, 0.4), 0 4px 32px rgba(245, 51, 63, 0.18);
+  --shadow-card: 0 1px 0 rgba(255, 255, 255, 0.03) inset, 0 8px 24px rgba(0, 0, 0, 0.4);
 
   /* ── Layout ── */
   --maxw: 1200px;

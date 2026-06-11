@@ -1,18 +1,14 @@
 .logo {
-  font-family: var(--font-display);
+  font-family: var(--font-brand);
   font-weight: 800;
-  font-size: 22px;
-  letter-spacing: 0.01em;
-  display: inline-flex;
-  align-items: baseline;
+  font-size: 26px;
   line-height: 1;
-  user-select: none;
-}
-
-.f {
+  letter-spacing: 0.01em;
   color: var(--text);
-}
-
-.sports {
-  color: var(--orange);
+  text-transform: none;
+  /* Inclinación agresiva del logo oficial (sin depender de una itálica real) */
+  transform: skewX(-9deg);
+  display: inline-block;
+  user-select: none;
+  white-space: nowrap;
 }

@@ -60,6 +60,7 @@ function normalizarMatches(): Match[] {
     fase: fase(p?.fase),
     estadio: texto(p?.estadio, ''),
     ciudad: texto(p?.ciudad, ''),
+    tv: Array.isArray(p?.tv) ? p.tv.filter((x): x is string => typeof x === 'string') : [],
     minuto: numeroONull(p?.minuto),
   }));
 }

@@ -1,4 +1,6 @@
 import type { CSSProperties } from 'react';
+import { Tv } from 'lucide-react';
+import { CANALES } from '../../data/sedes';
 import type { Match } from '../../lib/types';
 import { Flag } from '../ui/Flag';
 import { LiveDot } from '../ui/LiveDot';
@@ -62,6 +64,18 @@ export function MatchCard({ match, index = 0 }: MatchCardProps) {
       </div>
 
       {meta && <p className={styles.meta}>{meta}</p>}
+
+      {match.tv.length > 0 && (
+        <div className={styles.tv}>
+          <Tv size={12} aria-hidden="true" className={styles.tvIcon} />
+          <span className={styles.tvLabel}>Ver en</span>
+          {match.tv.map((c) => (
+            <span key={c} className={styles.canal}>
+              {CANALES[c] ?? c}
+            </span>
+          ))}
+        </div>
+      )}
     </article>
   );
 }

@@ -47,6 +47,8 @@ export interface Match {
   estadio: string;
   /** Ciudad sede del partido (vacío si no hay dato) */
   ciudad: string;
+  /** Canales de TV (claves; vacío si no hay dato) — ver src/data/sedes.ts */
+  tv: string[];
   /** Minuto de juego, solo si está en vivo */
   minuto: number | null;
 }

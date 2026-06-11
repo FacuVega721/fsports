@@ -52,6 +52,26 @@ export const SEDES: Record<string, Sede> = {
  * Agregá líneas siguiendo el ejemplo de arriba.
  */
 export const SEDE_POR_PARTIDO: Record<string, string> = {
-  'México vs Sudáfrica': 'azteca', // Partido inaugural — 11/6/2026
-  // "Local vs Visitante": "claveDeSede",
+  // ── 1ª fecha (jornada inaugural) — datos oficiales FIFA ──
+  'México vs Sudáfrica': 'azteca',
+  'Corea del Sur vs República Checa': 'akron',
+  'Canadá vs Bosnia y Herzegovina': 'bmo',
+  'Estados Unidos vs Paraguay': 'sofi',
+  'Catar vs Suiza': 'levis',
+  'Brasil vs Marruecos': 'metlife',
+  'Haití vs Escocia': 'gillette',
+  'Australia vs Turquía': 'bcplace',
+  'Alemania vs Curazao': 'nrg',
+  'Países Bajos vs Japón': 'att',
+  'Costa de Marfil vs Ecuador': 'lincoln',
+  'Suecia vs Túnez': 'bbva',
+  'España vs Cabo Verde': 'mercedes',
+  'Bélgica vs Egipto': 'lumen',
+  'Arabia Saudita vs Uruguay': 'hardrock',
+  'Irán vs Nueva Zelanda': 'sofi',
+  'Francia vs Senegal': 'metlife',
+  'Irak vs Noruega': 'gillette',
+  'Argentina vs Argelia': 'arrowhead',
+  'Austria vs Jordania': 'levis',
+  // 👉 Próximas fechas: agregá "Local vs Visitante": "claveDeSede",
 };

@@ -152,7 +152,12 @@ export async function getMatchesApi(): Promise<Match[]> {
     const local = m.homeTeam?.name ? nombreEspanol(m.homeTeam.name) : 'Por definir';
     const visitante = m.awayTeam?.name ? nombreEspanol(m.awayTeam.name) : 'Por definir';
     // La API no trae sede; la buscamos en el mapa editable (src/data/sedes.ts).
-    const sede = SEDES[SEDE_POR_PARTIDO[`${local} vs ${visitante}`] ?? ''];
+    // Probamos ambos órdenes por si la API invierte local/visitante.
+    const sedeKey =
+      SEDE_POR_PARTIDO[`${local} vs ${visitante}`] ??
+      SEDE_POR_PARTIDO[`${visitante} vs ${local}`] ??
+      '';
+    const sede = SEDES[sedeKey];
     return {
       id: String(m.id ?? `api-${i}`),
       fecha,

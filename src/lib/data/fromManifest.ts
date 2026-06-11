@@ -59,6 +59,7 @@ function normalizarMatches(): Match[] {
     grupo: texto(p?.grupo, ''),
     fase: fase(p?.fase),
     estadio: texto(p?.estadio, ''),
+    ciudad: texto(p?.ciudad, ''),
     minuto: numeroONull(p?.minuto),
   }));
 }

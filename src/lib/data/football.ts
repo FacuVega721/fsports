@@ -1,3 +1,4 @@
+import { SEDES, SEDE_POR_PARTIDO } from '../../data/sedes';
 import { FOOTBALL_API_BASE } from '../config';
 import { nombreEspanol } from '../paises';
 import { utcToArg } from '../time';
@@ -148,20 +149,25 @@ export async function getMatchesApi(): Promise<Match[]> {
   const matches = Array.isArray(data.matches) ? data.matches : [];
   return matches.map((m, i) => {
     const { fecha, hora } = utcToArg(m.utcDate ?? '');
+    const local = m.homeTeam?.name ? nombreEspanol(m.homeTeam.name) : 'Por definir';
+    const visitante = m.awayTeam?.name ? nombreEspanol(m.awayTeam.name) : 'Por definir';
+    // La API no trae sede; la buscamos en el mapa editable (src/data/sedes.ts).
+    const sede = SEDES[SEDE_POR_PARTIDO[`${local} vs ${visitante}`] ?? ''];
     return {
       id: String(m.id ?? `api-${i}`),
       fecha,
       hora,
       estado: estadoDesdeStatus(m.status),
-      local: m.homeTeam?.name ? nombreEspanol(m.homeTeam.name) : 'Por definir',
+      local,
       localCode: codigoPais(m.homeTeam),
       golesLocal: m.score?.fullTime?.home ?? null,
-      visitante: m.awayTeam?.name ? nombreEspanol(m.awayTeam.name) : 'Por definir',
+      visitante,
       visitanteCode: codigoPais(m.awayTeam),
       golesVisitante: m.score?.fullTime?.away ?? null,
       grupo: letraGrupo(m.group),
       fase: faseDesdeStage(m.stage),
-      estadio: m.venue ?? '',
+      estadio: m.venue ?? sede?.estadio ?? '',
+      ciudad: sede?.ciudad ?? '',
       minuto: typeof m.minute === 'number' ? m.minute : null,
     };
   });

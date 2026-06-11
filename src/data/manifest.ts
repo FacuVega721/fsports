@@ -45,6 +45,7 @@ export interface ManifestData {
       // "dieciseisavos" | "octavos" | "cuartos" | "semifinal" | "tercer_puesto" | "final"
       fase?: string;
       estadio?: string;
+      ciudad?: string;        // ciudad sede (ej: "Ciudad de México")
       minuto?: number | null; // solo para partidos en vivo
     }>;
     posiciones: Array<{

@@ -45,6 +45,8 @@ export interface Match {
   /** Fase del torneo (grupos por defecto, o ronda eliminatoria) */
   fase: FasePartido;
   estadio: string;
+  /** Ciudad sede del partido (vacío si no hay dato) */
+  ciudad: string;
   /** Minuto de juego, solo si está en vivo */
   minuto: number | null;
 }

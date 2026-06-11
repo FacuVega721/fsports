@@ -24,8 +24,8 @@ function fechaRelativa(dias: number): string {
   return `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())}`;
 }
 
-// Partidos de fase de grupos (la fase se agrega como 'grupos' más abajo)
-const GRUPOS_DEMO: Omit<Match, 'fase'>[] = [
+// Partidos de fase de grupos (fase y ciudad se agregan más abajo)
+const GRUPOS_DEMO: Omit<Match, 'fase' | 'ciudad'>[] = [
   // ── Ayer: resultados ──
   { id: 'd1', fecha: fechaRelativa(-1), hora: '13:00', estado: 'finalizado', local: 'México', localCode: 'mx', golesLocal: 2, visitante: 'Sudáfrica', visitanteCode: 'za', golesVisitante: 0, grupo: 'A', estadio: 'Estadio Azteca', minuto: null },
   { id: 'd2', fecha: fechaRelativa(-1), hora: '16:00', estado: 'finalizado', local: 'Corea del Sur', localCode: 'kr', golesLocal: 1, visitante: 'Escocia', visitanteCode: 'gb-sct', golesVisitante: 1, grupo: 'A', estadio: 'Estadio Akron, Guadalajara', minuto: null },
@@ -44,8 +44,8 @@ const GRUPOS_DEMO: Omit<Match, 'fase'>[] = [
   { id: 'd13', fecha: fechaRelativa(2), hora: '19:00', estado: 'programado', local: 'Alemania', localCode: 'de', golesLocal: null, visitante: 'Ecuador', visitanteCode: 'ec', golesVisitante: null, grupo: 'H', estadio: 'Mercedes-Benz Stadium, Atlanta', minuto: null },
 ];
 
-// Partidos de eliminatoria de ejemplo (cada uno con su fase)
-const ELIMINATORIA_DEMO: Match[] = [
+// Partidos de eliminatoria de ejemplo (la ciudad se agrega más abajo)
+const ELIMINATORIA_DEMO: Omit<Match, 'ciudad'>[] = [
   { id: 'k1', fecha: fechaRelativa(10), hora: '16:00', estado: 'programado', local: 'Argentina', localCode: 'ar', golesLocal: null, visitante: 'Suiza', visitanteCode: 'ch', golesVisitante: null, grupo: '', fase: 'dieciseisavos', estadio: 'Hard Rock Stadium, Miami', minuto: null },
   { id: 'k2', fecha: fechaRelativa(10), hora: '20:00', estado: 'programado', local: 'Brasil', localCode: 'br', golesLocal: null, visitante: 'Corea del Sur', visitanteCode: 'kr', golesVisitante: null, grupo: '', fase: 'dieciseisavos', estadio: 'MetLife Stadium, Nueva York', minuto: null },
   { id: 'k3', fecha: fechaRelativa(14), hora: '16:00', estado: 'programado', local: 'Argentina', localCode: 'ar', golesLocal: null, visitante: 'Países Bajos', visitanteCode: 'nl', golesVisitante: null, grupo: '', fase: 'octavos', estadio: 'AT&T Stadium, Dallas', minuto: null },
@@ -56,8 +56,8 @@ const ELIMINATORIA_DEMO: Match[] = [
 ];
 
 const MATCHES: Match[] = [
-  ...GRUPOS_DEMO.map((m) => ({ ...m, fase: 'grupos' as const })),
-  ...ELIMINATORIA_DEMO,
+  ...GRUPOS_DEMO.map((m) => ({ ...m, fase: 'grupos' as const, ciudad: '' })),
+  ...ELIMINATORIA_DEMO.map((m) => ({ ...m, ciudad: '' })),
 ];
 
 // Filas base (sin las stats detalladas); se completan con derivarStats abajo.

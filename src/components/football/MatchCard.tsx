@@ -17,7 +17,8 @@ export function MatchCard({ match, index = 0 }: MatchCardProps) {
 
   const claseCard = enVivo ? `${styles.card} ${styles.cardVivo}` : styles.card;
 
-  const meta = [match.grupo ? `Grupo ${match.grupo}` : '', match.estadio]
+  const sede = [match.estadio, match.ciudad].filter(Boolean).join(', ');
+  const meta = [match.grupo ? `Grupo ${match.grupo}` : '', sede]
     .filter(Boolean)
     .join(' · ');
 

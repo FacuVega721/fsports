@@ -15,7 +15,36 @@ export function Footer() {
             Fuentes: football-data.org · Jolpica-F1. Datos informativos, pueden
             tener demora.
           </p>
-          <p className={styles.social}>@FSports_21 en X e Instagram</p>
+          <p className={styles.social}>
+            Seguinos:{' '}
+            <a
+              className={styles.red}
+              href="https://x.com/oficialfsports"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              X
+            </a>{' '}
+            ·{' '}
+            <a
+              className={styles.red}
+              href="https://instagram.com/oficialfsports"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Instagram
+            </a>{' '}
+            ·{' '}
+            <a
+              className={styles.red}
+              href="https://tiktok.com/@oficialfsports"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              TikTok
+            </a>{' '}
+            — @oficialfsports
+          </p>
         </div>
       </div>
     </footer>

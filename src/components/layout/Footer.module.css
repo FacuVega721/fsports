@@ -36,6 +36,16 @@
   color: var(--text-dim);
 }
 
+.red {
+  color: var(--text-dim);
+  font-weight: 600;
+  transition: color 0.15s ease;
+}
+
+.red:hover {
+  color: var(--brand-bright);
+}
+
 @media (min-width: 768px) {
   .inner {
     flex-direction: row;

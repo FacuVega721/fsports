@@ -207,13 +207,22 @@ function traducirStatus(status: string | undefined): string {
   return 'Abandono'; // Accident, Engine, Collision, Gearbox, etc.
 }
 
-/** Deriva el estado del resultado a partir de positionText y status. */
+/**
+ * Deriva el estado del resultado. La AUTORIDAD es positionText:
+ *  - número  → el piloto terminó/clasificó (aunque sea a una o más vueltas) = 'ok'
+ *  - letra   → no clasificó: R retirado, D/E descalificado/excluido,
+ *              W retirado antes de largar, F no clasificó en parrilla, N no clasificado.
+ * El status solo se usa como respaldo y para el texto.
+ */
 function estadoResultado(positionText: string | undefined, status: string | undefined): ResultadoEstado {
-  if (status === 'Finished' || /^\+\d+ Lap/.test(status ?? '')) return 'ok';
-  if (positionText === 'D' || /disqualified/i.test(status ?? '')) return 'dsq';
-  if (positionText === 'W' || /did not start|withdrew/i.test(status ?? '')) return 'dns';
-  if (positionText === 'N' || positionText === 'F' || /not classified/i.test(status ?? '')) return 'nc';
-  return 'dnf';
+  const pt = (positionText ?? '').trim();
+  if (/^\d+$/.test(pt)) return 'ok';
+  if (pt === 'D' || pt === 'E' || /disqualified|excluded/i.test(status ?? '')) return 'dsq';
+  if (pt === 'W' || pt === 'F' || /did not start|withdrew|did not qualify/i.test(status ?? '')) {
+    return 'dns';
+  }
+  if (pt === 'N' || /not classified/i.test(status ?? '')) return 'nc';
+  return 'dnf'; // R u otros → abandono
 }
 
 const TEXTO_ESTADO: Record<ResultadoEstado, string> = {

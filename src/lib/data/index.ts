@@ -3,10 +3,13 @@ import type { DataSource } from '../types';
 import { demoSource } from './demo';
 import { manifestSource } from './fromManifest';
 import {
+  getF1CalendarApi,
   getF1ConstructorsApi,
   getF1DriversApi,
   getF1LastApi,
   getF1NextApi,
+  getF1RaceApi,
+  getF1TeamsApi,
 } from './f1';
 import { getMatchesApi, getStandingsApi, getTeamsApi } from './football';
 
@@ -26,6 +29,9 @@ const apiSource: DataSource = {
   getF1Next: getF1NextApi,
   getF1Drivers: getF1DriversApi,
   getF1Constructors: getF1ConstructorsApi,
+  getF1Calendar: getF1CalendarApi,
+  getF1Race: getF1RaceApi,
+  getF1Teams: getF1TeamsApi,
 };
 
 const sources: Record<typeof DATA_MODE, DataSource> = {

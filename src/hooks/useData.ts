@@ -39,6 +39,31 @@ export function useTeams() {
   });
 }
 
+export function useF1Calendar() {
+  return useQuery({
+    queryKey: ['f1-calendar', DATA_MODE],
+    queryFn: () => dataSource.getF1Calendar(),
+    staleTime: esApi ? CINCO_MINUTOS : Infinity,
+  });
+}
+
+export function useF1Race(ronda: number | null) {
+  return useQuery({
+    queryKey: ['f1-race', DATA_MODE, ronda],
+    queryFn: () => dataSource.getF1Race(ronda as number),
+    enabled: ronda !== null,
+    staleTime: esApi ? CINCO_MINUTOS : Infinity,
+  });
+}
+
+export function useF1Teams() {
+  return useQuery({
+    queryKey: ['f1-teams', DATA_MODE],
+    queryFn: () => dataSource.getF1Teams(),
+    staleTime: esApi ? CINCO_MINUTOS : Infinity,
+  });
+}
+
 export function useF1Last() {
   return useQuery({
     queryKey: ['f1-last', DATA_MODE],

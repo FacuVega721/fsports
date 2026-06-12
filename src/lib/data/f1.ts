@@ -1,6 +1,19 @@
+import { HISTORIAL_EQUIPOS } from '../../data/equipos-f1';
 import { F1_API_BASE } from '../config';
-import { utcToArg } from '../time';
-import type { ConstructorStanding, DriverStanding, LastRace, NextRace } from '../types';
+import { hoyArg, utcToArg } from '../time';
+import type {
+  ConstructorStanding,
+  DriverStanding,
+  EstadoCarrera,
+  F1DriverInfo,
+  F1Team,
+  LastRace,
+  NextRace,
+  RaceCalendar,
+  RaceFull,
+  RaceResultRow,
+  ResultadoEstado,
+} from '../types';
 
 /**
  * Adaptador de Jolpica-F1 (formato Ergast) → tipos normalizados.
@@ -27,17 +40,47 @@ import type { ConstructorStanding, DriverStanding, LastRace, NextRace } from '..
  * }
  */
 
+interface ErgastDriver {
+  givenName?: string;
+  familyName?: string;
+  code?: string;
+  permanentNumber?: string;
+  dateOfBirth?: string;
+  nationality?: string;
+}
+
+interface ErgastConstructor {
+  constructorId?: string;
+  name?: string;
+  nationality?: string;
+  url?: string;
+}
+
 interface ErgastRace {
+  round?: string;
   raceName?: string;
   date?: string;
   time?: string;
+  Sprint?: unknown;
   Circuit?: { circuitName?: string; Location?: { country?: string; locality?: string } };
   Results?: Array<{
     position?: string;
+    positionText?: string;
+    points?: string;
+    grid?: string;
+    laps?: string;
     status?: string;
-    Driver?: { givenName?: string; familyName?: string };
-    Constructor?: { name?: string };
+    Driver?: ErgastDriver;
+    Constructor?: ErgastConstructor;
     Time?: { time?: string };
+    FastestLap?: { rank?: string; Time?: { time?: string } };
+  }>;
+  QualifyingResults?: Array<{
+    Driver?: ErgastDriver;
+    Constructor?: ErgastConstructor;
+    Q1?: string;
+    Q2?: string;
+    Q3?: string;
   }>;
 }
 
@@ -49,13 +92,13 @@ interface ErgastResponse {
         DriverStandings?: Array<{
           position?: string;
           points?: string;
-          Driver?: { givenName?: string; familyName?: string };
-          Constructors?: Array<{ name?: string }>;
+          Driver?: ErgastDriver;
+          Constructors?: ErgastConstructor[];
         }>;
         ConstructorStandings?: Array<{
           position?: string;
           points?: string;
-          Constructor?: { name?: string };
+          Constructor?: ErgastConstructor;
         }>;
       }>;
     };
@@ -121,6 +164,181 @@ async function fetchJolpica(path: string): Promise<ErgastResponse> {
     throw new Error(`Jolpica-F1 respondió ${res.status} en ${path}`);
   }
   return (await res.json()) as ErgastResponse;
+}
+
+/** Nacionalidad (demónimo en inglés, como la da la API) → código ISO-2 para bandera. */
+const NACIONALIDAD: Record<string, string> = {
+  Argentine: 'ar', Australian: 'au', Austrian: 'at', Belgian: 'be', Brazilian: 'br',
+  British: 'gb', Canadian: 'ca', Chinese: 'cn', Danish: 'dk', Dutch: 'nl',
+  Finnish: 'fi', French: 'fr', German: 'de', Italian: 'it', Japanese: 'jp',
+  Mexican: 'mx', Monegasque: 'mc', 'New Zealander': 'nz', Polish: 'pl', Russian: 'ru',
+  Spanish: 'es', Swedish: 'se', Swiss: 'ch', Thai: 'th', American: 'us',
+  Emirati: 'ae', Estonian: 'ee',
+};
+
+function codigoNacionalidad(nac: string | undefined): string {
+  return nac ? NACIONALIDAD[nac] ?? '' : '';
+}
+
+/** Edad en años a partir de "YYYY-MM-DD". */
+function edadDesde(fechaNac: string | undefined): number | null {
+  if (!fechaNac) return null;
+  const d = new Date(fechaNac);
+  if (isNaN(d.getTime())) return null;
+  const [ay, am, ad] = hoyArg().split('-').map(Number);
+  let edad = ay - d.getUTCFullYear();
+  const m = am - 1 - d.getUTCMonth();
+  if (m < 0 || (m === 0 && ad < d.getUTCDate())) edad--;
+  return edad >= 0 && edad < 120 ? edad : null;
+}
+
+function nombrePiloto(d: { givenName?: string; familyName?: string } | undefined): string {
+  return `${d?.givenName ?? ''} ${d?.familyName ?? ''}`.trim() || 'Piloto';
+}
+
+/** "+1 Lap" → "+1 vuelta", "+2 Laps" → "+2 vueltas". */
+function traducirStatus(status: string | undefined): string {
+  if (!status) return '—';
+  const lap = status.match(/^\+(\d+) Lap/);
+  if (lap) return `+${lap[1]} ${lap[1] === '1' ? 'vuelta' : 'vueltas'}`;
+  if (status === 'Finished') return 'Finalizó';
+  if (/disqualified/i.test(status)) return 'Descalificado';
+  if (/did not start|withdrew/i.test(status)) return 'No largó';
+  return 'Abandono'; // Accident, Engine, Collision, Gearbox, etc.
+}
+
+/** Deriva el estado del resultado a partir de positionText y status. */
+function estadoResultado(positionText: string | undefined, status: string | undefined): ResultadoEstado {
+  if (status === 'Finished' || /^\+\d+ Lap/.test(status ?? '')) return 'ok';
+  if (positionText === 'D' || /disqualified/i.test(status ?? '')) return 'dsq';
+  if (positionText === 'W' || /did not start|withdrew/i.test(status ?? '')) return 'dns';
+  if (positionText === 'N' || positionText === 'F' || /not classified/i.test(status ?? '')) return 'nc';
+  return 'dnf';
+}
+
+const TEXTO_ESTADO: Record<ResultadoEstado, string> = {
+  ok: '', dnf: 'DNF', dns: 'DNS', dsq: 'DSQ', nc: 'NC',
+};
+
+/** Calendario completo de la temporada. */
+export async function getF1CalendarApi(): Promise<RaceCalendar[]> {
+  const data = await fetchJolpica('/current.json');
+  const races = data.MRData?.RaceTable?.Races ?? [];
+  const hoy = hoyArg();
+  return races.map((r) => {
+    const { fecha, hora } = utcToArg(`${r.date}T${r.time ?? '12:00:00Z'}`);
+    const estado: EstadoCarrera =
+      fecha < hoy ? 'finalizada' : fecha === hoy ? 'en_curso' : 'proxima';
+    return {
+      ronda: Number(r.round ?? 0),
+      gp: nombreGp(r.raceName),
+      code: codigoGp(r),
+      circuito: r.Circuit?.circuitName ?? '',
+      ciudad: r.Circuit?.Location?.locality ?? '',
+      fecha,
+      hora,
+      estado,
+      esSprint: !!r.Sprint,
+    };
+  });
+}
+
+/** Detalle de una carrera por ronda (resultados + pole + vuelta rápida). */
+export async function getF1RaceApi(ronda: number): Promise<RaceFull | null> {
+  const [resData, qData] = await Promise.all([
+    fetchJolpica(`/current/${ronda}/results.json`),
+    fetchJolpica(`/current/${ronda}/qualifying.json`).catch(() => ({}) as ErgastResponse),
+  ]);
+  const race = resData.MRData?.RaceTable?.Races?.[0];
+  if (!race) return null;
+
+  const resultados: RaceResultRow[] = (race.Results ?? []).map((r, i) => {
+    const estado = estadoResultado(r.positionText, r.status);
+    const clasificado = estado === 'ok';
+    return {
+      pos: clasificado ? Number(r.position ?? i + 1) : null,
+      posTexto: clasificado ? String(r.position ?? i + 1) : TEXTO_ESTADO[estado],
+      piloto: nombrePiloto(r.Driver),
+      code: r.Driver?.code ?? '',
+      equipo: r.Constructor?.name ?? '',
+      grilla: r.grid != null ? Number(r.grid) : null,
+      vueltas: r.laps != null ? Number(r.laps) : null,
+      tiempo: r.Time?.time ?? traducirStatus(r.status),
+      estado,
+      puntos: Number(r.points ?? 0),
+    };
+  });
+
+  // Pole = P1 de la clasificación
+  const polePos = qData.MRData?.RaceTable?.Races?.[0]?.QualifyingResults?.[0];
+  const pole = polePos
+    ? {
+        piloto: nombrePiloto(polePos.Driver),
+        equipo: polePos.Constructor?.name ?? '',
+        tiempo: polePos.Q3 || polePos.Q2 || polePos.Q1 || '',
+      }
+    : null;
+
+  // Vuelta rápida = la marcada con rank "1"
+  const flRow = (race.Results ?? []).find((r) => r.FastestLap?.rank === '1');
+  const vueltaRapida = flRow
+    ? { piloto: nombrePiloto(flRow.Driver), tiempo: flRow.FastestLap?.Time?.time ?? '' }
+    : null;
+
+  const { fecha } = utcToArg(`${race.date}T${race.time ?? '12:00:00Z'}`);
+  return {
+    ronda,
+    gp: nombreGp(race.raceName),
+    code: codigoGp(race),
+    circuito: race.Circuit?.circuitName ?? '',
+    ciudad: race.Circuit?.Location?.locality ?? '',
+    fecha,
+    pole,
+    vueltaRapida,
+    resultados,
+  };
+}
+
+/** Equipos con su detalle: pilotos, nacionalidad, puntos, reseña. */
+export async function getF1TeamsApi(): Promise<F1Team[]> {
+  const [consData, drvData] = await Promise.all([
+    fetchJolpica('/current/constructorStandings.json'),
+    fetchJolpica('/current/driverStandings.json'),
+  ]);
+
+  // Pilotos agrupados por equipo (constructorId)
+  const pilotosPorEquipo = new Map<string, F1DriverInfo[]>();
+  for (const d of drvData.MRData?.StandingsTable?.StandingsLists?.[0]?.DriverStandings ?? []) {
+    const cid = d.Constructors?.[0]?.constructorId ?? '';
+    if (!cid) continue;
+    const info: F1DriverInfo = {
+      nombre: nombrePiloto(d.Driver),
+      code: d.Driver?.code ?? '',
+      numero: d.Driver?.permanentNumber ?? '',
+      nacionalidadCode: codigoNacionalidad(d.Driver?.nationality),
+      nacionalidad: d.Driver?.nationality ?? '',
+      edad: edadDesde(d.Driver?.dateOfBirth),
+      puntos: Number(d.points ?? 0),
+    };
+    if (!pilotosPorEquipo.has(cid)) pilotosPorEquipo.set(cid, []);
+    pilotosPorEquipo.get(cid)!.push(info);
+  }
+
+  const lista = consData.MRData?.StandingsTable?.StandingsLists?.[0]?.ConstructorStandings ?? [];
+  return lista.map((c, i) => {
+    const cid = c.Constructor?.constructorId ?? '';
+    return {
+      id: cid,
+      nombre: c.Constructor?.name ?? 'Equipo',
+      nacionalidadCode: codigoNacionalidad(c.Constructor?.nationality),
+      nacionalidad: c.Constructor?.nationality ?? '',
+      pos: Number(c.position ?? i + 1),
+      puntos: Number(c.points ?? 0),
+      wikipedia: c.Constructor?.url ?? '',
+      pilotos: pilotosPorEquipo.get(cid) ?? [],
+      historial: HISTORIAL_EQUIPOS[cid] ?? '',
+    };
+  });
 }
 
 export async function getF1LastApi(): Promise<LastRace | null> {

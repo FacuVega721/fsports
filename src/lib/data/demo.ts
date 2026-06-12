@@ -200,4 +200,7 @@ export const demoSource: DataSource = {
   getF1Next: async () => PROXIMA_CARRERA,
   getF1Drivers: async () => PILOTOS,
   getF1Constructors: async () => CONSTRUCTORES,
+  getF1Calendar: async () => [],
+  getF1Race: async () => null,
+  getF1Teams: async () => [],
 };

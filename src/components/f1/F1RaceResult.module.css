@@ -1,0 +1,219 @@
+.detalle {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.cabecera {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-4) var(--space-5);
+  background: var(--grad-dark);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.gp {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-family: var(--font-hero);
+  text-transform: uppercase;
+  font-size: clamp(20px, 4vw, 28px);
+  font-weight: 800;
+}
+
+.circuito {
+  font-size: 12.5px;
+  color: var(--text-dim);
+}
+
+/* Pole + vuelta rápida */
+.destacados {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  gap: var(--space-3);
+}
+
+.destacado {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--space-3) var(--space-4);
+}
+
+.iconPole {
+  color: var(--medal-gold);
+}
+
+.iconVr {
+  color: #b46cff;
+}
+
+.dLabel {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.dValor {
+  display: block;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.dTiempo {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+/* Tabla */
+.scroll {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-elevated);
+}
+
+.tabla {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.tabla th {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  text-align: right;
+  padding: var(--space-2) var(--space-3);
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+.colPos {
+  width: 38px;
+  text-align: center !important;
+}
+
+.colPiloto,
+.tabla td:nth-child(2),
+.tabla th:nth-child(2),
+.tabla td:nth-child(3),
+.tabla th:nth-child(3) {
+  text-align: left !important;
+}
+
+.colTiempo {
+  min-width: 120px;
+}
+
+.tabla td {
+  padding: var(--space-2) var(--space-3);
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+.tabla tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.tabla tbody tr:hover {
+  background: var(--surface);
+}
+
+/* Podio: borde de medalla a la izquierda */
+.p1 td:first-child {
+  box-shadow: inset 3px 0 0 var(--medal-gold);
+}
+.p2 td:first-child {
+  box-shadow: inset 3px 0 0 var(--medal-silver);
+}
+.p3 td:first-child {
+  box-shadow: inset 3px 0 0 var(--medal-bronze);
+}
+
+.pos {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  text-align: center;
+  color: var(--text);
+}
+
+.piloto {
+  font-weight: 600;
+}
+
+.code {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-faint);
+  margin-left: 6px;
+}
+
+.equipo {
+  color: var(--text-dim);
+}
+
+.num {
+  font-family: var(--font-mono);
+  text-align: right;
+  color: var(--text-dim);
+  font-size: 12.5px;
+}
+
+.pts {
+  color: var(--brand-bright);
+  font-weight: 700;
+}
+
+.tiempo {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-dim);
+  text-align: right;
+}
+
+.badge {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  padding: 1px 5px;
+  border-radius: 3px;
+  margin-right: 6px;
+}
+
+.dnf {
+  background: rgba(255, 42, 42, 0.15);
+  color: var(--brand-bright);
+}
+.dns,
+.nc {
+  background: var(--surface-hover);
+  color: var(--text-faint);
+}
+.dsq {
+  background: rgba(255, 42, 42, 0.25);
+  color: #fff;
+}
+
+.nota {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--text-faint);
+}

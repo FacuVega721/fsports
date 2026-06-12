@@ -146,6 +146,88 @@ export interface ConstructorStanding {
   pts: number;
 }
 
+/* ─────────────── F1: calendario, resultados y equipos ─────────────── */
+
+export type EstadoCarrera = 'finalizada' | 'en_curso' | 'proxima';
+
+/** Una carrera del calendario de la temporada. */
+export interface RaceCalendar {
+  ronda: number;
+  gp: string;
+  /** Código ISO del país del GP, para la bandera */
+  code: string;
+  circuito: string;
+  ciudad: string;
+  /** YYYY-MM-DD en UTC-3 */
+  fecha: string;
+  /** HH:MM en UTC-3 */
+  hora: string;
+  estado: EstadoCarrera;
+  esSprint: boolean;
+}
+
+export type ResultadoEstado = 'ok' | 'dnf' | 'dns' | 'dsq' | 'nc';
+
+/** Una fila del resultado de una carrera. */
+export interface RaceResultRow {
+  /** Posición final, o null si no terminó/clasificó */
+  pos: number | null;
+  /** Texto a mostrar en la columna posición ("1", "DNF", "DNS"...) */
+  posTexto: string;
+  piloto: string;
+  /** Código de 3 letras del piloto (VER, HAM...) */
+  code: string;
+  equipo: string;
+  /** Posición de largada */
+  grilla: number | null;
+  vueltas: number | null;
+  /** Tiempo, diferencia o motivo ("2:23:31.243", "+6.271", "Abandono") */
+  tiempo: string;
+  estado: ResultadoEstado;
+  puntos: number;
+}
+
+/** Detalle completo de una carrera (pole, podio, clasificación, vuelta rápida). */
+export interface RaceFull {
+  ronda: number;
+  gp: string;
+  code: string;
+  circuito: string;
+  ciudad: string;
+  fecha: string;
+  pole: { piloto: string; equipo: string; tiempo: string } | null;
+  vueltaRapida: { piloto: string; tiempo: string } | null;
+  resultados: RaceResultRow[];
+}
+
+/** Un piloto dentro del detalle de un equipo. */
+export interface F1DriverInfo {
+  nombre: string;
+  /** Código de 3 letras (VER) */
+  code: string;
+  numero: string;
+  /** Código ISO de 2 letras de la nacionalidad, para la bandera */
+  nacionalidadCode: string;
+  nacionalidad: string;
+  edad: number | null;
+  puntos: number;
+}
+
+/** Un equipo (escudería) con su detalle. */
+export interface F1Team {
+  id: string;
+  nombre: string;
+  /** Código ISO de 2 letras de la nacionalidad del equipo */
+  nacionalidadCode: string;
+  nacionalidad: string;
+  pos: number;
+  puntos: number;
+  wikipedia: string;
+  pilotos: F1DriverInfo[];
+  /** Reseña breve editable (la API no la provee); '' si no hay */
+  historial: string;
+}
+
 /**
  * Contrato que cumplen los tres modos de datos.
  * Cambiar DATA_MODE intercambia la implementación, nunca los tipos.
@@ -162,4 +244,10 @@ export interface DataSource {
   getF1Next(): Promise<NextRace | null>;
   getF1Drivers(): Promise<DriverStanding[]>;
   getF1Constructors(): Promise<ConstructorStanding[]>;
+  /** Calendario completo de la temporada */
+  getF1Calendar(): Promise<RaceCalendar[]>;
+  /** Detalle de una carrera por ronda (resultados, pole, etc.) */
+  getF1Race(ronda: number): Promise<RaceFull | null>;
+  /** Equipos con su detalle (pilotos, puntos, etc.) */
+  getF1Teams(): Promise<F1Team[]>;
 }

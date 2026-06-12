@@ -1,0 +1,222 @@
+.grilla {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+  gap: var(--space-3);
+}
+
+.card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  text-align: left;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--space-3) var(--space-4);
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+
+.card:hover {
+  border-color: rgba(255, 42, 42, 0.5);
+  transform: translateY(-1px);
+}
+
+.card:hover .chevron {
+  color: var(--brand-bright);
+}
+
+.pos {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-faint);
+  min-width: 26px;
+}
+
+.cardInfo {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.cardNombre {
+  font-weight: 600;
+  font-size: 14.5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cardPilotos {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--text-faint);
+  letter-spacing: 0.04em;
+}
+
+.cardPts {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--brand-bright);
+}
+
+.chevron {
+  color: var(--text-faint);
+  transition: color 0.15s ease;
+  flex-shrink: 0;
+}
+
+/* ── Detalle ── */
+.detalle {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.volver {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  align-self: flex-start;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  transition: color 0.15s ease, background 0.15s ease;
+}
+
+.volver:hover {
+  color: var(--brand-bright);
+  background: var(--surface);
+}
+
+.cabecera {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  background: var(--grad-dark);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.posBig {
+  font-family: var(--font-hero);
+  font-size: clamp(28px, 7vw, 44px);
+  font-weight: 800;
+  color: var(--brand-bright);
+  line-height: 1;
+}
+
+.cabeceraInfo {
+  min-width: 0;
+}
+
+.nombre {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-family: var(--font-hero);
+  text-transform: uppercase;
+  font-size: clamp(20px, 4vw, 28px);
+  font-weight: 800;
+}
+
+.meta {
+  font-size: 13px;
+  color: var(--text-dim);
+  margin-top: 2px;
+}
+
+.pts {
+  color: var(--brand-bright);
+  font-weight: 700;
+}
+
+.historial {
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--text-dim);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--brand);
+  border-radius: var(--radius);
+  padding: var(--space-3) var(--space-4);
+}
+
+.subtitulo {
+  border-bottom: 1px solid var(--border);
+  padding-bottom: var(--space-2);
+}
+
+.pilotos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+  gap: var(--space-3);
+}
+
+.piloto {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--space-3) var(--space-4);
+}
+
+.dorsal {
+  font-family: var(--font-hero);
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text-faint);
+  min-width: 30px;
+  text-align: center;
+}
+
+.pilotoInfo {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.pilotoNombre {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.pilotoMeta {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-faint);
+}
+
+.pilotoPts {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--brand-bright);
+}
+
+.wiki {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  align-self: flex-start;
+  font-size: 12.5px;
+  color: var(--text-dim);
+  transition: color 0.15s ease;
+}
+
+.wiki:hover {
+  color: var(--brand-bright);
+}

@@ -191,10 +191,11 @@ const CONSTRUCTORES: ConstructorStanding[] = [
 ];
 
 export const demoSource: DataSource = {
-  futbolTitulo: 'Mundial 2026',
+  futbolTitulo: 'Copa Mundial 2026',
   f1Temporada: '2026',
   getMatches: async () => MATCHES,
   getStandings: async () => STANDINGS,
+  getScorers: async () => [],
   getTeams: async () => TEAMS,
   getF1Last: async () => ULTIMA_CARRERA,
   getF1Next: async () => PROXIMA_CARRERA,

@@ -102,6 +102,19 @@ export interface StandingGroup {
   equipos: StandingRow[];
 }
 
+/** Una fila de la tabla de goleadores del torneo. */
+export interface Scorer {
+  pos: number;
+  jugador: string;
+  equipo: string;
+  /** Código ISO de la selección, para la bandera */
+  equipoCode: string;
+  goles: number;
+  asistencias: number;
+  penales: number;
+  partidos: number;
+}
+
 /** Un resultado individual de una carrera de F1. */
 export interface RaceResult {
   pos: number;
@@ -241,6 +254,7 @@ export interface DataSource {
   f1Temporada: string;
   getMatches(): Promise<Match[]>;
   getStandings(): Promise<StandingGroup[]>;
+  getScorers(): Promise<Scorer[]>;
   getTeams(): Promise<TeamFull[]>;
   getF1Last(): Promise<LastRace | null>;
   getF1Next(): Promise<NextRace | null>;

@@ -12,16 +12,25 @@ interface MatchCardProps {
   match: Match;
   /** Índice para la animación de entrada en cascada */
   index?: number;
+  /** Si se pasa y el partido tiene grupo, la tarjeta abre el detalle del grupo */
+  onSelectGroup?: (grupo: string) => void;
 }
 
-export function MatchCard({ match, index = 0 }: MatchCardProps) {
+export function MatchCard({ match, index = 0, onSelectGroup }: MatchCardProps) {
   const enVivo = match.estado === 'en_vivo';
   const entretiempo = match.estado === 'entretiempo';
   const finalizado = match.estado === 'finalizado';
   const enJuego = enVivo || entretiempo; // partido en curso (encendido)
   const conMarcador = enJuego || finalizado;
 
-  const claseCard = enJuego ? `${styles.card} ${styles.cardVivo}` : styles.card;
+  const clickable = !!onSelectGroup && !!match.grupo;
+  const claseCard = [
+    styles.card,
+    enJuego ? styles.cardVivo : '',
+    clickable ? styles.clickable : '',
+  ]
+    .filter(Boolean)
+    .join(' ');
 
   const sede = [match.estadio, match.ciudad].filter(Boolean).join(', ');
   const meta = [match.grupo ? `Grupo ${match.grupo}` : '', sede]
@@ -29,7 +38,18 @@ export function MatchCard({ match, index = 0 }: MatchCardProps) {
     .join(' · ');
 
   return (
-    <article className={`${claseCard} stagger`} style={{ '--i': index } as CSSProperties}>
+    <article
+      className={`${claseCard} stagger`}
+      style={{ '--i': index } as CSSProperties}
+      onClick={clickable ? () => onSelectGroup!(match.grupo) : undefined}
+      role={clickable ? 'button' : undefined}
+      tabIndex={clickable ? 0 : undefined}
+      onKeyDown={
+        clickable
+          ? (e) => (e.key === 'Enter' || e.key === ' ') && onSelectGroup!(match.grupo)
+          : undefined
+      }
+    >
       <div className={styles.estado}>
         {enVivo ? (
           <>
@@ -75,7 +95,9 @@ export function MatchCard({ match, index = 0 }: MatchCardProps) {
         <div className={styles.metaRow}>
           {meta && <p className={styles.meta}>{meta}</p>}
           {finalizado && (
-            <CopyButton iconOnly text={postFinal(match)} label="Copiar resultado para X" />
+            <span onClick={(e) => e.stopPropagation()}>
+              <CopyButton iconOnly text={postFinal(match)} label="Copiar resultado para X" />
+            </span>
           )}
         </div>
       )}

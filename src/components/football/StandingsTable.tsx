@@ -1,3 +1,4 @@
+import { ChevronRight } from 'lucide-react';
 import type { StandingGroup } from '../../lib/types';
 import { Flag } from '../ui/Flag';
 import styles from './StandingsTable.module.css';
@@ -6,6 +7,8 @@ interface StandingsTableProps {
   standings: StandingGroup[];
   /** Muestra la referencia de colores de clasificación debajo de cada grupo */
   conLeyenda?: boolean;
+  /** Si se pasa, el título del grupo es clickeable (abre el detalle del grupo) */
+  onSelectGroup?: (grupo: string) => void;
 }
 
 /** Clase de zona de clasificación según la posición (Mundial: 1-2 clasifican,
@@ -17,14 +20,27 @@ function zona(pos: number): string {
 }
 
 /** Tablas de posiciones por grupo, con stats completas y zonas de clasificación. */
-export function StandingsTable({ standings, conLeyenda = true }: StandingsTableProps) {
+export function StandingsTable({ standings, conLeyenda = true, onSelectGroup }: StandingsTableProps) {
   return (
     <div className={styles.contenedor}>
       {standings.map((grupo) => (
         <section key={grupo.grupo} className={styles.grupo}>
-          <h3 className={`${styles.titulo} texture`}>
-            <span className="kicker">Grupo {grupo.grupo}</span>
-          </h3>
+          {onSelectGroup ? (
+            <button
+              type="button"
+              className={`${styles.titulo} ${styles.tituloBtn} texture`}
+              onClick={() => onSelectGroup(grupo.grupo)}
+            >
+              <span className="kicker">Grupo {grupo.grupo}</span>
+              <span className={styles.verMas}>
+                Ver grupo <ChevronRight size={13} aria-hidden="true" />
+              </span>
+            </button>
+          ) : (
+            <h3 className={`${styles.titulo} texture`}>
+              <span className="kicker">Grupo {grupo.grupo}</span>
+            </h3>
+          )}
           <div className={styles.scroll}>
             <table className={styles.tabla}>
               <thead>

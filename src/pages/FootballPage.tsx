@@ -1,5 +1,7 @@
 import { useMemo, useState } from 'react';
 import { BracketView } from '../components/football/BracketView';
+import { Goleadores } from '../components/football/Goleadores';
+import { GroupDetail } from '../components/football/GroupDetail';
 import { KnockoutBracket } from '../components/football/KnockoutBracket';
 import { MatchList } from '../components/football/MatchList';
 import { StandingsTable } from '../components/football/StandingsTable';
@@ -10,14 +12,14 @@ import { EmptyState } from '../components/ui/EmptyState';
 import { ErrorState } from '../components/ui/ErrorState';
 import { SkeletonCard } from '../components/ui/SkeletonCard';
 import { Tabs } from '../components/ui/Tabs';
-import { useMatches, useStandings, useTeams } from '../hooks/useData';
+import { useMatches, useScorers, useStandings, useTeams } from '../hooks/useData';
 import { dataSource } from '../lib/data';
 import { postAgenda } from '../lib/social';
 import { hoyArg } from '../lib/time';
 import type { Match } from '../lib/types';
 import styles from './Page.module.css';
 
-type Seccion = 'grupos' | 'eliminatoria' | 'paises' | 'fixture';
+type Seccion = 'fixture' | 'grupos' | 'eliminatoria' | 'goleadores' | 'paises';
 type TabFixture = 'hoy' | 'resultados' | 'proximos';
 type VistaElim = 'cuadro' | 'listado';
 
@@ -61,9 +63,17 @@ export default function FootballPage() {
   const [tabFixture, setTabFixture] = useState<TabFixture>('hoy');
   const [vistaElim, setVistaElim] = useState<VistaElim>('cuadro');
   const [paisSel, setPaisSel] = useState<string | null>(null);
+  const [grupoSel, setGrupoSel] = useState<string | null>(null);
   const matches = useMatches();
   const standings = useStandings();
+  const scorers = useScorers();
   const teams = useTeams();
+
+  // Abrir el detalle de un grupo (desde el título del grupo o desde un partido)
+  function verGrupo(grupo: string) {
+    setGrupoSel(grupo);
+    setSeccion('grupos');
+  }
 
   const fixtureFiltrado = useMemo(
     () => filtrarFixture(matches.data ?? [], tabFixture),
@@ -97,10 +107,15 @@ export default function FootballPage() {
           { id: 'fixture', label: 'Fixture' },
           { id: 'grupos', label: 'Grupos' },
           { id: 'eliminatoria', label: 'Eliminatoria' },
+          { id: 'goleadores', label: 'Goleadores' },
           { id: 'paises', label: 'Países' },
         ]}
         active={seccion}
-        onChange={(id) => setSeccion(id as Seccion)}
+        onChange={(id) => {
+          setSeccion(id as Seccion);
+          setGrupoSel(null);
+          setPaisSel(null);
+        }}
       />
 
       <div key={seccion} className={styles.fade}>
@@ -118,8 +133,25 @@ export default function FootballPage() {
               titulo="Sin grupos todavía"
               detalle="Las tablas aparecen cuando arranca la competición."
             />
+          ) : grupoSel ? (
+            <GroupDetail
+              grupo={grupoSel}
+              standings={standings.data ?? []}
+              matches={matches.data ?? []}
+              onBack={() => setGrupoSel(null)}
+            />
           ) : (
-            <StandingsTable standings={standings.data ?? []} />
+            <StandingsTable standings={standings.data ?? []} onSelectGroup={verGrupo} />
+          ))}
+
+        {/* ─── GOLEADORES ─── */}
+        {seccion === 'goleadores' &&
+          (scorers.isPending ? (
+            <SkeletonCard count={1} alto={320} />
+          ) : scorers.isError ? (
+            <ErrorState titulo="Goleadores no disponibles" onRetry={() => scorers.refetch()} />
+          ) : (
+            <Goleadores scorers={scorers.data ?? []} />
           ))}
 
         {/* ─── ELIMINATORIA ─── */}
@@ -200,7 +232,7 @@ export default function FootballPage() {
                   detalle={MENSAJES_VACIO[tabFixture].detalle}
                 />
               ) : (
-                <MatchList matches={fixtureFiltrado} />
+                <MatchList matches={fixtureFiltrado} onSelectGroup={verGrupo} />
               )}
             </div>
           </div>

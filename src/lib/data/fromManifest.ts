@@ -154,6 +154,7 @@ export const manifestSource: DataSource = {
   f1Temporada: texto(MANIFEST.f1?.temporada, ''),
   getMatches: async () => normalizarMatches(),
   getStandings: async () => normalizarStandings(),
+  getScorers: async () => [],
   getTeams: async () => normalizarTeams(),
   getF1Last: async () => normalizarUltimaCarrera(),
   getF1Next: async () => normalizarProximaCarrera(),

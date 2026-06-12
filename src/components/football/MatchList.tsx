@@ -5,10 +5,12 @@ import styles from './MatchList.module.css';
 
 interface MatchListProps {
   matches: Match[];
+  /** Al hacer clic en un partido (se pasa su grupo, para abrir el detalle del grupo) */
+  onSelectGroup?: (grupo: string) => void;
 }
 
 /** Lista de partidos agrupados por día, con encabezado de fecha. */
-export function MatchList({ matches }: MatchListProps) {
+export function MatchList({ matches, onSelectGroup }: MatchListProps) {
   const hoy = hoyArg();
 
   // Agrupar preservando el orden de llegada (ya viene ordenado por fecha)
@@ -34,7 +36,12 @@ export function MatchList({ matches }: MatchListProps) {
           </h3>
           <div className={styles.partidos}>
             {grupo.partidos.map((match) => (
-              <MatchCard key={match.id} match={match} index={indiceGlobal++} />
+              <MatchCard
+                key={match.id}
+                match={match}
+                index={indiceGlobal++}
+                onSelectGroup={onSelectGroup}
+              />
             ))}
           </div>
         </section>

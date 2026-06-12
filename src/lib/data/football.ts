@@ -8,6 +8,7 @@ import type {
   Match,
   Player,
   Posicion,
+  Scorer,
   StandingGroup,
   TeamFull,
 } from '../types';
@@ -248,6 +249,30 @@ export async function getTeamsApi(): Promise<TeamFull[]> {
       dt: t.coach?.name ?? '',
     };
   });
+}
+
+interface FdScorer {
+  player?: { name?: string };
+  team?: FdTeam;
+  goals?: number | null;
+  assists?: number | null;
+  penalties?: number | null;
+  playedMatches?: number | null;
+}
+
+export async function getScorersApi(): Promise<Scorer[]> {
+  const data = await fetchFd<{ scorers?: FdScorer[] }>('/competitions/WC/scorers');
+  const scorers = Array.isArray(data.scorers) ? data.scorers : [];
+  return scorers.map((s, i) => ({
+    pos: i + 1,
+    jugador: s.player?.name ?? 'Jugador',
+    equipo: nombreEspanol(s.team?.name) || '',
+    equipoCode: codigoPais(s.team),
+    goles: s.goals ?? 0,
+    asistencias: s.assists ?? 0,
+    penales: s.penalties ?? 0,
+    partidos: s.playedMatches ?? 0,
+  }));
 }
 
 export async function getStandingsApi(): Promise<StandingGroup[]> {

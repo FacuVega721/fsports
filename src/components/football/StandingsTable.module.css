@@ -18,6 +18,37 @@
   background: var(--surface);
 }
 
+/* Variante clickeable (abre el detalle del grupo) */
+.tituloBtn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.tituloBtn:hover {
+  background: var(--surface-hover);
+}
+
+.verMas {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.tituloBtn:hover .verMas {
+  color: var(--brand-bright);
+}
+
 /* Permite scroll horizontal si la tabla no entra (mobile angosto) */
 .scroll {
   overflow-x: auto;

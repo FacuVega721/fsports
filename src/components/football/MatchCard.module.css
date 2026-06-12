@@ -21,6 +21,10 @@
   box-shadow: var(--glow-gold);
 }
 
+.clickable {
+  cursor: pointer;
+}
+
 /* Signature: scoreboard glow — la tarjeta en vivo está "encendida" y respira */
 .cardVivo {
   border-color: rgba(255, 42, 42, 0.45);

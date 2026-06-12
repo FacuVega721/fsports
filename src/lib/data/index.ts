@@ -11,7 +11,7 @@ import {
   getF1RaceApi,
   getF1TeamsApi,
 } from './f1';
-import { getMatchesApi, getStandingsApi, getTeamsApi } from './football';
+import { getMatchesApi, getScorersApi, getStandingsApi, getTeamsApi } from './football';
 
 /**
  * Selector de modo de datos. ÚNICO punto donde se decide la fuente.
@@ -20,10 +20,11 @@ import { getMatchesApi, getStandingsApi, getTeamsApi } from './football';
  */
 
 const apiSource: DataSource = {
-  futbolTitulo: 'Mundial 2026',
+  futbolTitulo: 'Copa Mundial 2026',
   f1Temporada: String(new Date().getFullYear()),
   getMatches: getMatchesApi,
   getStandings: getStandingsApi,
+  getScorers: getScorersApi,
   getTeams: getTeamsApi,
   getF1Last: getF1LastApi,
   getF1Next: getF1NextApi,

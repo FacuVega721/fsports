@@ -13,7 +13,7 @@ export function Header() {
           <Logo />
         </NavLink>
         <nav className={styles.nav} aria-label="Secciones">
-          <NavLink to="/" end className={claseLink}>
+          <NavLink to="/futbol" className={claseLink}>
             Fútbol
           </NavLink>
           <NavLink to="/f1" className={claseLink}>

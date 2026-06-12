@@ -107,7 +107,7 @@ export default function FootballPage() {
           { id: 'fixture', label: 'Fixture' },
           { id: 'grupos', label: 'Grupos' },
           { id: 'eliminatoria', label: 'Eliminatoria' },
-          { id: 'goleadores', label: 'Goleadores' },
+          { id: 'goleadores', label: 'Estadísticas' },
           { id: 'paises', label: 'Países' },
         ]}
         active={seccion}

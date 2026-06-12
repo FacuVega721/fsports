@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "node scripts/gen-token.mjs && tsc && vite build",
+    "ship": "node scripts/ship.mjs",
     "preview": "vite preview"
   },
   "dependencies": {

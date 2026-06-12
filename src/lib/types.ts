@@ -198,6 +198,8 @@ export interface RaceFull {
   pole: { piloto: string; equipo: string; tiempo: string } | null;
   vueltaRapida: { piloto: string; tiempo: string } | null;
   resultados: RaceResultRow[];
+  /** Clasificación de la carrera Sprint (solo en fines de semana con Sprint), o null */
+  sprint: RaceResultRow[] | null;
 }
 
 /** Un piloto dentro del detalle de un equipo. */

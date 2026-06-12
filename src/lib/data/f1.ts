@@ -63,18 +63,8 @@ interface ErgastRace {
   time?: string;
   Sprint?: unknown;
   Circuit?: { circuitName?: string; Location?: { country?: string; locality?: string } };
-  Results?: Array<{
-    position?: string;
-    positionText?: string;
-    points?: string;
-    grid?: string;
-    laps?: string;
-    status?: string;
-    Driver?: ErgastDriver;
-    Constructor?: ErgastConstructor;
-    Time?: { time?: string };
-    FastestLap?: { rank?: string; Time?: { time?: string } };
-  }>;
+  Results?: ErgastResultRow[];
+  SprintResults?: ErgastResultRow[];
   QualifyingResults?: Array<{
     Driver?: ErgastDriver;
     Constructor?: ErgastConstructor;
@@ -82,6 +72,19 @@ interface ErgastRace {
     Q2?: string;
     Q3?: string;
   }>;
+}
+
+interface ErgastResultRow {
+  position?: string;
+  positionText?: string;
+  points?: string;
+  grid?: string;
+  laps?: string;
+  status?: string;
+  Driver?: ErgastDriver;
+  Constructor?: ErgastConstructor;
+  Time?: { time?: string };
+  FastestLap?: { rank?: string; Time?: { time?: string } };
 }
 
 interface ErgastResponse {
@@ -252,16 +255,9 @@ export async function getF1CalendarApi(): Promise<RaceCalendar[]> {
   });
 }
 
-/** Detalle de una carrera por ronda (resultados + pole + vuelta rápida). */
-export async function getF1RaceApi(ronda: number): Promise<RaceFull | null> {
-  const [resData, qData] = await Promise.all([
-    fetchJolpica(`/current/${ronda}/results.json`),
-    fetchJolpica(`/current/${ronda}/qualifying.json`).catch(() => ({}) as ErgastResponse),
-  ]);
-  const race = resData.MRData?.RaceTable?.Races?.[0];
-  if (!race) return null;
-
-  const resultados: RaceResultRow[] = (race.Results ?? []).map((r, i) => {
+/** Mapea filas crudas de resultados (carrera o sprint) a RaceResultRow[]. */
+function mapearResultados(filas: ErgastResultRow[] | undefined): RaceResultRow[] {
+  return (filas ?? []).map((r, i) => {
     const estado = estadoResultado(r.positionText, r.status);
     const clasificado = estado === 'ok';
     return {
@@ -277,6 +273,22 @@ export async function getF1RaceApi(ronda: number): Promise<RaceFull | null> {
       puntos: Number(r.points ?? 0),
     };
   });
+}
+
+/** Detalle de una carrera por ronda (resultados + pole + vuelta rápida + sprint). */
+export async function getF1RaceApi(ronda: number): Promise<RaceFull | null> {
+  const vacio = {} as ErgastResponse;
+  const [resData, qData, sprintData] = await Promise.all([
+    fetchJolpica(`/current/${ronda}/results.json`),
+    fetchJolpica(`/current/${ronda}/qualifying.json`).catch(() => vacio),
+    fetchJolpica(`/current/${ronda}/sprint.json`).catch(() => vacio),
+  ]);
+  const race = resData.MRData?.RaceTable?.Races?.[0];
+  if (!race) return null;
+
+  const resultados = mapearResultados(race.Results);
+  const sprintFilas = sprintData.MRData?.RaceTable?.Races?.[0]?.SprintResults;
+  const sprint = sprintFilas && sprintFilas.length > 0 ? mapearResultados(sprintFilas) : null;
 
   // Pole = P1 de la clasificación
   const polePos = qData.MRData?.RaceTable?.Races?.[0]?.QualifyingResults?.[0];
@@ -305,6 +317,7 @@ export async function getF1RaceApi(ronda: number): Promise<RaceFull | null> {
     pole,
     vueltaRapida,
     resultados,
+    sprint,
   };
 }
 

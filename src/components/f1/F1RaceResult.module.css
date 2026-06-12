@@ -217,3 +217,15 @@
   font-size: 11px;
   color: var(--text-faint);
 }
+
+.notaSprint {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12.5px;
+  color: var(--text-dim);
+}
+
+.notaSprint svg {
+  color: var(--brand-bright);
+}

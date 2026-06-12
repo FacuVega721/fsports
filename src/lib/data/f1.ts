@@ -13,6 +13,7 @@ import type {
   RaceFull,
   RaceResultRow,
   ResultadoEstado,
+  SesionF1,
 } from '../types';
 
 /**
@@ -61,7 +62,12 @@ interface ErgastRace {
   raceName?: string;
   date?: string;
   time?: string;
-  Sprint?: unknown;
+  Sprint?: { date?: string; time?: string };
+  FirstPractice?: { date?: string; time?: string };
+  SecondPractice?: { date?: string; time?: string };
+  ThirdPractice?: { date?: string; time?: string };
+  Qualifying?: { date?: string; time?: string };
+  SprintQualifying?: { date?: string; time?: string };
   Circuit?: { circuitName?: string; Location?: { country?: string; locality?: string } };
   Results?: ErgastResultRow[];
   SprintResults?: ErgastResultRow[];
@@ -232,6 +238,32 @@ const TEXTO_ESTADO: Record<ResultadoEstado, string> = {
   ok: '', dnf: 'DNF', dns: 'DNS', dsq: 'DSQ', nc: 'NC',
 };
 
+/** Etiquetas de las sesiones del fin de semana, en el orden que las da la API. */
+const SESIONES_GP: Array<{ clave: keyof ErgastRace; tipo: string }> = [
+  { clave: 'FirstPractice', tipo: 'Práctica Libre 1' },
+  { clave: 'SecondPractice', tipo: 'Práctica Libre 2' },
+  { clave: 'ThirdPractice', tipo: 'Práctica Libre 3' },
+  { clave: 'SprintQualifying', tipo: 'Clasificación Sprint' },
+  { clave: 'Sprint', tipo: 'Carrera Sprint' },
+  { clave: 'Qualifying', tipo: 'Clasificación' },
+];
+
+/** Extrae y ordena cronológicamente los horarios del fin de semana (FP1-3, quali, sprint, carrera). */
+function extraerHorarios(race: ErgastRace): SesionF1[] {
+  const sesiones: SesionF1[] = [];
+  for (const { clave, tipo } of SESIONES_GP) {
+    const sesion = race[clave] as { date?: string; time?: string } | undefined;
+    if (!sesion?.date) continue;
+    const { fecha, hora } = utcToArg(`${sesion.date}T${sesion.time ?? '12:00:00Z'}`);
+    sesiones.push({ tipo, fecha, hora });
+  }
+  if (race.date) {
+    const { fecha, hora } = utcToArg(`${race.date}T${race.time ?? '12:00:00Z'}`);
+    sesiones.push({ tipo: 'Carrera', fecha, hora });
+  }
+  return sesiones.sort((a, b) => `${a.fecha}T${a.hora}`.localeCompare(`${b.fecha}T${b.hora}`));
+}
+
 /** Calendario completo de la temporada. */
 export async function getF1CalendarApi(): Promise<RaceCalendar[]> {
   const data = await fetchJolpica('/current.json');
@@ -251,6 +283,7 @@ export async function getF1CalendarApi(): Promise<RaceCalendar[]> {
       hora,
       estado,
       esSprint: !!r.Sprint,
+      horarios: extraerHorarios(r),
     };
   });
 }
@@ -394,6 +427,7 @@ export async function getF1NextApi(): Promise<NextRace | null> {
     circuito: race.Circuit?.circuitName ?? '',
     fecha,
     hora,
+    horarios: extraerHorarios(race),
   };
 }
 

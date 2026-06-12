@@ -133,6 +133,15 @@ export interface LastRace {
   resultados: RaceResult[];
 }
 
+/** Una sesión del fin de semana de un GP (FP1, Clasificación, Carrera, etc), en UTC-3. */
+export interface SesionF1 {
+  tipo: string;
+  /** YYYY-MM-DD en UTC-3 */
+  fecha: string;
+  /** HH:MM en UTC-3 */
+  hora: string;
+}
+
 /** La próxima carrera del calendario, con horario en UTC-3. */
 export interface NextRace {
   gp: string;
@@ -142,6 +151,8 @@ export interface NextRace {
   fecha: string;
   /** HH:MM en UTC-3 */
   hora: string;
+  /** Horarios de todas las sesiones del fin de semana (FP1, Quali, Carrera, etc), en orden cronológico */
+  horarios?: SesionF1[];
 }
 
 /** Una fila del campeonato de pilotos. */
@@ -177,6 +188,8 @@ export interface RaceCalendar {
   hora: string;
   estado: EstadoCarrera;
   esSprint: boolean;
+  /** Horarios de todas las sesiones del fin de semana (FP1, Quali, Carrera, etc), en orden cronológico */
+  horarios: SesionF1[];
 }
 
 export type ResultadoEstado = 'ok' | 'dnf' | 'dns' | 'dsq' | 'nc';

@@ -49,6 +49,20 @@ export function NextRaceCard({ race }: NextRaceCardProps) {
           <span className={styles.tz}>hora ARG</span>
         </li>
       </ul>
+      {race.horarios && race.horarios.length > 0 && (
+        <div className={styles.finde}>
+          <span className="kicker">Fin de semana (hora ARG)</span>
+          <ul className={styles.sesiones}>
+            {race.horarios.map((s) => (
+              <li key={s.tipo} className={s.tipo === 'Carrera' ? styles.principal : undefined}>
+                <span className={styles.sesionTipo}>{s.tipo}</span>
+                <span className={styles.sesionFecha}>{formatFecha(s.fecha)}</span>
+                <span className={styles.sesionHora}>{s.hora}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </section>
   );
 }

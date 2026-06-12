@@ -128,7 +128,7 @@
 }
 
 .equipoCell {
-  max-width: 0;
+  width: 100%;
 }
 
 .equipo {
@@ -138,11 +138,24 @@
   min-width: 0;
 }
 
+/* Nombre del equipo: legible, puede ir a 2 líneas si hace falta (corta entre palabras) */
 .nombre {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
   font-weight: 500;
+  line-height: 1.2;
+  overflow-wrap: break-word;
+}
+
+/* Variante clickeable (abre el detalle del país) */
+.equipoBtn {
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: color 0.15s ease;
+}
+
+.equipoBtn:hover .nombre {
+  color: var(--brand-bright);
 }
 
 .num {

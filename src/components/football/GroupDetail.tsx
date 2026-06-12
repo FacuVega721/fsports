@@ -10,10 +10,12 @@ interface GroupDetailProps {
   standings: StandingGroup[];
   matches: Match[];
   onBack: () => void;
+  /** Al hacer clic en el nombre de un equipo (abre el detalle del país) */
+  onSelectPais?: (nombre: string) => void;
 }
 
 /** Zoom de un grupo: su tabla de posiciones + todos sus partidos fecha a fecha. */
-export function GroupDetail({ grupo, standings, matches, onBack }: GroupDetailProps) {
+export function GroupDetail({ grupo, standings, matches, onBack, onSelectPais }: GroupDetailProps) {
   const tabla = standings.find((g) => g.grupo === grupo);
   const partidos = matches
     .filter((m) => m.fase === 'grupos' && m.grupo === grupo)
@@ -36,7 +38,7 @@ export function GroupDetail({ grupo, standings, matches, onBack }: GroupDetailPr
           <span className="kicker">Posiciones</span>
         </h3>
         {tabla ? (
-          <StandingsTable standings={[tabla]} />
+          <StandingsTable standings={[tabla]} onSelectPais={onSelectPais} />
         ) : (
           <EmptyState titulo="Sin posiciones" detalle="Todavía no hay tabla para este grupo." />
         )}
@@ -47,7 +49,7 @@ export function GroupDetail({ grupo, standings, matches, onBack }: GroupDetailPr
           <span className="kicker">Resultados y fixture</span>
         </h3>
         {partidos.length > 0 ? (
-          <MatchList matches={partidos} />
+          <MatchList matches={partidos} onSelectPais={onSelectPais} />
         ) : (
           <EmptyState
             titulo="Sin partidos"

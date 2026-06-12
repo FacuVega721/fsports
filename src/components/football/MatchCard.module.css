@@ -108,6 +108,17 @@
   text-overflow: ellipsis;
 }
 
+/* Nombre clickeable → detalle del país */
+.nombreBtn {
+  text-align: left;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.nombreBtn:hover {
+  color: var(--brand-bright);
+}
+
 /* Marcadores SIEMPRE en mono — toque broadcast/timing */
 .goles {
   font-family: var(--font-mono);

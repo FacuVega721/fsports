@@ -1,10 +1,12 @@
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import { Logo } from '../ui/Logo';
+import { SportNav } from './SportNav';
 import styles from './Header.module.css';
 
 export function Header() {
-  const claseLink = ({ isActive }: { isActive: boolean }) =>
-    isActive ? `${styles.link} ${styles.activo}` : styles.link;
+  const { pathname } = useLocation();
+  // En la portada no mostramos el header: la página ya es la marca en grande.
+  if (pathname === '/') return null;
 
   return (
     <header className={styles.header}>
@@ -12,14 +14,7 @@ export function Header() {
         <NavLink to="/" className={styles.marca} aria-label="FSports — inicio">
           <Logo />
         </NavLink>
-        <nav className={styles.nav} aria-label="Secciones">
-          <NavLink to="/futbol" className={claseLink}>
-            Fútbol
-          </NavLink>
-          <NavLink to="/f1" className={claseLink}>
-            F1
-          </NavLink>
-        </nav>
+        <SportNav />
       </div>
     </header>
   );

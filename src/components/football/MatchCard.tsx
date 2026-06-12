@@ -14,9 +14,11 @@ interface MatchCardProps {
   index?: number;
   /** Si se pasa y el partido tiene grupo, la tarjeta abre el detalle del grupo */
   onSelectGroup?: (grupo: string) => void;
+  /** Si se pasa, los nombres de los equipos abren el detalle del país */
+  onSelectPais?: (nombre: string) => void;
 }
 
-export function MatchCard({ match, index = 0, onSelectGroup }: MatchCardProps) {
+export function MatchCard({ match, index = 0, onSelectGroup, onSelectPais }: MatchCardProps) {
   const enVivo = match.estado === 'en_vivo';
   const entretiempo = match.estado === 'entretiempo';
   const finalizado = match.estado === 'finalizado';
@@ -36,6 +38,24 @@ export function MatchCard({ match, index = 0, onSelectGroup }: MatchCardProps) {
   const meta = [match.grupo ? `Grupo ${match.grupo}` : '', sede]
     .filter(Boolean)
     .join(' · ');
+
+  const renderNombre = (nombre: string) => {
+    if (onSelectPais && nombre && nombre !== 'Por definir') {
+      return (
+        <button
+          type="button"
+          className={`${styles.nombre} ${styles.nombreBtn}`}
+          onClick={(e) => {
+            e.stopPropagation();
+            onSelectPais(nombre);
+          }}
+        >
+          {nombre}
+        </button>
+      );
+    }
+    return <span className={styles.nombre}>{nombre}</span>;
+  };
 
   return (
     <article
@@ -73,7 +93,7 @@ export function MatchCard({ match, index = 0, onSelectGroup }: MatchCardProps) {
       <div className={styles.equipos}>
         <div className={styles.fila}>
           <Flag code={match.localCode} title={match.local} />
-          <span className={styles.nombre}>{match.local}</span>
+          {renderNombre(match.local)}
           {conMarcador && (
             <span className={enJuego ? `${styles.goles} ${styles.golesVivo}` : styles.goles}>
               {match.golesLocal ?? '-'}
@@ -82,7 +102,7 @@ export function MatchCard({ match, index = 0, onSelectGroup }: MatchCardProps) {
         </div>
         <div className={styles.fila}>
           <Flag code={match.visitanteCode} title={match.visitante} />
-          <span className={styles.nombre}>{match.visitante}</span>
+          {renderNombre(match.visitante)}
           {conMarcador && (
             <span className={enJuego ? `${styles.goles} ${styles.golesVivo}` : styles.goles}>
               {match.golesVisitante ?? '-'}

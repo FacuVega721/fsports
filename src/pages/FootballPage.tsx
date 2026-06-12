@@ -75,6 +75,13 @@ export default function FootballPage() {
     setSeccion('grupos');
   }
 
+  // Abrir el detalle de un país (desde el nombre de un equipo en cualquier lado)
+  function verPais(nombre: string) {
+    setPaisSel(nombre);
+    setGrupoSel(null);
+    setSeccion('paises');
+  }
+
   const fixtureFiltrado = useMemo(
     () => filtrarFixture(matches.data ?? [], tabFixture),
     [matches.data, tabFixture],
@@ -139,9 +146,14 @@ export default function FootballPage() {
               standings={standings.data ?? []}
               matches={matches.data ?? []}
               onBack={() => setGrupoSel(null)}
+              onSelectPais={verPais}
             />
           ) : (
-            <StandingsTable standings={standings.data ?? []} onSelectGroup={verGrupo} />
+            <StandingsTable
+              standings={standings.data ?? []}
+              onSelectGroup={verGrupo}
+              onSelectPais={verPais}
+            />
           ))}
 
         {/* ─── GOLEADORES ─── */}
@@ -232,7 +244,11 @@ export default function FootballPage() {
                   detalle={MENSAJES_VACIO[tabFixture].detalle}
                 />
               ) : (
-                <MatchList matches={fixtureFiltrado} onSelectGroup={verGrupo} />
+                <MatchList
+                  matches={fixtureFiltrado}
+                  onSelectGroup={verGrupo}
+                  onSelectPais={verPais}
+                />
               )}
             </div>
           </div>

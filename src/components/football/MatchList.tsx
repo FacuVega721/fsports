@@ -7,10 +7,12 @@ interface MatchListProps {
   matches: Match[];
   /** Al hacer clic en un partido (se pasa su grupo, para abrir el detalle del grupo) */
   onSelectGroup?: (grupo: string) => void;
+  /** Al hacer clic en el nombre de un equipo (abre el detalle del país) */
+  onSelectPais?: (nombre: string) => void;
 }
 
 /** Lista de partidos agrupados por día, con encabezado de fecha. */
-export function MatchList({ matches, onSelectGroup }: MatchListProps) {
+export function MatchList({ matches, onSelectGroup, onSelectPais }: MatchListProps) {
   const hoy = hoyArg();
 
   // Agrupar preservando el orden de llegada (ya viene ordenado por fecha)
@@ -41,6 +43,7 @@ export function MatchList({ matches, onSelectGroup }: MatchListProps) {
                 match={match}
                 index={indiceGlobal++}
                 onSelectGroup={onSelectGroup}
+                onSelectPais={onSelectPais}
               />
             ))}
           </div>

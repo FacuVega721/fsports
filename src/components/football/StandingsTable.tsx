@@ -9,6 +9,8 @@ interface StandingsTableProps {
   conLeyenda?: boolean;
   /** Si se pasa, el título del grupo es clickeable (abre el detalle del grupo) */
   onSelectGroup?: (grupo: string) => void;
+  /** Si se pasa, el nombre del equipo es clickeable (abre el detalle del país) */
+  onSelectPais?: (nombre: string) => void;
 }
 
 /** Clase de zona de clasificación según la posición (Mundial: 1-2 clasifican,
@@ -20,7 +22,12 @@ function zona(pos: number): string {
 }
 
 /** Tablas de posiciones por grupo, con stats completas y zonas de clasificación. */
-export function StandingsTable({ standings, conLeyenda = true, onSelectGroup }: StandingsTableProps) {
+export function StandingsTable({
+  standings,
+  conLeyenda = true,
+  onSelectGroup,
+  onSelectPais,
+}: StandingsTableProps) {
   return (
     <div className={styles.contenedor}>
       {standings.map((grupo) => (
@@ -62,10 +69,21 @@ export function StandingsTable({ standings, conLeyenda = true, onSelectGroup }: 
                   <tr key={`${grupo.grupo}-${eq.pos}-${eq.nombre}`}>
                     <td className={`${styles.pos} ${zona(eq.pos)}`}>{eq.pos}</td>
                     <td className={styles.equipoCell}>
-                      <span className={styles.equipo}>
-                        <Flag code={eq.code} title={eq.nombre} />
-                        <span className={styles.nombre}>{eq.nombre}</span>
-                      </span>
+                      {onSelectPais ? (
+                        <button
+                          type="button"
+                          className={`${styles.equipo} ${styles.equipoBtn}`}
+                          onClick={() => onSelectPais(eq.nombre)}
+                        >
+                          <Flag code={eq.code} title={eq.nombre} />
+                          <span className={styles.nombre}>{eq.nombre}</span>
+                        </button>
+                      ) : (
+                        <span className={styles.equipo}>
+                          <Flag code={eq.code} title={eq.nombre} />
+                          <span className={styles.nombre}>{eq.nombre}</span>
+                        </span>
+                      )}
                     </td>
                     <td className={`${styles.num} ${styles.pts}`}>{eq.pts}</td>
                     <td className={styles.num}>{eq.pj}</td>

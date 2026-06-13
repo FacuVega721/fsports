@@ -273,7 +273,7 @@ interface FdScorer {
 }
 
 export async function getScorersApi(): Promise<Scorer[]> {
-  const data = await fetchFd<{ scorers?: FdScorer[] }>('/competitions/WC/scorers');
+  const data = await fetchFd<{ scorers?: FdScorer[] }>('/competitions/WC/scorers?limit=100');
   const scorers = Array.isArray(data.scorers) ? data.scorers : [];
   return scorers.map((s, i) => ({
     pos: i + 1,

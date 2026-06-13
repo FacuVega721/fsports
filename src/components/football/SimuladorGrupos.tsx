@@ -21,7 +21,6 @@ function ordenarPartidos(a: Match, b: Match) {
 export function SimuladorGrupos({ matches, standings, terceros, overrides, onChange }: SimuladorGruposProps) {
   return (
     <div className={styles.contenedor}>
-      <RankingTercerosTable terceros={terceros} />
       <div className={styles.grid}>
         {standings.map((tabla) => {
           const partidos = matches
@@ -57,6 +56,7 @@ export function SimuladorGrupos({ matches, standings, terceros, overrides, onCha
           );
         })}
       </div>
+      <RankingTercerosTable terceros={terceros} />
     </div>
   );
 }

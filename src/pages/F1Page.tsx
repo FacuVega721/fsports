@@ -31,15 +31,15 @@ export default function F1Page() {
   const pilotos = useF1Drivers();
   const constructores = useF1Constructors();
 
-  // GP finalizados (para el selector de resultados), del más reciente al primero
+  // GP con resultado disponible (finalizados o en curso, para el selector), del más reciente al primero
   const finalizadas = useMemo(
     () =>
       (calendario.data ?? [])
-        .filter((r) => r.estado === 'finalizada')
+        .filter((r) => r.estado === 'finalizada' || r.estado === 'en_curso')
         .sort((a, b) => b.ronda - a.ronda),
     [calendario.data],
   );
-  // Ronda a mostrar en Resultados: la elegida, o la última finalizada por defecto
+  // Ronda a mostrar en Resultados: la elegida, o la más reciente por defecto
   const rondaEfectiva = rondaSel ?? finalizadas[0]?.ronda ?? null;
   const race = useF1Race(seccion === 'resultados' ? rondaEfectiva : null);
 

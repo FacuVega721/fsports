@@ -336,7 +336,12 @@ export async function getF1RaceApi(ronda: number): Promise<RaceFull | null> {
     fetchJolpica(`/current/${ronda}/qualifying.json`).catch(() => vacio),
     fetchJolpica(`/current/${ronda}/sprint.json`).catch(() => vacio),
   ]);
-  const race = resData.MRData?.RaceTable?.Races?.[0];
+  // Si la carrera todavía no se corrió (GP en curso), results.json viene vacío:
+  // usamos los datos de qualifying/sprint para la cabecera (gp, circuito, fecha).
+  const race =
+    resData.MRData?.RaceTable?.Races?.[0] ??
+    qData.MRData?.RaceTable?.Races?.[0] ??
+    sprintData.MRData?.RaceTable?.Races?.[0];
   if (!race) return null;
 
   const resultados = mapearResultados(race.Results);

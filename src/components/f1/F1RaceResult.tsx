@@ -104,9 +104,12 @@ type Vista = 'carrera' | 'sprint' | 'clasificacion';
 
 /** Detalle de un GP: pole, vuelta rápida, clasificación y (si hubo) Sprint. */
 export function F1RaceResult({ race }: F1RaceResultProps) {
+  const hayResultados = race.resultados.length > 0;
   const haySprint = !!race.sprint && race.sprint.length > 0;
   const hayClasificacion = !!race.clasificacion && race.clasificacion.length > 0;
-  const [vista, setVista] = useState<Vista>('carrera');
+  const [vista, setVista] = useState<Vista>(
+    hayResultados ? 'carrera' : hayClasificacion ? 'clasificacion' : 'sprint',
+  );
   const enSprint = haySprint && vista === 'sprint';
   const enClasificacion = hayClasificacion && vista === 'clasificacion';
 
@@ -114,7 +117,7 @@ export function F1RaceResult({ race }: F1RaceResultProps) {
     <section className={styles.detalle}>
       <header className={`${styles.cabecera} texture`}>
         <span className="kicker">
-          Resultado · Ronda {race.ronda}
+          {hayResultados ? 'Resultado' : 'GP en curso'} · Ronda {race.ronda}
           {haySprint && ' · Fin de semana Sprint'}
         </span>
         <h2 className={styles.gp}>
@@ -127,11 +130,11 @@ export function F1RaceResult({ race }: F1RaceResultProps) {
         </p>
       </header>
 
-      {(haySprint || hayClasificacion) && (
+      {(hayResultados || haySprint || hayClasificacion) && (
         <Tabs
           label="Sesión del fin de semana"
           tabs={[
-            { id: 'carrera', label: 'Carrera' },
+            ...(hayResultados ? [{ id: 'carrera', label: 'Carrera' }] : []),
             ...(haySprint ? [{ id: 'sprint', label: 'Sprint' }] : []),
             ...(hayClasificacion ? [{ id: 'clasificacion', label: 'Clasificación' }] : []),
           ]}
@@ -140,7 +143,9 @@ export function F1RaceResult({ race }: F1RaceResultProps) {
         />
       )}
 
-      {enSprint ? (
+      {!hayResultados && !haySprint && !hayClasificacion ? (
+        <p className={styles.notaSprint}>Todavía no hay resultados para este GP.</p>
+      ) : enSprint ? (
         <>
           <p className={styles.notaSprint}>
             <Zap size={13} aria-hidden="true" /> Clasificación de la carrera Sprint (puntos para

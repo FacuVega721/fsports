@@ -26,20 +26,21 @@ export function F1Calendar({ races, onSelect }: F1CalendarProps) {
     <div className={styles.lista}>
       {races.map((r, i) => {
         const finalizada = r.estado === 'finalizada';
+        const clickable = r.estado !== 'proxima';
         const destacada = r.ronda === proxRonda;
         const badge = BADGE[r.estado];
         return (
           <article
             key={r.ronda}
             className={`${styles.fila} ${destacada ? styles.destacada : ''} ${
-              finalizada ? styles.clickable : ''
+              clickable ? styles.clickable : ''
             } stagger`}
             style={{ '--i': i } as CSSProperties}
-            onClick={finalizada ? () => onSelect?.(r.ronda) : undefined}
-            role={finalizada ? 'button' : undefined}
-            tabIndex={finalizada ? 0 : undefined}
+            onClick={clickable ? () => onSelect?.(r.ronda) : undefined}
+            role={clickable ? 'button' : undefined}
+            tabIndex={clickable ? 0 : undefined}
             onKeyDown={
-              finalizada
+              clickable
                 ? (e) => (e.key === 'Enter' || e.key === ' ') && onSelect?.(r.ronda)
                 : undefined
             }
@@ -62,9 +63,7 @@ export function F1Calendar({ races, onSelect }: F1CalendarProps) {
               {!finalizada && <span className={styles.hora}>{r.hora}</span>}
             </div>
             <span className={`${styles.badge} ${styles[badge.clase]}`}>{badge.label}</span>
-            {finalizada && (
-              <ChevronRight size={16} className={styles.chevron} aria-hidden="true" />
-            )}
+            {clickable && <ChevronRight size={16} className={styles.chevron} aria-hidden="true" />}
           </article>
         );
       })}

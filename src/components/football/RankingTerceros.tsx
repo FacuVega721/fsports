@@ -21,8 +21,8 @@ export function RankingTerceros({ terceros }: RankingTercerosProps) {
           <thead>
             <tr>
               <th className={styles.colPos} scope="col">#</th>
-              <th scope="col">Equipo</th>
-              <th scope="col">Grupo</th>
+              <th className={styles.colEquipo} scope="col">Equipo</th>
+              <th className={styles.colGrupo} scope="col">Grupo</th>
               <th scope="col" title="Puntos">PTS</th>
               <th scope="col" title="Diferencia de gol">DIF</th>
               <th scope="col" title="Goles a favor">GF</th>
@@ -33,8 +33,10 @@ export function RankingTerceros({ terceros }: RankingTercerosProps) {
               <tr key={`${t.grupo}-${t.nombre}`} className={t.clasifica ? styles.clasifica : styles.eliminado}>
                 <td className={styles.colPos}>{t.pos}</td>
                 <td className={styles.equipoCell}>
-                  <Flag code={t.code} title={t.nombre} />
-                  <span>{t.nombre}</span>
+                  <span className={styles.equipo}>
+                    <Flag code={t.code} title={t.nombre} />
+                    <span>{t.nombre}</span>
+                  </span>
                 </td>
                 <td className={styles.colGrupo}>{t.grupo}</td>
                 <td className={styles.num}>{t.pts}</td>

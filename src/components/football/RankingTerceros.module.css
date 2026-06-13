@@ -45,6 +45,11 @@
   text-align: center !important;
 }
 
+.colEquipo {
+  text-align: left !important;
+  width: 100%;
+}
+
 .colGrupo {
   text-align: center !important;
   font-family: var(--font-mono);
@@ -52,11 +57,14 @@
 }
 
 .equipoCell {
+  text-align: left !important;
+  width: 100%;
+}
+
+.equipo {
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  text-align: left !important;
-  width: 100%;
 }
 
 .num {

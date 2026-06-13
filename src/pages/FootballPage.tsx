@@ -178,12 +178,12 @@ export default function FootballPage() {
             />
           ) : (
             <div className={styles.gruposConTerceros}>
-              <RankingTerceros terceros={terceros} />
               <StandingsTable
                 standings={standings.data ?? []}
                 onSelectGroup={verGrupo}
                 onSelectPais={verPais}
               />
+              <RankingTerceros terceros={terceros} />
             </div>
           ))}
 

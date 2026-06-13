@@ -159,6 +159,8 @@ export interface NextRace {
   hora: string;
   /** Horarios de todas las sesiones del fin de semana (FP1, Quali, Carrera, etc), en orden cronológico */
   horarios?: SesionF1[];
+  /** Pole position, si la clasificación ya se corrió (GP en curso), o null si no hay dato */
+  pole?: { piloto: string; equipo: string; tiempo: string } | null;
 }
 
 /** Una fila del campeonato de pilotos. */

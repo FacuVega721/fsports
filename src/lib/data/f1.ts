@@ -444,13 +444,32 @@ export async function getF1NextApi(): Promise<NextRace | null> {
   if (!race) return null;
   // date + time vienen separados y en UTC: "2026-06-22" + "13:00:00Z"
   const { fecha, hora } = utcToArg(`${race.date}T${race.time ?? '12:00:00Z'}`);
+  const horarios = extraerHorarios(race);
+  const inicioFinde = horarios[0]?.fecha ?? fecha;
+  const enCurso = enRango(inicioFinde, fecha);
+
+  // Si el fin de semana ya empezó, buscamos si la clasificación ya se corrió.
+  let pole = null;
+  if (enCurso && race.round) {
+    const qData = await fetchJolpica(`/current/${race.round}/qualifying.json`).catch(() => null);
+    const polePos = qData?.MRData?.RaceTable?.Races?.[0]?.QualifyingResults?.[0];
+    pole = polePos
+      ? {
+          piloto: nombrePiloto(polePos.Driver),
+          equipo: polePos.Constructor?.name ?? '',
+          tiempo: polePos.Q3 || polePos.Q2 || polePos.Q1 || '',
+        }
+      : null;
+  }
+
   return {
     gp: nombreGp(race.raceName),
     code: codigoGp(race),
     circuito: race.Circuit?.circuitName ?? '',
     fecha,
     hora,
-    horarios: extraerHorarios(race),
+    horarios,
+    pole,
   };
 }
 

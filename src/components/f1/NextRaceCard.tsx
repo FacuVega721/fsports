@@ -1,4 +1,4 @@
-import { CalendarDays, ChevronDown, Clock, MapPin } from 'lucide-react';
+import { CalendarDays, ChevronDown, Clock, MapPin, Trophy } from 'lucide-react';
 import type { NextRace } from '../../lib/types';
 import { diasHasta, enRango, formatFecha } from '../../lib/time';
 import { Flag } from '../ui/Flag';
@@ -57,6 +57,17 @@ export function NextRaceCard({ race }: NextRaceCardProps) {
           <span className={styles.tz}>hora ARG</span>
         </li>
       </ul>
+      {enCurso && race.pole && (
+        <div className={styles.destacado}>
+          <Trophy size={15} className={styles.iconPole} aria-hidden="true" />
+          <div>
+            <span className={styles.dLabel}>Pole position</span>
+            <span className={styles.dValor}>
+              {race.pole.piloto} <span className={styles.dTiempo}>{race.pole.tiempo}</span>
+            </span>
+          </div>
+        </div>
+      )}
       {race.horarios && race.horarios.length > 0 && (
         <details className={styles.finde}>
           <summary className={styles.findeResumen}>

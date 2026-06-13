@@ -4,6 +4,7 @@ import { Goleadores } from '../components/football/Goleadores';
 import { GroupDetail } from '../components/football/GroupDetail';
 import { KnockoutBracket } from '../components/football/KnockoutBracket';
 import { MatchList } from '../components/football/MatchList';
+import { Simulador } from '../components/football/Simulador';
 import { StandingsTable } from '../components/football/StandingsTable';
 import { TeamDetail } from '../components/football/TeamDetail';
 import { TeamsGrid } from '../components/football/TeamsGrid';
@@ -19,7 +20,7 @@ import { hoyArg } from '../lib/time';
 import type { Match } from '../lib/types';
 import styles from './Page.module.css';
 
-type Seccion = 'fixture' | 'grupos' | 'eliminatoria' | 'goleadores' | 'paises';
+type Seccion = 'fixture' | 'grupos' | 'eliminatoria' | 'goleadores' | 'paises' | 'simulador';
 type TabFixture = 'hoy' | 'resultados' | 'proximos';
 type VistaElim = 'cuadro' | 'listado';
 
@@ -139,6 +140,7 @@ export default function FootballPage() {
           { id: 'eliminatoria', label: 'Eliminatoria' },
           { id: 'goleadores', label: 'Estadísticas' },
           { id: 'paises', label: 'Países' },
+          { id: 'simulador', label: 'Simulador' },
         ]}
         active={seccion}
         onChange={(id) => {
@@ -277,6 +279,16 @@ export default function FootballPage() {
             </div>
           </div>
         )}
+
+        {/* ─── SIMULADOR ─── */}
+        {seccion === 'simulador' &&
+          (matches.isPending ? (
+            <SkeletonCard count={4} alto={92} />
+          ) : matches.isError ? (
+            <ErrorState onRetry={() => matches.refetch()} />
+          ) : (
+            <Simulador matches={matches.data ?? []} />
+          ))}
       </div>
     </div>
   );

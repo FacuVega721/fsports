@@ -1,6 +1,6 @@
-import { CalendarDays, Clock, MapPin } from 'lucide-react';
+import { CalendarDays, ChevronDown, Clock, MapPin } from 'lucide-react';
 import type { NextRace } from '../../lib/types';
-import { diasHasta, formatFecha } from '../../lib/time';
+import { diasHasta, enRango, formatFecha } from '../../lib/time';
 import { Flag } from '../ui/Flag';
 import styles from './NextRaceCard.module.css';
 
@@ -11,8 +11,11 @@ interface NextRaceCardProps {
 /** Próximo GP, con fecha y hora en horario argentino (UTC-3). */
 export function NextRaceCard({ race }: NextRaceCardProps) {
   const dias = race.fecha ? diasHasta(race.fecha) : null;
-  const cuenta =
-    dias === null || dias < 0
+  const inicioFinde = race.horarios?.[0]?.fecha ?? race.fecha;
+  const enCurso = !!race.fecha && enRango(inicioFinde, race.fecha);
+  const cuenta = enCurso
+    ? 'En curso'
+    : dias === null || dias < 0
       ? ''
       : dias === 0
         ? '¡Es hoy!'
@@ -21,10 +24,15 @@ export function NextRaceCard({ race }: NextRaceCardProps) {
           : `Faltan ${dias} días`;
 
   return (
-    <section className={`${styles.card} texture`} aria-label={`Próxima carrera: ${race.gp}`}>
+    <section
+      className={`${styles.card} ${enCurso ? styles.cardVivo : ''} texture`}
+      aria-label={`Próxima carrera: ${race.gp}`}
+    >
       <div className={styles.cabecera}>
-        <span className="kicker">Próximo GP</span>
-        {cuenta && <span className={styles.cuenta}>{cuenta}</span>}
+        <span className="kicker">{enCurso ? 'GP en curso' : 'Próximo GP'}</span>
+        {cuenta && (
+          <span className={`${styles.cuenta} ${enCurso ? styles.cuentaVivo : ''}`}>{cuenta}</span>
+        )}
       </div>
       <h2 className={styles.gp}>
         <Flag code={race.code} title={race.gp} />
@@ -50,8 +58,11 @@ export function NextRaceCard({ race }: NextRaceCardProps) {
         </li>
       </ul>
       {race.horarios && race.horarios.length > 0 && (
-        <div className={styles.finde}>
-          <span className="kicker">Fin de semana (hora ARG)</span>
+        <details className={styles.finde}>
+          <summary className={styles.findeResumen}>
+            <span className="kicker">Fin de semana (hora ARG)</span>
+            <ChevronDown size={15} className={styles.chevron} aria-hidden="true" />
+          </summary>
           <ul className={styles.sesiones}>
             {race.horarios.map((s) => (
               <li key={s.tipo} className={s.tipo === 'Carrera' ? styles.principal : undefined}>
@@ -61,7 +72,7 @@ export function NextRaceCard({ race }: NextRaceCardProps) {
               </li>
             ))}
           </ul>
-        </div>
+        </details>
       )}
     </section>
   );

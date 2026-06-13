@@ -83,7 +83,10 @@ export function TeamDetail({ team, matches, onBack }: TeamDetailProps) {
                 <ul className={styles.jugadores}>
                   {grupo.jugadores.map((j) => (
                     <li key={j.nombre} className={styles.jugador}>
-                      <span className={styles.jugadorNombre}>{j.nombre}</span>
+                      <span className={styles.jugadorInfo}>
+                        {j.dorsal !== null && <span className={styles.dorsal}>{j.dorsal}</span>}
+                        <span className={styles.jugadorNombre}>{j.nombre}</span>
+                      </span>
                       {j.edad !== null && <span className={styles.edad}>{j.edad} años</span>}
                     </li>
                   ))}

@@ -1,7 +1,7 @@
 import type { CSSProperties } from 'react';
 import { ChevronRight } from 'lucide-react';
 import type { RaceCalendar } from '../../lib/types';
-import { formatFecha } from '../../lib/time';
+import { formatRangoFechas } from '../../lib/time';
 import { Flag } from '../ui/Flag';
 import styles from './F1Calendar.module.css';
 
@@ -56,8 +56,10 @@ export function F1Calendar({ races, onSelect }: F1CalendarProps) {
               </span>
             </div>
             <div className={styles.derecha}>
-              <span className={styles.fecha}>{r.fecha ? formatFecha(r.fecha) : '—'}</span>
-              <span className={styles.hora}>{r.hora}</span>
+              <span className={styles.fecha}>
+                {formatRangoFechas(r.horarios[0]?.fecha ?? r.fecha, r.fecha)}
+              </span>
+              {!finalizada && <span className={styles.hora}>{r.hora}</span>}
             </div>
             <span className={`${styles.badge} ${styles[badge.clase]}`}>{badge.label}</span>
             {finalizada && (

@@ -4,7 +4,9 @@ import { dataSource } from '../lib/data';
 
 /**
  * Hooks de datos. La frecuencia de actualización respeta los límites:
- * - football-data.org: 10 req/min → staleTime y refetchInterval de 60s, nunca menos.
+ * - football-data.org: 10 req/min → staleTime y refetchInterval de 60s.
+ *   Excepción: con partidos en vivo, useMatches baja a 20s (3 req/min) para
+ *   que el marcador/minuto se sienta en tiempo real sin acercarse al límite.
  * - Jolpica-F1: staleTime de 5 min (los datos de F1 cambian poco fuera de carrera).
  * - En modo manual/demo no hay red: los datos no caducan nunca.
  */
@@ -19,7 +21,24 @@ export function useMatches() {
     queryKey: ['matches', DATA_MODE],
     queryFn: () => dataSource.getMatches(),
     staleTime: esApi ? MINUTO : Infinity,
-    refetchInterval: esApi ? MINUTO : false,
+    refetchInterval: esApi
+      ? (query) => {
+          const hayEnVivo = (query.state.data ?? []).some(
+            (m) => m.estado === 'en_vivo' || m.estado === 'entretiempo',
+          );
+          return hayEnVivo ? 20_000 : MINUTO;
+        }
+      : false,
+  });
+}
+
+/** Detalle de un partido (árbitro + historial), solo se pide cuando se abre. */
+export function useMatchDetail(id: string | null) {
+  return useQuery({
+    queryKey: ['match-detail', DATA_MODE, id],
+    queryFn: () => dataSource.getMatchDetail(id as string),
+    enabled: id !== null,
+    staleTime: esApi ? 60 * MINUTO : Infinity,
   });
 }
 

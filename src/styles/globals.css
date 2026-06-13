@@ -115,6 +115,32 @@ h3 {
   border-radius: inherit;
 }
 
+/* Banderas: leve zoom al pasar el cursor sobre filas/botones clicables */
+.fi {
+  transition: transform 0.15s ease;
+}
+
+a:hover .fi,
+button:hover .fi {
+  transform: scale(1.12);
+}
+
+/* Transición de entrada al cambiar de página */
+.page-transition {
+  animation: page-in 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes page-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* Entrada en cascada de tarjetas: opacity + translateY(8px), 40ms por tarjeta */
 .stagger {
   opacity: 0;
@@ -185,7 +211,8 @@ h3 {
    OJO: solo desactivamos animaciones de ENTRADA/decorativas —
    el contenido nunca queda oculto. */
 @media (prefers-reduced-motion: reduce) {
-  .stagger {
+  .stagger,
+  .page-transition {
     animation: none;
     opacity: 1;
   }

@@ -23,6 +23,10 @@
   border-color: rgba(255, 42, 42, 0.45);
 }
 
+.boton svg {
+  transition: transform 0.18s ease;
+}
+
 .chevronOpen {
   transform: rotate(180deg);
 }
@@ -45,6 +49,19 @@
   border-radius: var(--radius);
   padding: var(--space-1);
   box-shadow: var(--shadow-card);
+  transform-origin: top right;
+  animation: menu-in 0.16s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes menu-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
 }
 
 .item {

@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { ChevronRight, Flag, Trophy } from 'lucide-react';
 import { Logo } from '../components/ui/Logo';
 import { useF1Next, useMatches } from '../hooks/useData';
-import { diasHasta, hoyArg } from '../lib/time';
+import { diasHasta, enRango, hoyArg } from '../lib/time';
 import styles from './HomePage.module.css';
 
 export default function HomePage() {
@@ -20,15 +20,19 @@ export default function HomePage() {
       ? `${hoyN} partidos hoy`
       : 'Fixture, grupos y eliminatoria';
 
-  // Teaser de F1: próximo GP
+  // Teaser de F1: próximo GP (o en curso)
   const gp = proxima.data;
   const dias = gp?.fecha ? diasHasta(gp.fecha) : null;
+  const inicioFinde = gp?.horarios?.[0]?.fecha ?? gp?.fecha;
+  const enCurso = !!gp?.fecha && !!inicioFinde && enRango(inicioFinde, gp.fecha);
   const teaserF1 = gp
-    ? dias === 0
-      ? `${gp.gp} · ¡es hoy!`
-      : dias && dias > 0
-        ? `${gp.gp} · faltan ${dias} días`
-        : gp.gp
+    ? enCurso
+      ? `${gp.gp} · en curso`
+      : dias === 0
+        ? `${gp.gp} · ¡es hoy!`
+        : dias && dias > 0
+          ? `${gp.gp} · faltan ${dias} días`
+          : gp.gp
     : 'Calendario, resultados y equipos';
 
   return (

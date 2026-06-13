@@ -48,6 +48,7 @@ export interface ManifestData {
       ciudad?: string;        // ciudad sede (ej: "Ciudad de México")
       tv?: string[];          // canales: "tyc" | "dsports" | "dgo"
       minuto?: number | null; // solo para partidos en vivo
+      jornada?: number | null; // fecha de la fase de grupos (1, 2, 3...)
     }>;
     posiciones: Array<{
       grupo?: string;

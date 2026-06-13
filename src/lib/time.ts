@@ -44,6 +44,26 @@ export function formatFecha(fecha: string): string {
   return `${DIAS[d.getUTCDay()]} ${dia} de ${MESES[mes - 1]}`;
 }
 
+/** Formatea un rango de fechas YYYY-MM-DD como "12 al 14 de junio" (o "30 de jun. al 1 de jul." si cruza de mes). */
+export function formatRangoFechas(inicio: string, fin: string): string {
+  const pInicio = inicio.split('-').map(Number);
+  const pFin = fin.split('-').map(Number);
+  if (pInicio.length !== 3 || pFin.length !== 3 || pInicio.some(isNaN) || pFin.some(isNaN)) {
+    return formatFecha(fin);
+  }
+  const [, mesI, diaI] = pInicio;
+  const [, mesF, diaF] = pFin;
+  if (inicio === fin) return `${diaF} de ${MESES[mesF - 1]}`;
+  if (mesI === mesF) return `${diaI} al ${diaF} de ${MESES[mesF - 1]}`;
+  return `${diaI} de ${MESES[mesI - 1]} al ${diaF} de ${MESES[mesF - 1]}`;
+}
+
+/** True si "hoy" (UTC-3) cae entre `inicio` y `fin` (fechas YYYY-MM-DD), inclusive. */
+export function enRango(inicio: string, fin: string): boolean {
+  const hoy = hoyArg();
+  return hoy >= inicio && hoy <= fin;
+}
+
 /** Días que faltan (en UTC-3) hasta una fecha YYYY-MM-DD. Negativo si ya pasó. */
 export function diasHasta(fecha: string): number {
   const partes = fecha.split('-').map(Number);

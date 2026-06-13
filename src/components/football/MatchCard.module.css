@@ -4,7 +4,8 @@
   grid-template-areas:
     'estado equipos'
     'estado meta'
-    'estado tv';
+    'estado tv'
+    'estado detalle';
   align-items: center;
   gap: var(--space-1) var(--space-3);
   background: var(--surface);
@@ -185,4 +186,80 @@
   border: 1px solid var(--border);
   border-radius: 4px;
   padding: 2px 6px;
+}
+
+/* Detalle desplegable: árbitro + historial entre los equipos */
+.detalle {
+  grid-area: detalle;
+  margin-top: var(--space-2);
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--border);
+}
+
+.detalleResumen {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  cursor: pointer;
+  list-style: none;
+}
+
+.detalleResumen::-webkit-details-marker {
+  display: none;
+}
+
+.chevron {
+  color: var(--text-faint);
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+.detalle[open] .chevron {
+  transform: rotate(180deg);
+}
+
+.detalleContenido {
+  margin-top: var(--space-2);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.detalleVacio {
+  font-size: 12px;
+  color: var(--text-faint);
+}
+
+.arbitro {
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+.h2hResumen {
+  font-size: 12px;
+  color: var(--text-dim);
+  line-height: 1.5;
+}
+
+.h2hLista {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.h2hFila {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  font-size: 12px;
+  color: var(--text-dim);
+  padding: 3px 0;
+}
+
+.h2hFecha {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--text-faint);
+  min-width: 64px;
 }

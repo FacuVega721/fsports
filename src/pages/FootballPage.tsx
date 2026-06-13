@@ -38,6 +38,28 @@ const MENSAJES_VACIO: Record<TabFixture, { titulo: string; detalle: string }> = 
   },
 };
 
+/** Jornada de la fase de grupos a destacar: la del partido en vivo, o la
+ *  del próximo programado, o la del último finalizado si ya terminó todo. */
+function jornadaActual(matches: Match[]): number | null {
+  const grupos = matches.filter(
+    (m): m is Match & { jornada: number } => m.fase === 'grupos' && m.jornada !== null,
+  );
+  if (grupos.length === 0) return null;
+
+  const enVivo = grupos.find((m) => m.estado === 'en_vivo' || m.estado === 'entretiempo');
+  if (enVivo) return enVivo.jornada;
+
+  const proximos = grupos
+    .filter((m) => m.estado === 'programado')
+    .sort((a, b) => a.fecha.localeCompare(b.fecha) || a.hora.localeCompare(b.hora));
+  if (proximos.length > 0) return proximos[0].jornada;
+
+  const finalizados = grupos
+    .filter((m) => m.estado === 'finalizado')
+    .sort((a, b) => b.fecha.localeCompare(a.fecha));
+  return finalizados[0]?.jornada ?? null;
+}
+
 function filtrarFixture(matches: Match[], tab: TabFixture): Match[] {
   const hoy = hoyArg();
   switch (tab) {
@@ -94,6 +116,7 @@ export default function FootballPage() {
     () => (teams.data ?? []).find((t) => t.nombre === paisSel) ?? null,
     [teams.data, paisSel],
   );
+  const jornada = useMemo(() => jornadaActual(matches.data ?? []), [matches.data]);
 
   return (
     <div className={`container ${styles.pagina}`}>
@@ -215,6 +238,7 @@ export default function FootballPage() {
         {/* ─── FIXTURE ─── */}
         {seccion === 'fixture' && (
           <div className={styles.fixture}>
+            {jornada !== null && <span className="kicker">Fecha {jornada} · Fase de grupos</span>}
             <div className={styles.fixtureToolbar}>
               <Tabs
                 label="Filtro de partidos"

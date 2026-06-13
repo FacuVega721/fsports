@@ -51,6 +51,8 @@ export interface Match {
   tv: string[];
   /** Minuto de juego, solo si está en vivo */
   minuto: number | null;
+  /** Jornada/fecha de la fase de grupos (1, 2, 3...), o null si no aplica */
+  jornada: number | null;
 }
 
 /** Una selección participante (para la sección PAÍSES). */
@@ -72,6 +74,8 @@ export interface Player {
   /** Edad en años (calculada desde la fecha de nacimiento), o null si no hay dato */
   edad: number | null;
   nacionalidad: string;
+  /** Número de camiseta, o null si no hay dato */
+  dorsal: number | null;
 }
 
 /** Una selección con su plantel completo (jugadores + DT) para el detalle de país. */
@@ -113,6 +117,35 @@ export interface Scorer {
   asistencias: number;
   penales: number;
   partidos: number;
+}
+
+/** Resumen histórico entre los dos equipos de un partido. */
+export interface H2HResumen {
+  partidos: number;
+  victoriasLocal: number;
+  empates: number;
+  victoriasVisitante: number;
+}
+
+/** Un partido previo entre dos equipos, dentro del historial head-to-head. */
+export interface H2HPartido {
+  /** YYYY-MM-DD */
+  fecha: string;
+  competicion: string;
+  local: string;
+  visitante: string;
+  golesLocal: number | null;
+  golesVisitante: number | null;
+}
+
+/** Detalle adicional de un partido (árbitro + historial entre los equipos). */
+export interface MatchDetail {
+  /** Nombre del árbitro principal, o '' si no hay dato */
+  arbitro: string;
+  /** Resumen del historial, o null si no hay partidos previos registrados */
+  resumen: H2HResumen | null;
+  /** Últimos enfrentamientos, del más reciente al más antiguo */
+  ultimos: H2HPartido[];
 }
 
 /** Un resultado individual de una carrera de F1. */
@@ -213,6 +246,19 @@ export interface RaceResultRow {
   puntos: number;
 }
 
+/** Una fila de la clasificación de Qualy (Q1/Q2/Q3). */
+export interface QualyResultRow {
+  /** Posición en la grilla de salida */
+  pos: number;
+  piloto: string;
+  /** Código de 3 letras del piloto (VER, HAM...) */
+  code: string;
+  equipo: string;
+  q1: string;
+  q2: string;
+  q3: string;
+}
+
 /** Detalle completo de una carrera (pole, podio, clasificación, vuelta rápida). */
 export interface RaceFull {
   ronda: number;
@@ -226,6 +272,8 @@ export interface RaceFull {
   resultados: RaceResultRow[];
   /** Clasificación de la carrera Sprint (solo en fines de semana con Sprint), o null */
   sprint: RaceResultRow[] | null;
+  /** Clasificación completa de Qualy (Q1/Q2/Q3, todos los pilotos), o null si no hay datos */
+  clasificacion: QualyResultRow[] | null;
 }
 
 /** Un piloto dentro del detalle de un equipo. */
@@ -269,6 +317,8 @@ export interface DataSource {
   getStandings(): Promise<StandingGroup[]>;
   getScorers(): Promise<Scorer[]>;
   getTeams(): Promise<TeamFull[]>;
+  /** Detalle adicional de un partido (árbitro + historial), o null si no hay datos */
+  getMatchDetail(id: string): Promise<MatchDetail | null>;
   getF1Last(): Promise<LastRace | null>;
   getF1Next(): Promise<NextRace | null>;
   getF1Drivers(): Promise<DriverStanding[]>;

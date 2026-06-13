@@ -127,6 +127,14 @@
   margin-top: var(--space-2);
 }
 
+.entrar svg {
+  transition: transform 0.18s ease;
+}
+
+.portal:hover .entrar svg {
+  transform: translateX(3px);
+}
+
 @media (max-width: 620px) {
   .portales {
     grid-template-columns: 1fr;

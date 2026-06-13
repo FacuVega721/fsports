@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Flag as FlagIcon, Timer, Trophy, Zap } from 'lucide-react';
-import type { RaceFull, RaceResultRow, ResultadoEstado } from '../../lib/types';
+import type { QualyResultRow, RaceFull, RaceResultRow, ResultadoEstado } from '../../lib/types';
 import { formatFecha } from '../../lib/time';
 import { Flag } from '../ui/Flag';
 import { Tabs } from '../ui/Tabs';
@@ -62,11 +62,53 @@ function Clasificacion({ rows }: { rows: RaceResultRow[] }) {
   );
 }
 
+/** Tabla de clasificación de Qualy (Q1/Q2/Q3). */
+function TablaQualy({ rows }: { rows: QualyResultRow[] }) {
+  return (
+    <div className={styles.scroll}>
+      <table className={styles.tabla}>
+        <thead>
+          <tr>
+            <th className={styles.colPos} scope="col">#</th>
+            <th scope="col">Piloto</th>
+            <th scope="col">Equipo</th>
+            <th className={styles.colTiempo} scope="col">Q1</th>
+            <th className={styles.colTiempo} scope="col">Q2</th>
+            <th className={styles.colTiempo} scope="col">Q3</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((r, i) => (
+            <tr
+              key={`${r.code || r.piloto}-${i}`}
+              className={r.pos <= 3 ? styles[`p${r.pos}`] : ''}
+            >
+              <td className={styles.pos}>{r.pos}</td>
+              <td>
+                <span className={styles.piloto}>{r.piloto}</span>
+                {r.code && <span className={styles.code}>{r.code}</span>}
+              </td>
+              <td className={styles.equipo}>{r.equipo}</td>
+              <td className={styles.tiempo}>{r.q1 || '—'}</td>
+              <td className={styles.tiempo}>{r.q2 || '—'}</td>
+              <td className={styles.tiempo}>{r.q3 || '—'}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+type Vista = 'carrera' | 'sprint' | 'clasificacion';
+
 /** Detalle de un GP: pole, vuelta rápida, clasificación y (si hubo) Sprint. */
 export function F1RaceResult({ race }: F1RaceResultProps) {
   const haySprint = !!race.sprint && race.sprint.length > 0;
-  const [vista, setVista] = useState<'carrera' | 'sprint'>('carrera');
+  const hayClasificacion = !!race.clasificacion && race.clasificacion.length > 0;
+  const [vista, setVista] = useState<Vista>('carrera');
   const enSprint = haySprint && vista === 'sprint';
+  const enClasificacion = hayClasificacion && vista === 'clasificacion';
 
   return (
     <section className={styles.detalle}>
@@ -85,15 +127,16 @@ export function F1RaceResult({ race }: F1RaceResultProps) {
         </p>
       </header>
 
-      {haySprint && (
+      {(haySprint || hayClasificacion) && (
         <Tabs
           label="Sesión del fin de semana"
           tabs={[
             { id: 'carrera', label: 'Carrera' },
-            { id: 'sprint', label: 'Sprint' },
+            ...(haySprint ? [{ id: 'sprint', label: 'Sprint' }] : []),
+            ...(hayClasificacion ? [{ id: 'clasificacion', label: 'Clasificación' }] : []),
           ]}
           active={vista}
-          onChange={(id) => setVista(id as 'carrera' | 'sprint')}
+          onChange={(id) => setVista(id as Vista)}
         />
       )}
 
@@ -105,6 +148,8 @@ export function F1RaceResult({ race }: F1RaceResultProps) {
           </p>
           <Clasificacion rows={race.sprint!} />
         </>
+      ) : enClasificacion ? (
+        <TablaQualy rows={race.clasificacion!} />
       ) : (
         <>
           {(race.pole || race.vueltaRapida) && (

@@ -25,7 +25,7 @@ function fechaRelativa(dias: number): string {
 }
 
 // Partidos de fase de grupos (fase y ciudad se agregan más abajo)
-const GRUPOS_DEMO: Omit<Match, 'fase' | 'ciudad' | 'tv'>[] = [
+const GRUPOS_DEMO: Omit<Match, 'fase' | 'ciudad' | 'tv' | 'jornada'>[] = [
   // ── Ayer: resultados ──
   { id: 'd1', fecha: fechaRelativa(-1), hora: '13:00', estado: 'finalizado', local: 'México', localCode: 'mx', golesLocal: 2, visitante: 'Sudáfrica', visitanteCode: 'za', golesVisitante: 0, grupo: 'A', estadio: 'Estadio Azteca', minuto: null },
   { id: 'd2', fecha: fechaRelativa(-1), hora: '16:00', estado: 'finalizado', local: 'Corea del Sur', localCode: 'kr', golesLocal: 1, visitante: 'Escocia', visitanteCode: 'gb-sct', golesVisitante: 1, grupo: 'A', estadio: 'Estadio Akron, Guadalajara', minuto: null },
@@ -45,7 +45,7 @@ const GRUPOS_DEMO: Omit<Match, 'fase' | 'ciudad' | 'tv'>[] = [
 ];
 
 // Partidos de eliminatoria de ejemplo (la ciudad se agrega más abajo)
-const ELIMINATORIA_DEMO: Omit<Match, 'ciudad' | 'tv'>[] = [
+const ELIMINATORIA_DEMO: Omit<Match, 'ciudad' | 'tv' | 'jornada'>[] = [
   { id: 'k1', fecha: fechaRelativa(10), hora: '16:00', estado: 'programado', local: 'Argentina', localCode: 'ar', golesLocal: null, visitante: 'Suiza', visitanteCode: 'ch', golesVisitante: null, grupo: '', fase: 'dieciseisavos', estadio: 'Hard Rock Stadium, Miami', minuto: null },
   { id: 'k2', fecha: fechaRelativa(10), hora: '20:00', estado: 'programado', local: 'Brasil', localCode: 'br', golesLocal: null, visitante: 'Corea del Sur', visitanteCode: 'kr', golesVisitante: null, grupo: '', fase: 'dieciseisavos', estadio: 'MetLife Stadium, Nueva York', minuto: null },
   { id: 'k3', fecha: fechaRelativa(14), hora: '16:00', estado: 'programado', local: 'Argentina', localCode: 'ar', golesLocal: null, visitante: 'Países Bajos', visitanteCode: 'nl', golesVisitante: null, grupo: '', fase: 'octavos', estadio: 'AT&T Stadium, Dallas', minuto: null },
@@ -56,8 +56,8 @@ const ELIMINATORIA_DEMO: Omit<Match, 'ciudad' | 'tv'>[] = [
 ];
 
 const MATCHES: Match[] = [
-  ...GRUPOS_DEMO.map((m) => ({ ...m, fase: 'grupos' as const, ciudad: '', tv: [] })),
-  ...ELIMINATORIA_DEMO.map((m) => ({ ...m, ciudad: '', tv: [] })),
+  ...GRUPOS_DEMO.map((m) => ({ ...m, fase: 'grupos' as const, ciudad: '', tv: [], jornada: 1 })),
+  ...ELIMINATORIA_DEMO.map((m) => ({ ...m, ciudad: '', tv: [], jornada: null })),
 ];
 
 // Filas base (sin las stats detalladas); se completan con derivarStats abajo.
@@ -117,18 +117,18 @@ const STANDINGS: StandingGroup[] = STANDINGS_RAW.map((grupo) => ({
 
 // Plantel de muestra (solo Argentina) para ver la sección en modo demo.
 const PLANTEL_ARG: Player[] = [
-  { nombre: 'Emiliano Martínez', posicion: 'Arquero', edad: 33, nacionalidad: 'Argentina' },
-  { nombre: 'Gerónimo Rulli', posicion: 'Arquero', edad: 34, nacionalidad: 'Argentina' },
-  { nombre: 'Nahuel Molina', posicion: 'Defensor', edad: 28, nacionalidad: 'Argentina' },
-  { nombre: 'Cristian Romero', posicion: 'Defensor', edad: 28, nacionalidad: 'Argentina' },
-  { nombre: 'Nicolás Otamendi', posicion: 'Defensor', edad: 38, nacionalidad: 'Argentina' },
-  { nombre: 'Nicolás Tagliafico', posicion: 'Defensor', edad: 33, nacionalidad: 'Argentina' },
-  { nombre: 'Rodrigo De Paul', posicion: 'Mediocampista', edad: 32, nacionalidad: 'Argentina' },
-  { nombre: 'Enzo Fernández', posicion: 'Mediocampista', edad: 25, nacionalidad: 'Argentina' },
-  { nombre: 'Alexis Mac Allister', posicion: 'Mediocampista', edad: 27, nacionalidad: 'Argentina' },
-  { nombre: 'Lionel Messi', posicion: 'Delantero', edad: 38, nacionalidad: 'Argentina' },
-  { nombre: 'Julián Álvarez', posicion: 'Delantero', edad: 26, nacionalidad: 'Argentina' },
-  { nombre: 'Lautaro Martínez', posicion: 'Delantero', edad: 28, nacionalidad: 'Argentina' },
+  { nombre: 'Emiliano Martínez', posicion: 'Arquero', edad: 33, nacionalidad: 'Argentina', dorsal: 23 },
+  { nombre: 'Gerónimo Rulli', posicion: 'Arquero', edad: 34, nacionalidad: 'Argentina', dorsal: 12 },
+  { nombre: 'Nahuel Molina', posicion: 'Defensor', edad: 28, nacionalidad: 'Argentina', dorsal: 26 },
+  { nombre: 'Cristian Romero', posicion: 'Defensor', edad: 28, nacionalidad: 'Argentina', dorsal: 13 },
+  { nombre: 'Nicolás Otamendi', posicion: 'Defensor', edad: 38, nacionalidad: 'Argentina', dorsal: 19 },
+  { nombre: 'Nicolás Tagliafico', posicion: 'Defensor', edad: 33, nacionalidad: 'Argentina', dorsal: 3 },
+  { nombre: 'Rodrigo De Paul', posicion: 'Mediocampista', edad: 32, nacionalidad: 'Argentina', dorsal: 7 },
+  { nombre: 'Enzo Fernández', posicion: 'Mediocampista', edad: 25, nacionalidad: 'Argentina', dorsal: 24 },
+  { nombre: 'Alexis Mac Allister', posicion: 'Mediocampista', edad: 27, nacionalidad: 'Argentina', dorsal: 20 },
+  { nombre: 'Lionel Messi', posicion: 'Delantero', edad: 38, nacionalidad: 'Argentina', dorsal: 10 },
+  { nombre: 'Julián Álvarez', posicion: 'Delantero', edad: 26, nacionalidad: 'Argentina', dorsal: 9 },
+  { nombre: 'Lautaro Martínez', posicion: 'Delantero', edad: 28, nacionalidad: 'Argentina', dorsal: 22 },
 ];
 
 const TEAMS: TeamFull[] = STANDINGS.flatMap((g) =>
@@ -197,6 +197,7 @@ export const demoSource: DataSource = {
   getStandings: async () => STANDINGS,
   getScorers: async () => [],
   getTeams: async () => TEAMS,
+  getMatchDetail: async () => null,
   getF1Last: async () => ULTIMA_CARRERA,
   getF1Next: async () => PROXIMA_CARRERA,
   getF1Drivers: async () => PILOTOS,

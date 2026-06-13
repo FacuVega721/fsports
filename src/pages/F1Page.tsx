@@ -60,7 +60,11 @@ export default function F1Page() {
       </section>
 
       {/* Próximo GP destacado (siempre arriba) */}
-      {proxima.data && <NextRaceCard race={proxima.data} />}
+      {proxima.isPending ? (
+        <SkeletonCard count={1} alto={260} />
+      ) : (
+        proxima.data && <NextRaceCard race={proxima.data} />
+      )}
 
       {/* Navegación de secciones */}
       <Tabs

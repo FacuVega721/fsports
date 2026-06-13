@@ -1,6 +1,6 @@
 import { HISTORIAL_EQUIPOS } from '../../data/equipos-f1';
 import { F1_API_BASE } from '../config';
-import { hoyArg, utcToArg } from '../time';
+import { enRango, hoyArg, utcToArg } from '../time';
 import type {
   ConstructorStanding,
   DriverStanding,
@@ -10,6 +10,7 @@ import type {
   LastRace,
   NextRace,
   RaceCalendar,
+  QualyResultRow,
   RaceFull,
   RaceResultRow,
   ResultadoEstado,
@@ -72,6 +73,7 @@ interface ErgastRace {
   Results?: ErgastResultRow[];
   SprintResults?: ErgastResultRow[];
   QualifyingResults?: Array<{
+    position?: string;
     Driver?: ErgastDriver;
     Constructor?: ErgastConstructor;
     Q1?: string;
@@ -271,8 +273,10 @@ export async function getF1CalendarApi(): Promise<RaceCalendar[]> {
   const hoy = hoyArg();
   return races.map((r) => {
     const { fecha, hora } = utcToArg(`${r.date}T${r.time ?? '12:00:00Z'}`);
+    const horarios = extraerHorarios(r);
+    const inicioFinde = horarios[0]?.fecha ?? fecha;
     const estado: EstadoCarrera =
-      fecha < hoy ? 'finalizada' : fecha === hoy ? 'en_curso' : 'proxima';
+      hoy > fecha ? 'finalizada' : enRango(inicioFinde, fecha) ? 'en_curso' : 'proxima';
     return {
       ronda: Number(r.round ?? 0),
       gp: nombreGp(r.raceName),
@@ -283,7 +287,7 @@ export async function getF1CalendarApi(): Promise<RaceCalendar[]> {
       hora,
       estado,
       esSprint: !!r.Sprint,
-      horarios: extraerHorarios(r),
+      horarios,
     };
   });
 }
@@ -308,6 +312,22 @@ function mapearResultados(filas: ErgastResultRow[] | undefined): RaceResultRow[]
   });
 }
 
+/** Mapea la clasificación completa de Qualy (Q1/Q2/Q3) a QualyResultRow[]. */
+function mapearClasificacion(
+  filas: ErgastRace['QualifyingResults'] | undefined,
+): QualyResultRow[] | null {
+  if (!filas || filas.length === 0) return null;
+  return filas.map((r, i) => ({
+    pos: Number(r.position ?? i + 1),
+    piloto: nombrePiloto(r.Driver),
+    code: r.Driver?.code ?? '',
+    equipo: r.Constructor?.name ?? '',
+    q1: r.Q1 ?? '',
+    q2: r.Q2 ?? '',
+    q3: r.Q3 ?? '',
+  }));
+}
+
 /** Detalle de una carrera por ronda (resultados + pole + vuelta rápida + sprint). */
 export async function getF1RaceApi(ronda: number): Promise<RaceFull | null> {
   const vacio = {} as ErgastResponse;
@@ -324,7 +344,8 @@ export async function getF1RaceApi(ronda: number): Promise<RaceFull | null> {
   const sprint = sprintFilas && sprintFilas.length > 0 ? mapearResultados(sprintFilas) : null;
 
   // Pole = P1 de la clasificación
-  const polePos = qData.MRData?.RaceTable?.Races?.[0]?.QualifyingResults?.[0];
+  const qualyFilas = qData.MRData?.RaceTable?.Races?.[0]?.QualifyingResults;
+  const polePos = qualyFilas?.[0];
   const pole = polePos
     ? {
         piloto: nombrePiloto(polePos.Driver),
@@ -332,6 +353,7 @@ export async function getF1RaceApi(ronda: number): Promise<RaceFull | null> {
         tiempo: polePos.Q3 || polePos.Q2 || polePos.Q1 || '',
       }
     : null;
+  const clasificacion = mapearClasificacion(qualyFilas);
 
   // Vuelta rápida = la marcada con rank "1"
   const flRow = (race.Results ?? []).find((r) => r.FastestLap?.rank === '1');
@@ -351,6 +373,7 @@ export async function getF1RaceApi(ronda: number): Promise<RaceFull | null> {
     vueltaRapida,
     resultados,
     sprint,
+    clasificacion,
   };
 }
 

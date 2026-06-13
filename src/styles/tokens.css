@@ -71,5 +71,5 @@
   --glow-gold: 0 0 0 1px rgba(213, 0, 0, 0.55), 0 0 36px rgba(255, 42, 42, 0.28); /* compat: glow rojo */
 
   /* ── Layout ── */
-  --maxw: 1200px;
+  --maxw: 880px;
 }

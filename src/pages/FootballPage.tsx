@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { BracketView } from '../components/football/BracketView';
-import { Goleadores } from '../components/football/Goleadores';
+import { Asistencias, Goleadores } from '../components/football/Goleadores';
 import { GroupDetail } from '../components/football/GroupDetail';
 import { KnockoutBracket } from '../components/football/KnockoutBracket';
 import { MatchList } from '../components/football/MatchList';
@@ -177,7 +177,7 @@ export default function FootballPage() {
               onSelectPais={verPais}
             />
           ) : (
-            <div className={styles.gruposConTerceros}>
+            <div className={styles.pila}>
               <StandingsTable
                 standings={standings.data ?? []}
                 onSelectGroup={verGrupo}
@@ -187,14 +187,17 @@ export default function FootballPage() {
             </div>
           ))}
 
-        {/* ─── GOLEADORES ─── */}
+        {/* ─── GOLEADORES Y ASISTENCIAS ─── */}
         {seccion === 'goleadores' &&
           (scorers.isPending ? (
-            <SkeletonCard count={1} alto={320} />
+            <SkeletonCard count={2} alto={320} />
           ) : scorers.isError ? (
-            <ErrorState titulo="Goleadores no disponibles" onRetry={() => scorers.refetch()} />
+            <ErrorState titulo="Estadísticas no disponibles" onRetry={() => scorers.refetch()} />
           ) : (
-            <Goleadores scorers={scorers.data ?? []} />
+            <div className={styles.pila}>
+              <Goleadores scorers={scorers.data ?? []} />
+              <Asistencias scorers={scorers.data ?? []} />
+            </div>
           ))}
 
         {/* ─── ELIMINATORIA ─── */}

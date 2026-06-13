@@ -106,8 +106,8 @@
   border-color: var(--brand);
 }
 
-/* Barra superior del fixture: filtros + botón copiar agenda */
-.gruposConTerceros {
+/* Apila secciones verticalmente con espaciado uniforme */
+.pila {
   display: flex;
   flex-direction: column;
   gap: var(--space-4);

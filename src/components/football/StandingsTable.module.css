@@ -2,10 +2,11 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr));
   gap: var(--space-4);
-  align-items: start;
 }
 
 .grupo {
+  display: flex;
+  flex-direction: column;
   background: var(--bg-elevated);
   border: 1px solid var(--border);
   border-radius: var(--radius);
@@ -49,8 +50,10 @@
   color: var(--brand-bright);
 }
 
-/* Permite scroll horizontal si la tabla no entra (mobile angosto) */
+/* Permite scroll horizontal si la tabla no entra (mobile angosto); crece para
+   parejar la altura de todas las cards de la fila y empujar la leyenda abajo. */
 .scroll {
+  flex: 1;
   overflow-x: auto;
 }
 

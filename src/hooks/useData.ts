@@ -32,16 +32,6 @@ export function useMatches() {
   });
 }
 
-/** Detalle de un partido (árbitro + historial), solo se pide cuando se abre. */
-export function useMatchDetail(id: string | null) {
-  return useQuery({
-    queryKey: ['match-detail', DATA_MODE, id],
-    queryFn: () => dataSource.getMatchDetail(id as string),
-    enabled: id !== null,
-    staleTime: esApi ? 60 * MINUTO : Infinity,
-  });
-}
-
 export function useStandings() {
   return useQuery({
     queryKey: ['standings', DATA_MODE],

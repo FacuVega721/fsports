@@ -11,13 +11,7 @@ import {
   getF1RaceApi,
   getF1TeamsApi,
 } from './f1';
-import {
-  getMatchDetailApi,
-  getMatchesApi,
-  getScorersApi,
-  getStandingsApi,
-  getTeamsApi,
-} from './football';
+import { getMatchesApi, getScorersApi, getStandingsApi, getTeamsApi } from './football';
 
 /**
  * Selector de modo de datos. ÚNICO punto donde se decide la fuente.
@@ -32,7 +26,6 @@ const apiSource: DataSource = {
   getStandings: getStandingsApi,
   getScorers: getScorersApi,
   getTeams: getTeamsApi,
-  getMatchDetail: getMatchDetailApi,
   getF1Last: getF1LastApi,
   getF1Next: getF1NextApi,
   getF1Drivers: getF1DriversApi,

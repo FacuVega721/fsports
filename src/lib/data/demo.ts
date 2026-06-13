@@ -25,7 +25,7 @@ function fechaRelativa(dias: number): string {
 }
 
 // Partidos de fase de grupos (fase y ciudad se agregan más abajo)
-const GRUPOS_DEMO: Omit<Match, 'fase' | 'ciudad' | 'tv' | 'jornada'>[] = [
+const GRUPOS_DEMO: Omit<Match, 'fase' | 'ciudad' | 'tv' | 'jornada' | 'arbitro'>[] = [
   // ── Ayer: resultados ──
   { id: 'd1', fecha: fechaRelativa(-1), hora: '13:00', estado: 'finalizado', local: 'México', localCode: 'mx', golesLocal: 2, visitante: 'Sudáfrica', visitanteCode: 'za', golesVisitante: 0, grupo: 'A', estadio: 'Estadio Azteca', minuto: null },
   { id: 'd2', fecha: fechaRelativa(-1), hora: '16:00', estado: 'finalizado', local: 'Corea del Sur', localCode: 'kr', golesLocal: 1, visitante: 'Escocia', visitanteCode: 'gb-sct', golesVisitante: 1, grupo: 'A', estadio: 'Estadio Akron, Guadalajara', minuto: null },
@@ -45,7 +45,7 @@ const GRUPOS_DEMO: Omit<Match, 'fase' | 'ciudad' | 'tv' | 'jornada'>[] = [
 ];
 
 // Partidos de eliminatoria de ejemplo (la ciudad se agrega más abajo)
-const ELIMINATORIA_DEMO: Omit<Match, 'ciudad' | 'tv' | 'jornada'>[] = [
+const ELIMINATORIA_DEMO: Omit<Match, 'ciudad' | 'tv' | 'jornada' | 'arbitro'>[] = [
   { id: 'k1', fecha: fechaRelativa(10), hora: '16:00', estado: 'programado', local: 'Argentina', localCode: 'ar', golesLocal: null, visitante: 'Suiza', visitanteCode: 'ch', golesVisitante: null, grupo: '', fase: 'dieciseisavos', estadio: 'Hard Rock Stadium, Miami', minuto: null },
   { id: 'k2', fecha: fechaRelativa(10), hora: '20:00', estado: 'programado', local: 'Brasil', localCode: 'br', golesLocal: null, visitante: 'Corea del Sur', visitanteCode: 'kr', golesVisitante: null, grupo: '', fase: 'dieciseisavos', estadio: 'MetLife Stadium, Nueva York', minuto: null },
   { id: 'k3', fecha: fechaRelativa(14), hora: '16:00', estado: 'programado', local: 'Argentina', localCode: 'ar', golesLocal: null, visitante: 'Países Bajos', visitanteCode: 'nl', golesVisitante: null, grupo: '', fase: 'octavos', estadio: 'AT&T Stadium, Dallas', minuto: null },
@@ -56,8 +56,8 @@ const ELIMINATORIA_DEMO: Omit<Match, 'ciudad' | 'tv' | 'jornada'>[] = [
 ];
 
 const MATCHES: Match[] = [
-  ...GRUPOS_DEMO.map((m) => ({ ...m, fase: 'grupos' as const, ciudad: '', tv: [], jornada: 1 })),
-  ...ELIMINATORIA_DEMO.map((m) => ({ ...m, ciudad: '', tv: [], jornada: null })),
+  ...GRUPOS_DEMO.map((m) => ({ ...m, fase: 'grupos' as const, ciudad: '', tv: [], jornada: 1, arbitro: '' })),
+  ...ELIMINATORIA_DEMO.map((m) => ({ ...m, ciudad: '', tv: [], jornada: null, arbitro: '' })),
 ];
 
 // Filas base (sin las stats detalladas); se completan con derivarStats abajo.
@@ -197,7 +197,6 @@ export const demoSource: DataSource = {
   getStandings: async () => STANDINGS,
   getScorers: async () => [],
   getTeams: async () => TEAMS,
-  getMatchDetail: async () => null,
   getF1Last: async () => ULTIMA_CARRERA,
   getF1Next: async () => PROXIMA_CARRERA,
   getF1Drivers: async () => PILOTOS,

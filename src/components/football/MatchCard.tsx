@@ -1,9 +1,6 @@
 import type { CSSProperties } from 'react';
-import { useState } from 'react';
-import { ChevronDown, Tv } from 'lucide-react';
+import { Tv } from 'lucide-react';
 import { CANALES } from '../../data/sedes';
-import { useMatchDetail } from '../../hooks/useData';
-import { DATA_MODE } from '../../lib/config';
 import { postFinal } from '../../lib/social';
 import type { Match } from '../../lib/types';
 import { CopyButton } from '../ui/CopyButton';
@@ -41,10 +38,6 @@ export function MatchCard({ match, index = 0, onSelectGroup, onSelectPais }: Mat
   const meta = [match.grupo ? `Grupo ${match.grupo}` : '', sede]
     .filter(Boolean)
     .join(' · ');
-
-  const conEquiposDefinidos = match.local !== 'Por definir' && match.visitante !== 'Por definir';
-  const [verDetalle, setVerDetalle] = useState(false);
-  const detalle = useMatchDetail(verDetalle ? match.id : null);
 
   const renderNombre = (nombre: string) => {
     if (onSelectPais && nombre && nombre !== 'Por definir') {
@@ -141,50 +134,10 @@ export function MatchCard({ match, index = 0, onSelectGroup, onSelectPais }: Mat
         </div>
       )}
 
-      {DATA_MODE === 'api' && conEquiposDefinidos && (
-        <details
-          className={styles.detalle}
-          onClick={(e) => e.stopPropagation()}
-          onToggle={(e) => setVerDetalle(e.currentTarget.open)}
-        >
-          <summary className={styles.detalleResumen}>
-            <span className="kicker">Árbitro e historial</span>
-            <ChevronDown size={14} className={styles.chevron} aria-hidden="true" />
-          </summary>
-          <div className={styles.detalleContenido}>
-            {detalle.isPending ? (
-              <p className={styles.detalleVacio}>Cargando…</p>
-            ) : (
-              <>
-                {detalle.data?.arbitro && (
-                  <p className={styles.arbitro}>
-                    Árbitro: <strong>{detalle.data.arbitro}</strong>
-                  </p>
-                )}
-                {detalle.data?.resumen && (
-                  <p className={styles.h2hResumen}>
-                    Últimos {detalle.data.resumen.partidos} enfrentamientos: {match.local}{' '}
-                    ganó {detalle.data.resumen.victoriasLocal}, empataron{' '}
-                    {detalle.data.resumen.empates} y {match.visitante} ganó{' '}
-                    {detalle.data.resumen.victoriasVisitante}.
-                  </p>
-                )}
-                {detalle.data && detalle.data.ultimos.length > 0 && (
-                  <ul className={styles.h2hLista}>
-                    {detalle.data.ultimos.slice(0, 5).map((p, i) => (
-                      <li key={i} className={styles.h2hFila}>
-                        <span className={styles.h2hFecha}>{p.fecha}</span>
-                        <span className={styles.h2hPartido}>
-                          {p.local} {p.golesLocal ?? '-'}-{p.golesVisitante ?? '-'} {p.visitante}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </>
-            )}
-          </div>
-        </details>
+      {match.arbitro && (
+        <p className={styles.arbitro}>
+          Árbitro: <strong>{match.arbitro}</strong>
+        </p>
       )}
     </article>
   );

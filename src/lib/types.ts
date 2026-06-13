@@ -53,6 +53,8 @@ export interface Match {
   minuto: number | null;
   /** Jornada/fecha de la fase de grupos (1, 2, 3...), o null si no aplica */
   jornada: number | null;
+  /** Nombre del árbitro principal, o '' si no hay dato */
+  arbitro: string;
 }
 
 /** Una selección participante (para la sección PAÍSES). */
@@ -117,35 +119,6 @@ export interface Scorer {
   asistencias: number;
   penales: number;
   partidos: number;
-}
-
-/** Resumen histórico entre los dos equipos de un partido. */
-export interface H2HResumen {
-  partidos: number;
-  victoriasLocal: number;
-  empates: number;
-  victoriasVisitante: number;
-}
-
-/** Un partido previo entre dos equipos, dentro del historial head-to-head. */
-export interface H2HPartido {
-  /** YYYY-MM-DD */
-  fecha: string;
-  competicion: string;
-  local: string;
-  visitante: string;
-  golesLocal: number | null;
-  golesVisitante: number | null;
-}
-
-/** Detalle adicional de un partido (árbitro + historial entre los equipos). */
-export interface MatchDetail {
-  /** Nombre del árbitro principal, o '' si no hay dato */
-  arbitro: string;
-  /** Resumen del historial, o null si no hay partidos previos registrados */
-  resumen: H2HResumen | null;
-  /** Últimos enfrentamientos, del más reciente al más antiguo */
-  ultimos: H2HPartido[];
 }
 
 /** Un resultado individual de una carrera de F1. */
@@ -317,8 +290,6 @@ export interface DataSource {
   getStandings(): Promise<StandingGroup[]>;
   getScorers(): Promise<Scorer[]>;
   getTeams(): Promise<TeamFull[]>;
-  /** Detalle adicional de un partido (árbitro + historial), o null si no hay datos */
-  getMatchDetail(id: string): Promise<MatchDetail | null>;
   getF1Last(): Promise<LastRace | null>;
   getF1Next(): Promise<NextRace | null>;
   getF1Drivers(): Promise<DriverStanding[]>;

@@ -63,6 +63,7 @@ function normalizarMatches(): Match[] {
     tv: Array.isArray(p?.tv) ? p.tv.filter((x): x is string => typeof x === 'string') : [],
     minuto: numeroONull(p?.minuto),
     jornada: numeroONull(p?.jornada),
+    arbitro: '',
   }));
 }
 
@@ -157,7 +158,6 @@ export const manifestSource: DataSource = {
   getStandings: async () => normalizarStandings(),
   getScorers: async () => [],
   getTeams: async () => normalizarTeams(),
-  getMatchDetail: async () => null,
   getF1Last: async () => normalizarUltimaCarrera(),
   getF1Next: async () => normalizarProximaCarrera(),
   getF1Calendar: async () => [],

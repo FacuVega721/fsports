@@ -5,9 +5,7 @@ import { utcToArg } from '../time';
 import type {
   EstadoPartido,
   FasePartido,
-  H2HPartido,
   Match,
-  MatchDetail,
   Player,
   Posicion,
   Scorer,
@@ -179,6 +177,7 @@ export async function getMatchesApi(): Promise<Match[]> {
       tv: info.tv ?? [],
       minuto: typeof m.minute === 'number' ? m.minute : null,
       jornada: typeof m.matchday === 'number' ? m.matchday : null,
+      arbitro: (m.referees ?? []).find((r) => r.name)?.name ?? '',
     };
   });
 }
@@ -311,45 +310,3 @@ export async function getStandingsApi(): Promise<StandingGroup[]> {
     }));
 }
 
-interface FdHead2Head {
-  numberOfMatches?: number;
-  homeTeam?: { wins?: number; draws?: number; losses?: number };
-  matches?: FdMatch[];
-}
-
-/** Detalle de un partido: árbitro + historial entre los dos equipos (`/matches/{id}`). */
-export async function getMatchDetailApi(id: string): Promise<MatchDetail | null> {
-  const m = await fetchFd<FdMatch & { head2head?: FdHead2Head }>(`/matches/${id}`);
-  if (!m) return null;
-
-  const arbitro = (m.referees ?? []).find((r) => r.name)?.name ?? '';
-
-  const h2h = m.head2head;
-  const resumen =
-    h2h && typeof h2h.numberOfMatches === 'number' && h2h.numberOfMatches > 0
-      ? {
-          partidos: h2h.numberOfMatches,
-          victoriasLocal: h2h.homeTeam?.wins ?? 0,
-          empates: h2h.homeTeam?.draws ?? 0,
-          victoriasVisitante: h2h.homeTeam?.losses ?? 0,
-        }
-      : null;
-
-  const ultimos: H2HPartido[] = (h2h?.matches ?? [])
-    .filter((p) => p.id !== m.id)
-    .map((p) => {
-      const { fecha } = utcToArg(p.utcDate ?? '');
-      return {
-        fecha,
-        competicion: p.competition?.name ?? '',
-        local: p.homeTeam?.name ? nombreEspanol(p.homeTeam.name) : 'Por definir',
-        visitante: p.awayTeam?.name ? nombreEspanol(p.awayTeam.name) : 'Por definir',
-        golesLocal: p.score?.fullTime?.home ?? null,
-        golesVisitante: p.score?.fullTime?.away ?? null,
-      };
-    });
-
-  if (!arbitro && !resumen && ultimos.length === 0) return null;
-
-  return { arbitro, resumen, ultimos };
-}

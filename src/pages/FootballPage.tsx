@@ -4,6 +4,7 @@ import { Goleadores } from '../components/football/Goleadores';
 import { GroupDetail } from '../components/football/GroupDetail';
 import { KnockoutBracket } from '../components/football/KnockoutBracket';
 import { MatchList } from '../components/football/MatchList';
+import { RankingTerceros } from '../components/football/RankingTerceros';
 import { Simulador } from '../components/football/Simulador';
 import { StandingsTable } from '../components/football/StandingsTable';
 import { TeamDetail } from '../components/football/TeamDetail';
@@ -15,6 +16,7 @@ import { SkeletonCard } from '../components/ui/SkeletonCard';
 import { Tabs } from '../components/ui/Tabs';
 import { useMatches, useScorers, useStandings, useTeams } from '../hooks/useData';
 import { dataSource } from '../lib/data';
+import { mejoresTerceros } from '../lib/simulator/terceros';
 import { postAgenda } from '../lib/social';
 import { hoyArg } from '../lib/time';
 import type { Match } from '../lib/types';
@@ -113,6 +115,7 @@ export default function FootballPage() {
     () => (matches.data ?? []).filter((m) => m.fase !== 'grupos'),
     [matches.data],
   );
+  const terceros = useMemo(() => mejoresTerceros(standings.data ?? []), [standings.data]);
   const teamSel = useMemo(
     () => (teams.data ?? []).find((t) => t.nombre === paisSel) ?? null,
     [teams.data, paisSel],
@@ -174,11 +177,14 @@ export default function FootballPage() {
               onSelectPais={verPais}
             />
           ) : (
-            <StandingsTable
-              standings={standings.data ?? []}
-              onSelectGroup={verGrupo}
-              onSelectPais={verPais}
-            />
+            <div className={styles.gruposConTerceros}>
+              <RankingTerceros terceros={terceros} />
+              <StandingsTable
+                standings={standings.data ?? []}
+                onSelectGroup={verGrupo}
+                onSelectPais={verPais}
+              />
+            </div>
           ))}
 
         {/* ─── GOLEADORES ─── */}

@@ -107,6 +107,12 @@
 }
 
 /* Barra superior del fixture: filtros + botón copiar agenda */
+.gruposConTerceros {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
 .fixtureToolbar {
   display: flex;
   align-items: center;

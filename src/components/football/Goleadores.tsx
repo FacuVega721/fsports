@@ -34,7 +34,6 @@ export function Goleadores({ scorers, conTitulo = true }: GoleadoresProps) {
               <th className={styles.colPos} scope="col">#</th>
               <th className={styles.colJug} scope="col">Jugador</th>
               <th className={styles.colNum} scope="col" title="Partidos jugados">PJ</th>
-              <th className={styles.colNum} scope="col" title="Asistencias">Asis</th>
               <th className={styles.colNum} scope="col" title="Goles">Goles</th>
             </tr>
           </thead>
@@ -52,10 +51,9 @@ export function Goleadores({ scorers, conTitulo = true }: GoleadoresProps) {
                   </span>
                 </td>
                 <td className={styles.num}>{s.partidos}</td>
-                <td className={styles.num}>{s.asistencias}</td>
                 <td className={`${styles.num} ${styles.destacado}`}>
                   {s.goles}
-                  {s.penales > 0 && <span className={styles.pen}> ({s.penales}p)</span>}
+                  {s.penales > 0 && <span className={styles.pen}>{s.penales} de penal</span>}
                 </td>
               </tr>
             ))}
@@ -99,7 +97,6 @@ export function Asistencias({ scorers, conTitulo = true }: GoleadoresProps) {
               <th className={styles.colJug} scope="col">Jugador</th>
               <th className={styles.colNum} scope="col" title="Partidos jugados">PJ</th>
               <th className={styles.colNum} scope="col" title="Asistencias">Asis</th>
-              <th className={styles.colNum} scope="col" title="Goles">Goles</th>
             </tr>
           </thead>
           <tbody>
@@ -117,10 +114,6 @@ export function Asistencias({ scorers, conTitulo = true }: GoleadoresProps) {
                 </td>
                 <td className={styles.num}>{s.partidos}</td>
                 <td className={`${styles.num} ${styles.destacado}`}>{s.asistencias}</td>
-                <td className={styles.num}>
-                  {s.goles}
-                  {s.penales > 0 && <span className={styles.pen}> ({s.penales}p)</span>}
-                </td>
               </tr>
             ))}
           </tbody>

@@ -51,9 +51,11 @@ export function Goleadores({ scorers, conTitulo = true }: GoleadoresProps) {
                   </span>
                 </td>
                 <td className={styles.num}>{s.partidos}</td>
-                <td className={`${styles.num} ${styles.destacado}`}>
-                  {s.goles}
-                  {s.penales > 0 && <span className={styles.pen}>{s.penales} de penal</span>}
+                <td className={styles.num}>
+                  <span className={styles.destacado}>
+                    {s.goles}
+                    {s.penales > 0 && <span className={styles.pen}>{s.penales} de penal</span>}
+                  </span>
                 </td>
               </tr>
             ))}
@@ -113,7 +115,9 @@ export function Asistencias({ scorers, conTitulo = true }: GoleadoresProps) {
                   </span>
                 </td>
                 <td className={styles.num}>{s.partidos}</td>
-                <td className={`${styles.num} ${styles.destacado}`}>{s.asistencias}</td>
+                <td className={styles.num}>
+                  <span className={styles.destacado}>{s.asistencias}</span>
+                </td>
               </tr>
             ))}
           </tbody>

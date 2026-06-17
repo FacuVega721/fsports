@@ -80,7 +80,23 @@ export const INFO_POR_PARTIDO: Record<string, InfoPartido> = {
   'Irak vs Noruega': { sede: 'gillette', tv: ['tyc', 'dsports', 'dgo'] },
   'Argentina vs Argelia': { sede: 'arrowhead', tv: ['tyc', 'dsports', 'dgo'] },
   'Austria vs Jordania': { sede: 'levis', tv: ['tyc', 'dsports', 'dgo'] },
-  // 👉 Próximas fechas: agregá "Local vs Visitante": { sede: "...", tv: ["..."] },
+  // ── 2ª+ fechas (de las capturas) ──
+  'Países Bajos vs Suecia': { sede: 'nrg', tv: ['tyc', 'dsports', 'dgo'] },
+  'Alemania vs Costa de Marfil': { sede: 'bmo', tv: ['tyc', 'dsports', 'dgo'] },
+  'Ecuador vs Curazao': { sede: 'arrowhead', tv: ['dsports', 'dgo'] },
+  'Escocia vs Marruecos': { sede: 'gillette', tv: ['dsports', 'dgo'] },
+  'Brasil vs Haití': { sede: 'lincoln', tv: ['tyc', 'dsports', 'dgo'] },
+  'Turquía vs Paraguay': { sede: 'levis', tv: ['dsports', 'dgo'] },
+  'Canadá vs Catar': { sede: 'bcplace', tv: ['dsports', 'dgo'] },
+  'México vs Corea del Sur': { sede: 'akron', tv: ['tyc', 'dsports', 'dgo'] },
+  'Estados Unidos vs Australia': { sede: 'lumen', tv: ['tyc', 'dsports', 'dgo'] },
+  'Uzbekistán vs Colombia': { sede: 'azteca', tv: ['tyc', 'dsports', 'dgo'] },
+  'República Checa vs Sudáfrica': { sede: 'mercedes', tv: ['tyc', 'dsports', 'dgo'] },
+  'Suiza vs Bosnia y Herzegovina': { sede: 'sofi', tv: ['dsports', 'dgo'] },
+  'Portugal vs RD del Congo': { sede: 'nrg', tv: ['dsports', 'dgo'] },
+  'Inglaterra vs Croacia': { sede: 'att', tv: ['tyc', 'dsports', 'dgo'] },
+  'Ghana vs Panamá': { sede: 'bmo', tv: ['tyc', 'dsports', 'dgo'] },
+  // 👉 Seguir cargando con capturas de FIFA
 };
 
 /** Busca la info de un partido probando ambos órdenes (local/visitante). */

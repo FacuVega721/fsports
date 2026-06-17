@@ -96,6 +96,22 @@ export const INFO_POR_PARTIDO: Record<string, InfoPartido> = {
   'Portugal vs RD del Congo': { sede: 'nrg', tv: ['dsports', 'dgo'] },
   'Inglaterra vs Croacia': { sede: 'att', tv: ['tyc', 'dsports', 'dgo'] },
   'Ghana vs Panamá': { sede: 'bmo', tv: ['tyc', 'dsports', 'dgo'] },
+  // ── Partidos-6 ──
+  'Túnez vs Japón': { sede: 'bbva', tv: ['dsports', 'dgo'] },
+  'España vs Arabia Saudita': { sede: 'mercedes', tv: ['tyc', 'dsports', 'dgo'] },
+  'Bélgica vs Irán': { sede: 'sofi', tv: ['dsports', 'dgo'] },
+  // ── Partidos-7 ──
+  'Uruguay vs Cabo Verde': { sede: 'hardrock', tv: ['dsports', 'dgo'] },
+  'Nueva Zelanda vs Egipto': { sede: 'bcplace', tv: ['tyc', 'dsports', 'dgo'] },
+  'Argentina vs Austria': { sede: 'att', tv: ['tyc', 'dsports', 'dgo'] },
+  // ── Partidos-8 ──
+  'Francia vs Irak': { sede: 'lincoln', tv: ['dsports', 'dgo'] },
+  'Noruega vs Senegal': { sede: 'metlife', tv: ['tyc', 'dsports', 'dgo'] },
+  'Jordania vs Argelia': { sede: 'levis', tv: ['dsports', 'dgo'] },
+  // ── Partidos-9 ──
+  'Portugal vs Uzbekistán': { sede: 'nrg', tv: ['tyc', 'dsports', 'dgo'] },
+  'Inglaterra vs Ghana': { sede: 'gillette', tv: ['dsports', 'dgo'] },
+  'Panamá vs Croacia': { sede: 'bmo', tv: ['tyc', 'dsports', 'dgo'] },
   // 👉 Seguir cargando con capturas de FIFA
 };
 

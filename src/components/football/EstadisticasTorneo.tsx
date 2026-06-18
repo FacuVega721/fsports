@@ -3,10 +3,13 @@ import type { Match, StandingGroup, TeamFull } from '../../lib/types';
 import { Flag } from '../ui/Flag';
 import styles from './EstadisticasTorneo.module.css';
 
+type VistaEstadisticas = 'resumen' | 'ranking' | 'planteles';
+
 interface Props {
   matches: Match[];
   standings: StandingGroup[];
   teams: TeamFull[];
+  vista: VistaEstadisticas;
 }
 
 /* ── Sub-componente: tabla de ranking compacta ── */
@@ -51,7 +54,7 @@ function MiniTabla({ titulo, col, filas, verde }: {
 }
 
 /* ── Componente principal ── */
-export function EstadisticasTorneo({ matches, standings, teams }: Props) {
+export function EstadisticasTorneo({ matches, standings, teams, vista }: Props) {
   /* Partidos ya disputados con marcador válido */
   const finalizados = useMemo(
     () => matches.filter(m => m.estado === 'finalizado' && m.golesLocal !== null && m.golesVisitante !== null),
@@ -138,13 +141,15 @@ export function EstadisticasTorneo({ matches, standings, teams }: Props) {
     return { porEquipo, masJoven, masVeterano };
   }, [teams]);
 
-  if (!resumen && !ranking && planteles.porEquipo.length === 0) return null;
+  if (vista === 'resumen' && !resumen) return null;
+  if (vista === 'ranking' && !ranking) return null;
+  if (vista === 'planteles' && planteles.porEquipo.length === 0) return null;
 
   return (
     <div className={styles.raiz}>
 
       {/* ── 1. Resumen del torneo ── */}
-      {resumen && (
+      {vista === 'resumen' && resumen && (
         <section className={styles.seccion}>
           <header className={`${styles.header} texture`}>
             <span className="kicker">Resumen del torneo</span>
@@ -168,7 +173,7 @@ export function EstadisticasTorneo({ matches, standings, teams }: Props) {
               </div>
               <div className={styles.stat}>
                 <span className={styles.statNum}>{resumen.porteriasEnCero}</span>
-                <span className={styles.statLabel}>Porterías en cero</span>
+                <span className={styles.statLabel}>Vallas invictas</span>
               </div>
             </div>
             <div className={styles.highlights}>
@@ -213,7 +218,7 @@ export function EstadisticasTorneo({ matches, standings, teams }: Props) {
       )}
 
       {/* ── 2. Ranking de selecciones ── */}
-      {ranking && (
+      {vista === 'ranking' && ranking && (
         <section className={styles.seccion}>
           <header className={`${styles.header} texture`}>
             <span className="kicker">Ranking de selecciones</span>
@@ -223,7 +228,7 @@ export function EstadisticasTorneo({ matches, standings, teams }: Props) {
               <MiniTabla titulo="Mejores ataques" col="GF" filas={ranking.ataques} />
               <MiniTabla titulo="Mejores defensas" col="GC" filas={ranking.defensas} verde />
               {ranking.porterias.length > 0 && (
-                <MiniTabla titulo="Porterías en cero" col="CS" filas={ranking.porterias} verde />
+                <MiniTabla titulo="Vallas invictas" col="CS" filas={ranking.porterias} verde />
               )}
             </div>
           </div>
@@ -231,7 +236,7 @@ export function EstadisticasTorneo({ matches, standings, teams }: Props) {
       )}
 
       {/* ── 3. Estadísticas de planteles ── */}
-      {planteles.porEquipo.length > 0 && (
+      {vista === 'planteles' && planteles.porEquipo.length > 0 && (
         <section className={styles.seccion}>
           <header className={`${styles.header} texture`}>
             <span className="kicker">Estadísticas de planteles</span>

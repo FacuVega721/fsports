@@ -26,6 +26,7 @@ import styles from './Page.module.css';
 type Seccion = 'fixture' | 'grupos' | 'eliminatoria' | 'goleadores' | 'paises' | 'simulador';
 type TabFixture = 'hoy' | 'resultados' | 'proximos';
 type VistaElim = 'cuadro' | 'listado';
+type SubEstadisticas = 'resumen' | 'goleadores' | 'ranking' | 'planteles';
 
 const MENSAJES_VACIO: Record<TabFixture, { titulo: string; detalle: string }> = {
   hoy: {
@@ -88,6 +89,7 @@ export default function FootballPage() {
   const [seccion, setSeccion] = useState<Seccion>('fixture');
   const [tabFixture, setTabFixture] = useState<TabFixture>('hoy');
   const [vistaElim, setVistaElim] = useState<VistaElim>('cuadro');
+  const [subEstadisticas, setSubEstadisticas] = useState<SubEstadisticas>('resumen');
   const [paisSel, setPaisSel] = useState<string | null>(null);
   const [grupoSel, setGrupoSel] = useState<string | null>(null);
   const matches = useMatches();
@@ -188,22 +190,72 @@ export default function FootballPage() {
             </div>
           ))}
 
-        {/* ─── GOLEADORES Y ASISTENCIAS ─── */}
-        {seccion === 'goleadores' &&
-          (scorers.isPending ? (
-            <SkeletonCard count={2} alto={320} />
-          ) : scorers.isError ? (
-            <ErrorState titulo="Estadísticas no disponibles" onRetry={() => scorers.refetch()} />
-          ) : (
-            <>
-              <EstadisticasTorneo
-                matches={matches.data ?? []}
-                standings={standings.data ?? []}
-                teams={teams.data ?? []}
-              />
-              <Goleadores scorers={scorers.data ?? []} />
-            </>
-          ))}
+        {/* ─── ESTADÍSTICAS ─── */}
+        {seccion === 'goleadores' && (
+          <div className={styles.fixture}>
+            <Tabs
+              label="Vista de estadísticas"
+              tabs={[
+                { id: 'resumen', label: 'Resumen' },
+                { id: 'goleadores', label: 'Goleadores' },
+                { id: 'ranking', label: 'Ranking' },
+                { id: 'planteles', label: 'Planteles' },
+              ]}
+              active={subEstadisticas}
+              onChange={(id) => setSubEstadisticas(id as SubEstadisticas)}
+            />
+            <div key={subEstadisticas} className={styles.fade}>
+              {subEstadisticas === 'goleadores' ? (
+                scorers.isPending ? (
+                  <SkeletonCard count={2} alto={320} />
+                ) : scorers.isError ? (
+                  <ErrorState titulo="Goleadores no disponibles" onRetry={() => scorers.refetch()} />
+                ) : (
+                  <Goleadores scorers={scorers.data ?? []} />
+                )
+              ) : subEstadisticas === 'planteles' ? (
+                teams.isPending ? (
+                  <SkeletonCard count={2} alto={200} />
+                ) : teams.isError ? (
+                  <ErrorState titulo="Planteles no disponibles" onRetry={() => teams.refetch()} />
+                ) : (
+                  <EstadisticasTorneo
+                    matches={matches.data ?? []}
+                    standings={standings.data ?? []}
+                    teams={teams.data ?? []}
+                    vista="planteles"
+                  />
+                )
+              ) : subEstadisticas === 'ranking' ? (
+                standings.isPending ? (
+                  <SkeletonCard count={2} alto={200} />
+                ) : standings.isError ? (
+                  <ErrorState titulo="Ranking no disponible" onRetry={() => standings.refetch()} />
+                ) : (
+                  <EstadisticasTorneo
+                    matches={matches.data ?? []}
+                    standings={standings.data ?? []}
+                    teams={teams.data ?? []}
+                    vista="ranking"
+                  />
+                )
+              ) : (
+                matches.isPending ? (
+                  <SkeletonCard count={3} alto={180} />
+                ) : matches.isError ? (
+                  <ErrorState titulo="Estadísticas no disponibles" onRetry={() => matches.refetch()} />
+                ) : (
+                  <EstadisticasTorneo
+                    matches={matches.data ?? []}
+                    standings={standings.data ?? []}
+                    teams={teams.data ?? []}
+                    vista="resumen"
+                  />
+                )
+              )}
+            </div>
+          </div>
+        )}
 
         {/* ─── ELIMINATORIA ─── */}
         {seccion === 'eliminatoria' &&

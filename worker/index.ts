@@ -9,8 +9,11 @@
  *     reenvía la petición agregando el token DESDE EL SERVIDOR. El token nunca
  *     se expone en el navegador ni en el bundle.
  *
- * El token se configura como variable del Worker en Cloudflare:
- *   FOOTBALL_DATA_TOKEN
+ * Protecciones del proxy:
+ *  - Solo acepta rutas del Mundial (/competitions/WC/*). Cualquier otro path → 403.
+ *  - Solo acepta peticiones del propio sitio (Sec-Fetch-Site: same-origin).
+ *    Este header lo pone el navegador automáticamente y no puede ser enviado
+ *    por scripts de terceros ni por curl sin esfuerzo explícito.
  */
 
 import { BUILD_TOKEN } from './token.generated';
@@ -22,11 +25,19 @@ interface Env {
 
 const FOOTBALL_BASE = 'https://api.football-data.org/v4';
 const PREFIX = '/api/football';
+const RUTA_PERMITIDA = '/competitions/WC';
 
 /** Token: primero el secret de runtime; si no, el inyectado en build. */
 function resolverToken(env: Env): string {
   const rt = env.FOOTBALL_DATA_TOKEN ?? '';
   return rt.length > 0 ? rt : BUILD_TOKEN;
+}
+
+function forbidden(): Response {
+  return new Response(JSON.stringify({ error: 'forbidden' }), {
+    status: 403,
+    headers: { 'content-type': 'application/json' },
+  });
 }
 
 export default {
@@ -35,13 +46,25 @@ export default {
 
     if (url.pathname.startsWith(PREFIX)) {
       const upstreamPath = url.pathname.slice(PREFIX.length) || '/';
+
+      // Solo rutas del Mundial — bloquea uso del proxy para otras competiciones.
+      if (!upstreamPath.startsWith(RUTA_PERMITIDA)) {
+        return forbidden();
+      }
+
+      // Solo peticiones originadas desde el propio sitio (navegador).
+      // Sec-Fetch-Site es un header que los navegadores fijan automáticamente
+      // y que no puede ser sobreescrito por JavaScript del cliente.
+      const secFetchSite = request.headers.get('Sec-Fetch-Site');
+      if (secFetchSite !== null && secFetchSite !== 'same-origin') {
+        return forbidden();
+      }
+
       const target = `${FOOTBALL_BASE}${upstreamPath}${url.search}`;
       try {
         const upstream = await fetch(target, {
           headers: { 'X-Auth-Token': resolverToken(env) },
         });
-        // Reenviamos el cuerpo y el status; cacheamos 60s (respeta el límite
-        // de 10 req/min de football-data.org).
         return new Response(upstream.body, {
           status: upstream.status,
           headers: {

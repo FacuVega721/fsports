@@ -31,6 +31,111 @@ export function SimuladorMatchInput({ partido, override, eliminatoria, onChange 
     setPenVisitante(override?.penalesVisitante?.toString() ?? '');
   }, [override?.golesLocal, override?.golesVisitante, override?.penalesLocal, override?.penalesVisitante]);
 
+  const empate = eliminatoria && aEntero(local) !== null && aEntero(local) === aEntero(visitante);
+
+  /* ── Layout vertical para bracket (eliminatoria) ── */
+  if (eliminatoria) {
+    if (partido.real) {
+      return (
+        <div className={styles.cardV}>
+          <div className={styles.cardFilaV}>
+            <span className={styles.cardEquipoV}>
+              <Flag code={partido.localCode} title={partido.local} />
+              <span className={styles.nombreV} title={partido.local}>{partido.local}</span>
+            </span>
+            <strong className={styles.scoreV}>{partido.golesLocal}</strong>
+          </div>
+          <div className={styles.cardFilaV}>
+            <span className={styles.cardEquipoV}>
+              <Flag code={partido.visitanteCode} title={partido.visitante} />
+              <span className={styles.nombreV} title={partido.visitante}>{partido.visitante}</span>
+            </span>
+            <strong className={styles.scoreV}>{partido.golesVisitante}</strong>
+          </div>
+        </div>
+      );
+    }
+
+    if (!partido.definido) {
+      return (
+        <div className={`${styles.cardV} ${styles.porDefinir}`}>
+          <div className={styles.cardFilaV}>
+            <span className={styles.nombreV}>{partido.local}</span>
+          </div>
+          <div className={styles.cardFilaV}>
+            <span className={styles.nombreV}>{partido.visitante}</span>
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div className={styles.contenedorFila}>
+        <div className={styles.cardV}>
+          <div className={styles.cardFilaV}>
+            <span className={styles.cardEquipoV}>
+              <Flag code={partido.localCode} title={partido.local} />
+              <span className={styles.nombreV} title={partido.local}>{partido.local}</span>
+            </span>
+            <input
+              type="number"
+              min={0}
+              max={20}
+              inputMode="numeric"
+              className={styles.inputV}
+              value={local}
+              onChange={(e) => actualizarGoles(e.target.value, visitante)}
+              aria-label={`Goles de ${partido.local}`}
+            />
+          </div>
+          <div className={styles.cardFilaV}>
+            <span className={styles.cardEquipoV}>
+              <Flag code={partido.visitanteCode} title={partido.visitante} />
+              <span className={styles.nombreV} title={partido.visitante}>{partido.visitante}</span>
+            </span>
+            <input
+              type="number"
+              min={0}
+              max={20}
+              inputMode="numeric"
+              className={styles.inputV}
+              value={visitante}
+              onChange={(e) => actualizarGoles(local, e.target.value)}
+              aria-label={`Goles de ${partido.visitante}`}
+            />
+          </div>
+        </div>
+        {empate && (
+          <div className={styles.penalesV}>
+            <span className={styles.penalesLabelV}>Pen</span>
+            <input
+              type="number"
+              min={0}
+              max={20}
+              inputMode="numeric"
+              className={styles.inputV}
+              value={penLocal}
+              onChange={(e) => actualizarPenales(e.target.value, penVisitante)}
+              aria-label={`Penales de ${partido.local}`}
+            />
+            <span>-</span>
+            <input
+              type="number"
+              min={0}
+              max={20}
+              inputMode="numeric"
+              className={styles.inputV}
+              value={penVisitante}
+              onChange={(e) => actualizarPenales(penLocal, e.target.value)}
+              aria-label={`Penales de ${partido.visitante}`}
+            />
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  /* ── Layout horizontal para grupos ── */
   if (partido.real) {
     return (
       <div className={styles.fila}>
@@ -92,8 +197,6 @@ export function SimuladorMatchInput({ partido, override, eliminatoria, onChange 
     setPenVisitante(nuevoVisitante);
     emitir(local, visitante, nuevoLocal, nuevoVisitante);
   }
-
-  const empate = eliminatoria && aEntero(local) !== null && aEntero(local) === aEntero(visitante);
 
   return (
     <div className={styles.contenedorFila}>

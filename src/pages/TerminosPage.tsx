@@ -103,7 +103,7 @@ export default function TerminosPage() {
           <p>
             La información publicada en FSports puede compartirse libremente, incluyendo
             capturas de pantalla, siempre que se cite la fuente (FSports /
-            fsports.facundovega97.workers.dev). La reproducción con fines comerciales
+            oficialfsports.com). La reproducción con fines comerciales
             sin autorización expresa está prohibida.
           </p>
         </div>

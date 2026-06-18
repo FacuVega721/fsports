@@ -22,6 +22,32 @@
   color: var(--text-dim);
 }
 
+.redes {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-1);
+}
+
+.iconRed {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  color: var(--text-faint);
+  transition: color 0.15s;
+}
+
+.iconRed:hover {
+  color: var(--brand-bright);
+}
+
+.iconRed svg {
+  width: 18px;
+  height: 18px;
+}
+
 .notas {
   display: flex;
   flex-direction: column;
@@ -32,17 +58,13 @@
   letter-spacing: 0.02em;
 }
 
-.social {
-  color: var(--text-dim);
-}
-
-.red {
-  color: var(--text-dim);
+.legal {
+  color: var(--text-faint);
   font-weight: 600;
-  transition: color 0.15s ease;
+  transition: color 0.15s;
 }
 
-.red:hover {
+.legal:hover {
   color: var(--brand-bright);
 }
 

@@ -1,0 +1,66 @@
+.pagina {
+  padding: var(--space-6) 0 var(--space-8);
+}
+
+.articulo {
+  max-width: 68ch;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.cabecera {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--border);
+}
+
+.cabecera h1 {
+  font-family: var(--font-display);
+  font-size: clamp(22px, 4vw, 30px);
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.seccion {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.seccion h2 {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--brand-bright);
+}
+
+.seccion p {
+  font-size: 14px;
+  color: var(--text-dim);
+  line-height: 1.75;
+}
+
+.volver {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-faint);
+  transition: color 0.15s;
+  margin-bottom: var(--space-3);
+}
+
+.volver:hover {
+  color: var(--brand-bright);
+}

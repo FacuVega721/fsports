@@ -60,10 +60,16 @@ export function SimuladorMatchInput({ partido, override, eliminatoria, onChange 
       return (
         <div className={`${styles.cardV} ${styles.porDefinir}`}>
           <div className={styles.cardFilaV}>
-            <span className={styles.nombreV}>{partido.local}</span>
+            <span className={styles.cardEquipoV}>
+              {partido.localCode && <Flag code={partido.localCode} title={partido.local} />}
+              <span className={styles.nombreV}>{partido.local}</span>
+            </span>
           </div>
           <div className={styles.cardFilaV}>
-            <span className={styles.nombreV}>{partido.visitante}</span>
+            <span className={styles.cardEquipoV}>
+              {partido.visitanteCode && <Flag code={partido.visitanteCode} title={partido.visitante} />}
+              <span className={styles.nombreV}>{partido.visitante}</span>
+            </span>
           </div>
         </div>
       );

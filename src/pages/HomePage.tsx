@@ -113,6 +113,7 @@ function ProximoGP({ gp }: { gp: NextRace }) {
             {gp.horarios.map((s) => (
               <div key={s.tipo} className={styles.gpSesion}>
                 <span className={styles.gpSesionNombre}>{s.tipo}</span>
+                <span className={styles.gpSesionFecha}>{formatFecha(s.fecha)}</span>
                 <span className={styles.gpSesionHora}>{s.hora}</span>
               </div>
             ))}

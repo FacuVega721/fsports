@@ -63,6 +63,7 @@ export function Footer() {
             >
               <IconTikTok />
             </a>
+            <span className={styles.handle}>@oficialfsports</span>
           </div>
         </div>
 

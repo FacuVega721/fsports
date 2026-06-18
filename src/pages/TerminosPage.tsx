@@ -89,7 +89,27 @@ export default function TerminosPage() {
         </div>
 
         <div className={styles.seccion}>
-          <h2>7. Cambios y contacto</h2>
+          <h2>7. Privacidad y datos personales</h2>
+          <p>
+            FSports no solicita registro de usuarios ni almacena direcciones de correo
+            electrónico. No realizamos envíos de spam ni compartimos información con
+            terceros de ningún tipo. Las novedades del sitio se anuncian exclusivamente
+            a través de nuestras redes sociales.
+          </p>
+        </div>
+
+        <div className={styles.seccion}>
+          <h2>8. Compartir contenido</h2>
+          <p>
+            La información publicada en FSports puede compartirse libremente, incluyendo
+            capturas de pantalla, siempre que se cite la fuente (FSports /
+            fsports.facundovega97.workers.dev). La reproducción con fines comerciales
+            sin autorización expresa está prohibida.
+          </p>
+        </div>
+
+        <div className={styles.seccion}>
+          <h2>9. Cambios y contacto</h2>
           <p>
             Estos términos pueden actualizarse en cualquier momento. Para consultas o
             reportes, podés contactarnos a través de nuestras redes sociales{' '}

@@ -161,7 +161,7 @@ export default function MatchPage() {
 
       {m.eventos.length === 0 && conMarcador && (
         <section className={styles.seccion}>
-          <p className={styles.sinDatos}>No hay detalle de eventos disponible para este partido.</p>
+          <p className={styles.sinDatos}>Estamos trabajando para mostrarte los detalles de este partido a la brevedad.</p>
         </section>
       )}
 

@@ -48,7 +48,7 @@ export default function HomePage() {
         <Link to="/futbol" className={`${styles.portal} ${styles.futbol}`}>
           <Trophy className={styles.icono} aria-hidden="true" />
           <span className="kicker">Fútbol</span>
-          <h2 className={styles.titulo}>Copa Mundial 2026</h2>
+          <h2 className={styles.titulo}>FIFA World Cup 2026</h2>
           <p className={styles.teaser}>
             {enVivo > 0 && <span className={styles.vivo} />}
             {teaserFutbol}
@@ -60,8 +60,8 @@ export default function HomePage() {
 
         <Link to="/f1" className={`${styles.portal} ${styles.f1}`}>
           <Flag className={styles.icono} aria-hidden="true" />
-          <span className="kicker">Fórmula 1</span>
-          <h2 className={styles.titulo}>Temporada 2026</h2>
+          <span className="kicker">Temporada 2026</span>
+          <h2 className={styles.titulo}>Fórmula 1</h2>
           <p className={styles.teaser}>{teaserF1}</p>
           <span className={styles.entrar}>
             Entrar <ChevronRight size={16} aria-hidden="true" />

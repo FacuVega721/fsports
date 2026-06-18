@@ -112,6 +112,30 @@ function ModalContent({ match: m }: { match: MatchDetail }) {
         </div>
       </div>
 
+      {/* Info extra: ciudad, TV, árbitro */}
+      {(m.ciudad || m.tv.length > 0 || m.arbitro) && (
+        <div className={styles.infoExtra}>
+          {m.ciudad && (
+            <span className={styles.infoChip}>
+              <span className={styles.infoLabel}>Sede</span>
+              {m.ciudad}
+            </span>
+          )}
+          {m.tv.length > 0 && (
+            <span className={styles.infoChip}>
+              <span className={styles.infoLabel}>TV</span>
+              {m.tv.join(' · ')}
+            </span>
+          )}
+          {m.arbitro && (
+            <span className={styles.infoChip}>
+              <span className={styles.infoLabel}>Árbitro</span>
+              {m.arbitro}
+            </span>
+          )}
+        </div>
+      )}
+
       {/* Incidencias: solo si hay datos */}
       {incidencias.length > 0 && (
         <div className={styles.incidencias}>

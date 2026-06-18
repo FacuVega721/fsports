@@ -270,6 +270,9 @@ a.card:hover {
   text-decoration: none;
   color: inherit;
   transition: background 0.12s;
+  width: 100%;
+  box-sizing: border-box;
+  background: none;
 }
 
 .partido:last-child {

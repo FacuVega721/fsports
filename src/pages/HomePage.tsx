@@ -51,7 +51,7 @@ function PartidoFila({ match: m, onVerDetalle }: { match: Match; onVerDetalle: (
       {...(conMarcador ? { type: 'button', onClick: () => onVerDetalle(m.id) } : {})}
       className={`${styles.partido} ${enJuego ? styles.partidoVivo : ''} ${conMarcador ? styles.partidoClickable : ''}`}
     >
-      {/* Col 1: estado */}
+      {/* Col 1: estado o hora */}
       <div className={styles.partidoEstado}>
         {enVivo ? (
           <><LiveDot />{m.minuto != null && <span className={styles.estadoMin}>{m.minuto}'</span>}</>
@@ -59,7 +59,9 @@ function PartidoFila({ match: m, onVerDetalle }: { match: Match; onVerDetalle: (
           <span className={styles.estadoEt}>ET</span>
         ) : finalizado ? (
           <span className={styles.estadoFin}>FIN</span>
-        ) : null}
+        ) : (
+          <span className={styles.estadoHora}>{m.hora}</span>
+        )}
       </div>
 
       {/* Col 2: equipos */}
@@ -74,14 +76,12 @@ function PartidoFila({ match: m, onVerDetalle }: { match: Match; onVerDetalle: (
         </div>
       </div>
 
-      {/* Col 3: scores o hora */}
-      {conMarcador ? (
+      {/* Col 3: scores */}
+      {conMarcador && (
         <div className={styles.scores}>
           <span className={enJuego ? `${styles.gol} ${styles.golVivo}` : styles.gol}>{m.golesLocal ?? '-'}</span>
           <span className={enJuego ? `${styles.gol} ${styles.golVivo}` : styles.gol}>{m.golesVisitante ?? '-'}</span>
         </div>
-      ) : (
-        <span className={styles.estadoHora}>{m.hora}</span>
       )}
 
       {/* Col 4: flecha */}

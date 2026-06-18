@@ -112,3 +112,13 @@ export function useF1Constructors() {
     staleTime: esApi ? CINCO_MINUTOS : Infinity,
   });
 }
+
+export function useMatchDetail(id: string | null) {
+  return useQuery({
+    queryKey: ['match-detail', DATA_MODE, id],
+    queryFn: () => dataSource.getMatchDetail(id as string),
+    enabled: id !== null,
+    staleTime: esApi ? 30_000 : Infinity,
+    refetchInterval: esApi ? 30_000 : false,
+  });
+}

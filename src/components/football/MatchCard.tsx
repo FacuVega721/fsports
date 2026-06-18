@@ -1,4 +1,5 @@
 import type { CSSProperties } from 'react';
+import { Link } from 'react-router-dom';
 import { Tv } from 'lucide-react';
 import { CANALES } from '../../data/sedes';
 import { postFinal } from '../../lib/social';
@@ -111,14 +112,19 @@ export function MatchCard({ match, index = 0, onSelectGroup, onSelectPais }: Mat
         </div>
       </div>
 
-      {(meta || finalizado) && (
+      {(meta || finalizado || enJuego) && (
         <div className={styles.metaRow}>
           {meta && <p className={styles.meta}>{meta}</p>}
-          {finalizado && (
-            <span onClick={(e) => e.stopPropagation()}>
+          <div className={styles.acciones} onClick={(e) => e.stopPropagation()}>
+            {finalizado && (
               <CopyButton iconOnly text={postFinal(match)} label="Copiar resultado para X" />
-            </span>
-          )}
+            )}
+            {(finalizado || enJuego) && (
+              <Link to={`/futbol/partido/${match.id}`} className={styles.verLink}>
+                Ver →
+              </Link>
+            )}
+          </div>
         </div>
       )}
 

@@ -1,0 +1,313 @@
+.pagina {
+  padding: var(--space-6) 0 var(--space-8);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.volver {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-faint);
+  transition: color 0.15s;
+}
+
+.volver:hover {
+  color: var(--brand-bright);
+}
+
+/* ── CABECERA ── */
+
+.cabecera {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding-bottom: var(--space-5);
+  border-bottom: 1px solid var(--border);
+}
+
+.equipos {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.equipoBloque {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  text-align: center;
+}
+
+.banderaGrande {
+  font-size: 40px;
+  line-height: 1;
+}
+
+.nombreEquipo {
+  font-size: clamp(13px, 2.5vw, 17px);
+  font-weight: 700;
+  color: var(--text);
+  text-align: center;
+  letter-spacing: 0.02em;
+}
+
+.centro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.marcador {
+  font-family: var(--font-display);
+  font-size: clamp(28px, 7vw, 48px);
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: 0.04em;
+}
+
+.horaGrande {
+  font-family: var(--font-mono);
+  font-size: clamp(24px, 5vw, 36px);
+  font-weight: 700;
+  color: var(--text-dim);
+}
+
+.badgeVivo {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--brand-bright);
+  letter-spacing: 0.08em;
+}
+
+.badgeEt {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent-amber, #e8a045);
+  letter-spacing: 0.08em;
+}
+
+.badgeFin {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-faint);
+  letter-spacing: 0.08em;
+}
+
+.metaInfo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-3);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-faint);
+  letter-spacing: 0.04em;
+  justify-content: center;
+}
+
+.metaInfo span + span::before {
+  content: '·';
+  margin-right: var(--space-3);
+}
+
+.arbitro {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-faint);
+  text-align: center;
+}
+
+/* ── SECCIONES ── */
+
+.seccion {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.seccionTitulo {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--brand-bright);
+}
+
+.sinDatos {
+  font-size: 13px;
+  color: var(--text-faint);
+}
+
+/* ── CRONOLOGÍA ── */
+
+.timeline {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.timelineHeader {
+  display: grid;
+  grid-template-columns: 1fr 56px 1fr;
+  padding: var(--space-2) var(--space-3);
+  background: var(--bg-elevated);
+  border-bottom: 1px solid var(--border);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-faint);
+}
+
+.timelineHeader span:last-child {
+  text-align: right;
+}
+
+.eventoFila {
+  display: grid;
+  grid-template-columns: 1fr 56px 1fr;
+  align-items: center;
+  padding: var(--space-2) var(--space-3);
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+}
+
+.eventoFila:last-child {
+  border-bottom: none;
+}
+
+.eventoFila:nth-child(even) {
+  background: var(--bg-elevated);
+}
+
+.eventoLado {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.eventoLocal {
+  text-align: left;
+}
+
+.eventoVisit {
+  text-align: right;
+  align-items: flex-end;
+}
+
+.eventoCenter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.eventoIcono {
+  font-size: 14px;
+  line-height: 1;
+}
+
+.eventoMin {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-faint);
+  white-space: nowrap;
+}
+
+.eventoJugador {
+  font-weight: 600;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.eventoDetalle {
+  font-size: 11px;
+  color: var(--text-dim);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ── H2H ── */
+
+.h2hLista {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.h2hFila {
+  display: grid;
+  grid-template-columns: 1fr 56px 1fr auto;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+}
+
+.h2hFila:last-child {
+  border-bottom: none;
+}
+
+.h2hFila:nth-child(even) {
+  background: var(--bg-elevated);
+}
+
+.h2hEquipo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.h2hDerecha {
+  justify-content: flex-end;
+}
+
+.h2hNombre {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text);
+}
+
+.h2hResultado {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--text);
+  text-align: center;
+}
+
+.h2hFecha {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-faint);
+  white-space: nowrap;
+  text-align: right;
+}

@@ -4,8 +4,11 @@ import { nombreEspanol } from '../paises';
 import { utcToArg } from '../time';
 import type {
   EstadoPartido,
+  EventoPartido,
   FasePartido,
   Match,
+  MatchDetail,
+  MatchH2H,
   Player,
   Posicion,
   Scorer,
@@ -285,6 +288,128 @@ export async function getScorersApi(): Promise<Scorer[]> {
     penales: s.penalties ?? 0,
     partidos: s.playedMatches ?? 0,
   }));
+}
+
+interface FdGoal {
+  minute?: number;
+  team?: FdTeam;
+  scorer?: { name?: string };
+  assist?: { name?: string } | null;
+}
+
+interface FdBooking {
+  minute?: number;
+  team?: FdTeam;
+  player?: { name?: string };
+  card?: string;
+}
+
+interface FdSubstitution {
+  minute?: number;
+  team?: FdTeam;
+  playerOut?: { name?: string };
+  playerIn?: { name?: string };
+}
+
+interface FdMatchFull extends FdMatch {
+  goals?: FdGoal[];
+  bookings?: FdBooking[];
+  substitutions?: FdSubstitution[];
+}
+
+export async function getMatchDetailApi(id: string): Promise<MatchDetail | null> {
+  const [raw, h2hRaw] = await Promise.all([
+    fetchFd<FdMatchFull>(`/matches/${id}`),
+    fetchFd<{ matches?: FdMatch[] }>(`/matches/${id}/head2head?limit=5`),
+  ]);
+
+  if (!raw?.id) return null;
+
+  const { fecha, hora } = utcToArg(raw.utcDate ?? '');
+  const local = raw.homeTeam?.name ? nombreEspanol(raw.homeTeam.name) : 'Por definir';
+  const visitante = raw.awayTeam?.name ? nombreEspanol(raw.awayTeam.name) : 'Por definir';
+  const info = infoPartido(local, visitante);
+  const sede = info.sede ? SEDES[info.sede] : undefined;
+
+  const base: Match = {
+    id: String(raw.id),
+    fecha,
+    hora,
+    estado: estadoDesdeStatus(raw.status),
+    local,
+    localCode: codigoPais(raw.homeTeam),
+    golesLocal: raw.score?.fullTime?.home ?? null,
+    visitante,
+    visitanteCode: codigoPais(raw.awayTeam),
+    golesVisitante: raw.score?.fullTime?.away ?? null,
+    grupo: letraGrupo(raw.group),
+    fase: faseDesdeStage(raw.stage),
+    estadio: raw.venue ?? sede?.estadio ?? '',
+    ciudad: sede?.ciudad ?? '',
+    tv: info.tv ?? [],
+    minuto: typeof raw.minute === 'number' ? raw.minute : null,
+    jornada: typeof raw.matchday === 'number' ? raw.matchday : null,
+    arbitro: (raw.referees ?? []).find((r) => r.name)?.name ?? '',
+  };
+
+  const ladoEquipo = (team: FdTeam | undefined): 'local' | 'visitante' => {
+    const nombre = team?.name ? nombreEspanol(team.name) : '';
+    return nombre === local ? 'local' : 'visitante';
+  };
+
+  const eventos: EventoPartido[] = [];
+
+  for (const g of raw.goals ?? []) {
+    if (g.minute == null) continue;
+    eventos.push({
+      minuto: g.minute,
+      tipo: 'gol',
+      equipo: ladoEquipo(g.team),
+      jugador: g.scorer?.name ?? '',
+      detalle: g.assist?.name ?? '',
+    });
+  }
+
+  for (const b of raw.bookings ?? []) {
+    if (b.minute == null) continue;
+    eventos.push({
+      minuto: b.minute,
+      tipo: b.card === 'RED_CARD' ? 'tarjeta_roja' : 'tarjeta_amarilla',
+      equipo: ladoEquipo(b.team),
+      jugador: b.player?.name ?? '',
+      detalle: '',
+    });
+  }
+
+  for (const s of raw.substitutions ?? []) {
+    if (s.minute == null) continue;
+    eventos.push({
+      minuto: s.minute,
+      tipo: 'sustitucion',
+      equipo: ladoEquipo(s.team),
+      jugador: s.playerOut?.name ?? '',
+      detalle: s.playerIn?.name ?? '',
+    });
+  }
+
+  eventos.sort((a, b) => a.minuto - b.minuto);
+
+  const h2h: MatchH2H[] = (h2hRaw.matches ?? [])
+    .filter((m) => m.status === 'FINISHED')
+    .map((m) => {
+      const { fecha: fH } = utcToArg(m.utcDate ?? '');
+      return {
+        fecha: fH,
+        local: m.homeTeam?.name ? nombreEspanol(m.homeTeam.name) : '',
+        localCode: codigoPais(m.homeTeam),
+        visitante: m.awayTeam?.name ? nombreEspanol(m.awayTeam.name) : '',
+        visitanteCode: codigoPais(m.awayTeam),
+        golesLocal: m.score?.fullTime?.home ?? 0,
+        golesVisitante: m.score?.fullTime?.away ?? 0,
+      };
+    });
+
+  return { ...base, eventos, h2h };
 }
 
 export async function getStandingsApi(): Promise<StandingGroup[]> {

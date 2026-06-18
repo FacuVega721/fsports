@@ -279,6 +279,33 @@ export interface F1Team {
   historial: string;
 }
 
+/** Un evento dentro de un partido (gol, tarjeta, sustitución). */
+export interface EventoPartido {
+  minuto: number;
+  tipo: 'gol' | 'tarjeta_amarilla' | 'tarjeta_roja' | 'sustitucion';
+  equipo: 'local' | 'visitante';
+  jugador: string;
+  /** Asistente (gol), jugador que entra (sustitución), o vacío */
+  detalle: string;
+}
+
+/** Un partido del historial H2H entre dos selecciones. */
+export interface MatchH2H {
+  fecha: string;
+  local: string;
+  localCode: string;
+  visitante: string;
+  visitanteCode: string;
+  golesLocal: number;
+  golesVisitante: number;
+}
+
+/** Detalle completo de un partido: eventos cronológicos + historial H2H. */
+export interface MatchDetail extends Match {
+  eventos: EventoPartido[];
+  h2h: MatchH2H[];
+}
+
 /**
  * Contrato que cumplen los tres modos de datos.
  * Cambiar DATA_MODE intercambia la implementación, nunca los tipos.
@@ -302,4 +329,6 @@ export interface DataSource {
   getF1Race(ronda: number): Promise<RaceFull | null>;
   /** Equipos con su detalle (pilotos, puntos, etc.) */
   getF1Teams(): Promise<F1Team[]>;
+  /** Detalle de un partido (eventos + H2H) */
+  getMatchDetail(id: string): Promise<MatchDetail | null>;
 }

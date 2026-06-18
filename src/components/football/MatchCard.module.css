@@ -188,6 +188,27 @@
   padding: 2px 6px;
 }
 
+.acciones {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+
+.verLink {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--text-faint);
+  transition: color 0.15s;
+  white-space: nowrap;
+}
+
+.verLink:hover {
+  color: var(--brand-bright);
+}
+
 .arbitro {
   grid-area: arbitro;
   margin-top: var(--space-1);

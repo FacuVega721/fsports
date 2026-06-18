@@ -11,7 +11,7 @@ import {
   getF1RaceApi,
   getF1TeamsApi,
 } from './f1';
-import { getMatchesApi, getScorersApi, getStandingsApi, getTeamsApi } from './football';
+import { getMatchDetailApi, getMatchesApi, getScorersApi, getStandingsApi, getTeamsApi } from './football';
 
 /**
  * Selector de modo de datos. ÚNICO punto donde se decide la fuente.
@@ -33,6 +33,7 @@ const apiSource: DataSource = {
   getF1Calendar: getF1CalendarApi,
   getF1Race: getF1RaceApi,
   getF1Teams: getF1TeamsApi,
+  getMatchDetail: getMatchDetailApi,
 };
 
 const sources: Record<typeof DATA_MODE, DataSource> = {

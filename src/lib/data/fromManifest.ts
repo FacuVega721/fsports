@@ -165,4 +165,8 @@ export const manifestSource: DataSource = {
   getF1Teams: async () => [],
   getF1Drivers: async () => normalizarPilotos(),
   getF1Constructors: async () => normalizarConstructores(),
+  getMatchDetail: async (id) => {
+    const m = normalizarMatches().find((m) => m.id === id);
+    return m ? { ...m, eventos: [], h2h: [] } : null;
+  },
 };

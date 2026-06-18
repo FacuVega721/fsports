@@ -259,13 +259,13 @@ a.card:hover {
   color: var(--text-faint);
 }
 
-/* ── Filas de partido (estilo MatchCard compacto) ── */
+/* ── Filas de partido ── */
 .partido {
   display: grid;
-  grid-template-columns: 52px 1fr auto;
+  grid-template-columns: 34px 1fr auto auto;
   align-items: center;
   gap: var(--space-2);
-  padding: var(--space-3) var(--space-3) var(--space-3) 0;
+  padding: var(--space-2) var(--space-3);
   border-bottom: 1px solid var(--border);
   text-decoration: none;
   color: inherit;
@@ -297,75 +297,54 @@ a.card:hover {
   animation: glow-breathe 2.4s ease-in-out infinite;
 }
 
-/* Columna izquierda: estado */
+/* Col 1: estado */
 .partidoEstado {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 3px;
-  align-self: stretch;
-  border-right: 1px solid var(--border);
-  padding: 0 var(--space-2) 0 var(--space-3);
+  gap: 2px;
   font-family: var(--font-mono);
-  min-width: 0;
-}
-
-.estadoHora {
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text);
 }
 
 .estadoFin {
-  font-size: 11px;
+  font-size: 9px;
   font-weight: 700;
   letter-spacing: 0.14em;
   color: var(--text-faint);
 }
 
 .estadoEt {
-  font-size: 11px;
+  font-size: 9px;
   font-weight: 700;
   letter-spacing: 0.12em;
   color: var(--brand-bright);
 }
 
-.estadoVivo {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  color: var(--red);
-}
-
 .estadoMin {
-  font-size: 13px;
+  font-size: 11px;
   font-weight: 700;
   color: var(--red);
 }
 
-/* Columna central: dos filas de equipo */
+/* Col 2: equipos */
 .partidoEquipos {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
-  padding: var(--space-2) 0;
+  gap: 5px;
   min-width: 0;
 }
 
-.partidoFila {
+.equipoRow {
   display: flex;
   align-items: center;
-  gap: var(--space-2);
+  gap: 6px;
+  min-width: 0;
 }
 
 .partidoNombre {
   font-weight: 500;
-  font-size: 13.5px;
-  flex: 1;
+  font-size: 13px;
   min-width: 0;
   white-space: nowrap;
   overflow: hidden;
@@ -373,24 +352,41 @@ a.card:hover {
   color: var(--text);
 }
 
-.goles {
-  font-family: var(--font-mono);
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--text);
-  min-width: 18px;
-  text-align: right;
+/* Col 3: scores o hora */
+.scores {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 5px;
 }
 
-.golesVivo {
+.gol {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  min-width: 14px;
+  text-align: right;
+  line-height: 1;
+}
+
+.golVivo {
   color: var(--gold-bright);
 }
 
+.estadoHora {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-dim);
+  white-space: nowrap;
+}
+
+/* Col 4: flecha */
 .partidoArrow {
   color: var(--text-faint);
   transition: color 0.15s, transform 0.15s;
   flex-shrink: 0;
-  margin-right: var(--space-2);
 }
 
 /* ── F1: próximo GP ── */

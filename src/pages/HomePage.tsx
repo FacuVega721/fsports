@@ -37,14 +37,13 @@ function ChipPartido({ match: m, onVerDetalle }: { match: Match; onVerDetalle: (
   );
 }
 
-/* ── Fila de partido estilo MatchCard (compacto) ── */
+/* ── Fila de partido compacta ── */
 function PartidoFila({ match: m, onVerDetalle }: { match: Match; onVerDetalle: (id: string) => void }) {
   const enVivo = m.estado === 'en_vivo';
   const entretiempo = m.estado === 'entretiempo';
   const finalizado = m.estado === 'finalizado';
   const enJuego = enVivo || entretiempo;
   const conMarcador = enJuego || finalizado;
-
   const Tag = conMarcador ? 'button' : 'div';
 
   return (
@@ -52,44 +51,40 @@ function PartidoFila({ match: m, onVerDetalle }: { match: Match; onVerDetalle: (
       {...(conMarcador ? { type: 'button', onClick: () => onVerDetalle(m.id) } : {})}
       className={`${styles.partido} ${enJuego ? styles.partidoVivo : ''} ${conMarcador ? styles.partidoClickable : ''}`}
     >
-      {/* Columna estado */}
+      {/* Col 1: estado */}
       <div className={styles.partidoEstado}>
         {enVivo ? (
-          <>
-            <span className={styles.estadoVivo}><LiveDot />VIVO</span>
-            {m.minuto != null && <span className={styles.estadoMin}>{m.minuto}'</span>}
-          </>
+          <><LiveDot />{m.minuto != null && <span className={styles.estadoMin}>{m.minuto}'</span>}</>
         ) : entretiempo ? (
           <span className={styles.estadoEt}>ET</span>
         ) : finalizado ? (
           <span className={styles.estadoFin}>FIN</span>
-        ) : (
-          <span className={styles.estadoHora}>{m.hora}</span>
-        )}
+        ) : null}
       </div>
 
-      {/* Equipos + scores */}
+      {/* Col 2: equipos */}
       <div className={styles.partidoEquipos}>
-        <div className={styles.partidoFila}>
+        <div className={styles.equipoRow}>
           <Flag code={m.localCode} title={m.local} />
           <span className={styles.partidoNombre}>{m.local}</span>
-          {conMarcador && (
-            <span className={enJuego ? `${styles.goles} ${styles.golesVivo}` : styles.goles}>
-              {m.golesLocal ?? '-'}
-            </span>
-          )}
         </div>
-        <div className={styles.partidoFila}>
+        <div className={styles.equipoRow}>
           <Flag code={m.visitanteCode} title={m.visitante} />
           <span className={styles.partidoNombre}>{m.visitante}</span>
-          {conMarcador && (
-            <span className={enJuego ? `${styles.goles} ${styles.golesVivo}` : styles.goles}>
-              {m.golesVisitante ?? '-'}
-            </span>
-          )}
         </div>
       </div>
 
+      {/* Col 3: scores o hora */}
+      {conMarcador ? (
+        <div className={styles.scores}>
+          <span className={enJuego ? `${styles.gol} ${styles.golVivo}` : styles.gol}>{m.golesLocal ?? '-'}</span>
+          <span className={enJuego ? `${styles.gol} ${styles.golVivo}` : styles.gol}>{m.golesVisitante ?? '-'}</span>
+        </div>
+      ) : (
+        <span className={styles.estadoHora}>{m.hora}</span>
+      )}
+
+      {/* Col 4: flecha */}
       {conMarcador && <ChevronRight size={13} className={styles.partidoArrow} aria-hidden="true" />}
     </Tag>
   );

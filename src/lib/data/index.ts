@@ -20,7 +20,7 @@ import { getMatchesApi, getScorersApi, getStandingsApi, getTeamsApi } from './fo
  */
 
 const apiSource: DataSource = {
-  futbolTitulo: 'Copa Mundial 2026',
+  futbolTitulo: 'FIFA World Cup 2026',
   f1Temporada: String(new Date().getFullYear()),
   getMatches: getMatchesApi,
   getStandings: getStandingsApi,

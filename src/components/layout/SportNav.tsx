@@ -4,7 +4,7 @@ import { ChevronDown } from 'lucide-react';
 import styles from './SportNav.module.css';
 
 const DEPORTES = [
-  { to: '/futbol', label: 'Fútbol' },
+  { to: '/futbol', label: 'Mundial 2026' },
   { to: '/f1', label: 'Fórmula 1' },
 ];
 

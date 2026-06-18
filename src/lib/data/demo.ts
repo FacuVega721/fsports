@@ -191,7 +191,7 @@ const CONSTRUCTORES: ConstructorStanding[] = [
 ];
 
 export const demoSource: DataSource = {
-  futbolTitulo: 'Copa Mundial 2026',
+  futbolTitulo: 'FIFA World Cup 2026',
   f1Temporada: '2026',
   getMatches: async () => MATCHES,
   getStandings: async () => STANDINGS,

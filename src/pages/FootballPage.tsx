@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { BracketView } from '../components/football/BracketView';
+import { EstadisticasTorneo } from '../components/football/EstadisticasTorneo';
 import { Goleadores } from '../components/football/Goleadores';
 import { GroupDetail } from '../components/football/GroupDetail';
 import { KnockoutBracket } from '../components/football/KnockoutBracket';
@@ -194,7 +195,14 @@ export default function FootballPage() {
           ) : scorers.isError ? (
             <ErrorState titulo="Estadísticas no disponibles" onRetry={() => scorers.refetch()} />
           ) : (
-            <Goleadores scorers={scorers.data ?? []} />
+            <>
+              <EstadisticasTorneo
+                matches={matches.data ?? []}
+                standings={standings.data ?? []}
+                teams={teams.data ?? []}
+              />
+              <Goleadores scorers={scorers.data ?? []} />
+            </>
           ))}
 
         {/* ─── ELIMINATORIA ─── */}

@@ -1,4 +1,5 @@
 import { Link, useParams } from 'react-router-dom';
+import { Clock } from 'lucide-react';
 import { Flag } from '../components/ui/Flag';
 import { LiveDot } from '../components/ui/LiveDot';
 import { ErrorState } from '../components/ui/ErrorState';
@@ -161,7 +162,13 @@ export default function MatchPage() {
 
       {m.eventos.length === 0 && conMarcador && (
         <section className={styles.seccion}>
-          <p className={styles.sinDatos}>Estamos trabajando para mostrarte los detalles de este partido a la brevedad.</p>
+          <div className={styles.sinDatosCard}>
+            <Clock size={28} className={styles.sinDatosIcon} aria-hidden="true" />
+            <p className={styles.sinDatosTitulo}>En camino</p>
+            <p className={styles.sinDatosTexto}>
+              Estamos trabajando para mostrarte los detalles de este partido a la brevedad.
+            </p>
+          </div>
         </section>
       )}
 

@@ -149,9 +149,38 @@
   color: var(--brand-bright);
 }
 
-.sinDatos {
+.sinDatosCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-8) var(--space-6);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  text-align: center;
+  box-shadow: var(--shadow-card);
+}
+
+.sinDatosIcon {
+  color: var(--text-faint);
+  opacity: 0.5;
+}
+
+.sinDatosTitulo {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--brand-bright);
+}
+
+.sinDatosTexto {
   font-size: 13px;
   color: var(--text-faint);
+  max-width: 340px;
+  line-height: 1.65;
 }
 
 /* ── CRONOLOGÍA ── */

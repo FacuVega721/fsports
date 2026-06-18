@@ -471,6 +471,7 @@ export async function getF1NextApi(): Promise<NextRace | null> {
     gp: nombreGp(race.raceName),
     code: codigoGp(race),
     circuito: race.Circuit?.circuitName ?? '',
+    ronda: race.round ? Number(race.round) : undefined,
     fecha,
     hora,
     horarios,

@@ -5,6 +5,7 @@ import { Goleadores } from '../components/football/Goleadores';
 import { GroupDetail } from '../components/football/GroupDetail';
 import { KnockoutBracket } from '../components/football/KnockoutBracket';
 import { MatchList } from '../components/football/MatchList';
+import { MatchModal } from '../components/football/MatchModal';
 import { RankingTerceros } from '../components/football/RankingTerceros';
 import { Simulador } from '../components/football/Simulador';
 import { StandingsTable } from '../components/football/StandingsTable';
@@ -93,6 +94,7 @@ export default function FootballPage() {
   const [subEstadisticas, setSubEstadisticas] = useState<SubEstadisticas>('resumen');
   const [paisSel, setPaisSel] = useState<string | null>(null);
   const [grupoSel, setGrupoSel] = useState<string | null>(null);
+  const [modalMatchId, setModalMatchId] = useState<string | null>(null);
   const matches = useMatches();
   const standings = useStandings();
   const scorers = useScorers();
@@ -356,6 +358,7 @@ export default function FootballPage() {
                   matches={fixtureFiltrado}
                   onSelectGroup={verGrupo}
                   onSelectPais={verPais}
+                  onVerDetalle={setModalMatchId}
                 />
               )}
             </div>
@@ -372,6 +375,10 @@ export default function FootballPage() {
             <Simulador matches={matches.data ?? []} />
           ))}
       </div>
+
+      {modalMatchId && (
+        <MatchModal matchId={modalMatchId} onClose={() => setModalMatchId(null)} />
+      )}
     </div>
   );
 }

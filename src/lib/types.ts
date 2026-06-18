@@ -153,6 +153,8 @@ export interface NextRace {
   gp: string;
   code: string;
   circuito: string;
+  /** Número de ronda en el campeonato */
+  ronda?: number;
   /** YYYY-MM-DD en UTC-3 */
   fecha: string;
   /** HH:MM en UTC-3 */

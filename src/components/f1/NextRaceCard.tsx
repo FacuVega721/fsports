@@ -1,80 +1,93 @@
-import { CalendarDays, ChevronDown, Clock, MapPin, Trophy } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { CalendarDays, ChevronRight, MapPin, Trophy, X } from 'lucide-react';
 import type { NextRace } from '../../lib/types';
-import { diasHasta, enRango, formatFecha } from '../../lib/time';
+import { enRango, formatFecha, formatRangoFechas } from '../../lib/time';
 import { Flag } from '../ui/Flag';
+import { LiveDot } from '../ui/LiveDot';
 import styles from './NextRaceCard.module.css';
 
-interface NextRaceCardProps {
-  race: NextRace;
+/* ── Countdown ── */
+interface Cd { dias: number; horas: number; minutos: number; segundos: number; vencido: boolean }
+
+function calcCd(fecha: string, hora: string): Cd {
+  const [y, m, d] = fecha.split('-').map(Number);
+  const [hh, mm] = hora.split(':').map(Number);
+  const target = Date.UTC(y, m - 1, d, hh + 3, mm, 0);
+  const diff = target - Date.now();
+  if (diff <= 0) return { dias: 0, horas: 0, minutos: 0, segundos: 0, vencido: true };
+  const s = Math.floor(diff / 1000);
+  return { dias: Math.floor(s / 86400), horas: Math.floor((s % 86400) / 3600), minutos: Math.floor((s % 3600) / 60), segundos: s % 60, vencido: false };
 }
 
-/** Próximo GP, con fecha y hora en horario argentino (UTC-3). */
-export function NextRaceCard({ race }: NextRaceCardProps) {
-  const dias = race.fecha ? diasHasta(race.fecha) : null;
+function CountdownBadge({ fecha, hora }: { fecha: string; hora: string }) {
+  const [cd, setCd] = useState(() => calcCd(fecha, hora));
+  useEffect(() => {
+    const id = setInterval(() => setCd(calcCd(fecha, hora)), 1000);
+    return () => clearInterval(id);
+  }, [fecha, hora]);
+  if (cd.vencido) return null;
+  const pad = (n: number) => String(n).padStart(2, '0');
+  return (
+    <span className={styles.countdown}>
+      Faltan{' '}
+      {cd.dias > 0 && <><b>{cd.dias}</b><em>d</em>{' '}</>}
+      <b>{pad(cd.horas)}</b><em>h</em>{' '}
+      <b>{pad(cd.minutos)}</b><em>m</em>{' '}
+      <b>{pad(cd.segundos)}</b><em>s</em>
+    </span>
+  );
+}
+
+/* ── Modal con el horario completo ── */
+function NextRaceModal({ race, onClose }: { race: NextRace; onClose: () => void }) {
+  useEffect(() => {
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
+    document.addEventListener('keydown', onKey);
+    return () => { document.body.style.overflow = prev; document.removeEventListener('keydown', onKey); };
+  }, [onClose]);
+
   const inicioFinde = race.horarios?.[0]?.fecha ?? race.fecha;
-  const enCurso = !!race.fecha && enRango(inicioFinde, race.fecha);
-  const cuenta = enCurso
-    ? 'En curso'
-    : dias === null || dias < 0
-      ? ''
-      : dias === 0
-        ? '¡Es hoy!'
-        : dias === 1
-          ? 'Falta 1 día'
-          : `Faltan ${dias} días`;
+  const finFinde   = race.horarios?.[race.horarios.length - 1]?.fecha ?? race.fecha;
+  const rango = race.horarios && race.horarios.length > 0
+    ? formatRangoFechas(inicioFinde, finFinde)
+    : formatFecha(race.fecha);
 
   return (
-    <section
-      className={`${styles.card} ${enCurso ? styles.cardVivo : ''} texture`}
-      aria-label={`Próxima carrera: ${race.gp}`}
-    >
-      <div className={styles.cabecera}>
-        <span className="kicker">{enCurso ? 'GP en curso' : 'Próximo GP'}</span>
-        {cuenta && (
-          <span className={`${styles.cuenta} ${enCurso ? styles.cuentaVivo : ''}`}>{cuenta}</span>
-        )}
-      </div>
-      <h2 className={styles.gp}>
-        <Flag code={race.code} title={race.gp} />
-        {race.gp}
-      </h2>
-      <ul className={styles.datos}>
-        {race.circuito && (
-          <li>
-            <MapPin size={14} aria-hidden="true" />
-            {race.circuito}
-          </li>
-        )}
-        {race.fecha && (
-          <li>
-            <CalendarDays size={14} aria-hidden="true" />
-            {formatFecha(race.fecha)}
-          </li>
-        )}
-        <li>
-          <Clock size={14} aria-hidden="true" />
-          <span className={styles.hora}>{race.hora}</span>
-          <span className={styles.tz}>hora ARG</span>
-        </li>
-      </ul>
-      {enCurso && race.pole && (
-        <div className={styles.destacado}>
-          <Trophy size={15} className={styles.iconPole} aria-hidden="true" />
-          <div>
-            <span className={styles.dLabel}>Pole position</span>
-            <span className={styles.dValor}>
-              {race.pole.piloto} <span className={styles.dTiempo}>{race.pole.tiempo}</span>
-            </span>
+    <div className={styles.overlay} onClick={onClose} role="dialog" aria-modal="true" aria-label={`Detalle ${race.gp}`}>
+      <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+
+        <div className={styles.modalCabecera}>
+          <div className={styles.modalTitulo}>
+            <Flag code={race.code} title={race.gp} />
+            <div>
+              <span className="kicker">{race.ronda ? `Round ${race.ronda}` : 'Próximo GP'}</span>
+              <h2 className={styles.modalGp}>{race.gp}</h2>
+            </div>
           </div>
+          <button className={styles.closeBtn} onClick={onClose} aria-label="Cerrar">
+            <X size={18} />
+          </button>
         </div>
-      )}
-      {race.horarios && race.horarios.length > 0 && (
-        <details className={styles.finde}>
-          <summary className={styles.findeResumen}>
-            <span className="kicker">Fin de semana (hora ARG)</span>
-            <ChevronDown size={15} className={styles.chevron} aria-hidden="true" />
-          </summary>
-          <ul className={styles.sesiones}>
+
+        <div className={styles.modalMeta}>
+          <span><MapPin size={12} aria-hidden="true" /> {race.circuito}</span>
+          <span><CalendarDays size={12} aria-hidden="true" /> {rango}</span>
+        </div>
+
+        {race.pole && (
+          <div className={styles.modalPole}>
+            <Trophy size={14} className={styles.iconPole} aria-hidden="true" />
+            <div>
+              <span className={styles.dLabel}>Pole position</span>
+              <span className={styles.dValor}>{race.pole.piloto} <span className={styles.dTiempo}>{race.pole.tiempo}</span></span>
+            </div>
+          </div>
+        )}
+
+        {race.horarios && race.horarios.length > 0 && (
+          <ul className={styles.modalSesiones}>
             {race.horarios.map((s) => (
               <li key={s.tipo} className={s.tipo === 'Carrera' ? styles.principal : undefined}>
                 <span className={styles.sesionTipo}>{s.tipo}</span>
@@ -83,8 +96,62 @@ export function NextRaceCard({ race }: NextRaceCardProps) {
               </li>
             ))}
           </ul>
-        </details>
-      )}
-    </section>
+        )}
+
+      </div>
+    </div>
+  );
+}
+
+/* ── Card compacta ── */
+export function NextRaceCard({ race }: { race: NextRace }) {
+  const [modalAbierto, setModalAbierto] = useState(false);
+
+  const inicioFinde = race.horarios?.[0]?.fecha ?? race.fecha;
+  const finFinde   = race.horarios?.[race.horarios.length - 1]?.fecha ?? race.fecha;
+  const enCurso    = !!race.fecha && enRango(inicioFinde, race.fecha);
+  const rango      = race.horarios && race.horarios.length > 0
+    ? formatRangoFechas(inicioFinde, finFinde)
+    : formatFecha(race.fecha);
+  const kicker = enCurso ? 'GP en curso' : race.ronda ? `Round ${race.ronda}` : 'Próximo GP';
+
+  return (
+    <>
+      <section
+        className={`${styles.card} ${enCurso ? styles.cardVivo : ''} texture`}
+        aria-label={`Próxima carrera: ${race.gp}`}
+      >
+        {/* Fila meta */}
+        <div className={styles.metaRow}>
+          {enCurso && <LiveDot />}
+          <span className={styles.metaKicker}>{kicker}</span>
+          <span className={styles.metaSep}>·</span>
+          <MapPin size={11} className={styles.metaIcon} aria-hidden="true" />
+          <span className={styles.metaTexto}>{race.circuito}</span>
+          <span className={styles.metaSep}>·</span>
+          <CalendarDays size={11} className={styles.metaIcon} aria-hidden="true" />
+          <span className={styles.metaTexto}>{rango}</span>
+        </div>
+
+        {/* Nombre del GP */}
+        <h2 className={styles.gp}>
+          <Flag code={race.code} title={race.gp} />
+          {race.gp}
+        </h2>
+
+        {/* Pie: countdown + botón */}
+        <div className={styles.footerRow}>
+          {enCurso
+            ? <span className={styles.cuentaVivo}>En curso</span>
+            : <CountdownBadge fecha={race.fecha} hora={race.hora} />
+          }
+          <button type="button" className={styles.verDetalleBtn} onClick={() => setModalAbierto(true)}>
+            Ver detalle <ChevronRight size={12} aria-hidden="true" />
+          </button>
+        </div>
+      </section>
+
+      {modalAbierto && <NextRaceModal race={race} onClose={() => setModalAbierto(false)} />}
+    </>
   );
 }

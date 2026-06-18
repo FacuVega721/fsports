@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { DriverStandings } from '../components/f1/DriverStandings';
 import { F1Calendar } from '../components/f1/F1Calendar';
 import { F1RaceResult } from '../components/f1/F1RaceResult';
@@ -21,8 +22,13 @@ import styles from './Page.module.css';
 
 type SeccionF1 = 'calendario' | 'resultados' | 'equipos' | 'campeonato';
 
+const VALID_TABS: SeccionF1[] = ['calendario', 'resultados', 'equipos', 'campeonato'];
+
 export default function F1Page() {
-  const [seccion, setSeccion] = useState<SeccionF1>('calendario');
+  const [searchParams] = useSearchParams();
+  const tabParam = searchParams.get('tab') as SeccionF1 | null;
+  const initialTab = tabParam && VALID_TABS.includes(tabParam) ? tabParam : 'calendario';
+  const [seccion, setSeccion] = useState<SeccionF1>(initialTab);
   const [rondaSel, setRondaSel] = useState<number | null>(null);
 
   const proxima = useF1Next();

@@ -17,9 +17,11 @@ interface MatchCardProps {
   onSelectGroup?: (grupo: string) => void;
   /** Si se pasa, los nombres de los equipos abren el detalle del país */
   onSelectPais?: (nombre: string) => void;
+  /** Si se pasa, "Ver →" abre el modal en lugar de navegar a la ruta */
+  onVerDetalle?: (id: string) => void;
 }
 
-export function MatchCard({ match, index = 0, onSelectGroup, onSelectPais }: MatchCardProps) {
+export function MatchCard({ match, index = 0, onSelectGroup, onSelectPais, onVerDetalle }: MatchCardProps) {
   const enVivo = match.estado === 'en_vivo';
   const entretiempo = match.estado === 'entretiempo';
   const finalizado = match.estado === 'finalizado';
@@ -120,9 +122,19 @@ export function MatchCard({ match, index = 0, onSelectGroup, onSelectPais }: Mat
               <CopyButton iconOnly text={postFinal(match)} label="Copiar resultado para X" />
             )}
             {(finalizado || enJuego) && (
-              <Link to={`/futbol/partido/${match.id}`} className={styles.verLink}>
-                Ver →
-              </Link>
+              onVerDetalle ? (
+                <button
+                  type="button"
+                  className={styles.verLink}
+                  onClick={() => onVerDetalle(match.id)}
+                >
+                  Ver →
+                </button>
+              ) : (
+                <Link to={`/futbol/partido/${match.id}`} className={styles.verLink}>
+                  Ver →
+                </Link>
+              )
             )}
           </div>
         </div>

@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
-import { BracketView } from '../components/football/BracketView';
 import { EstadisticasTorneo } from '../components/football/EstadisticasTorneo';
+import { SimuladorBracket } from '../components/football/SimuladorBracket';
 import { Goleadores } from '../components/football/Goleadores';
 import { GroupDetail } from '../components/football/GroupDetail';
 import { KnockoutBracket } from '../components/football/KnockoutBracket';
@@ -18,6 +18,7 @@ import { Tabs } from '../components/ui/Tabs';
 import { useMatches, useScorers, useStandings, useTeams } from '../hooks/useData';
 import { dataSource } from '../lib/data';
 import { mejoresTerceros } from '../lib/simulator/terceros';
+import { marcarReales, overridesReales, simularTorneo } from '../lib/simulator/simular';
 import { postAgenda } from '../lib/social';
 import { hoyArg } from '../lib/time';
 import type { Match } from '../lib/types';
@@ -119,6 +120,12 @@ export default function FootballPage() {
     [matches.data],
   );
   const terceros = useMemo(() => mejoresTerceros(standings.data ?? []), [standings.data]);
+  const proyeccion = useMemo(() => {
+    const ms = matches.data;
+    if (!ms || ms.length === 0) return null;
+    const resultado = simularTorneo(ms, overridesReales(ms));
+    return marcarReales(resultado.rondas, ms);
+  }, [matches.data]);
   const teamSel = useMemo(
     () => (teams.data ?? []).find((t) => t.nombre === paisSel) ?? null,
     [teams.data, paisSel],
@@ -276,7 +283,16 @@ export default function FootballPage() {
               />
               <div key={vistaElim} className={styles.fade}>
                 {vistaElim === 'cuadro' ? (
-                  <BracketView matches={eliminatoria} />
+                  proyeccion ? (
+                    <SimuladorBracket
+                      rondas={proyeccion}
+                      overrides={{}}
+                      onChange={() => {}}
+                      readOnly
+                    />
+                  ) : (
+                    <SkeletonCard count={4} alto={92} />
+                  )
                 ) : (
                   <KnockoutBracket matches={eliminatoria} />
                 )}

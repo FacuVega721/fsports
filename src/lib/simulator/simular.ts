@@ -32,3 +32,35 @@ export function simularTorneo(matches: Match[], overrides: OverridesSim): Simula
 
   return { standings, terceros, rondas: { dieciseisavos, octavos, cuartos, semifinal, final, tercer_puesto } };
 }
+
+/** Extrae resultados reales de partidos de eliminatoria para usarlos como overrides en la proyección. */
+export function overridesReales(matches: Match[]): OverridesSim {
+  const ov: OverridesSim = {};
+  for (const m of matches) {
+    if (m.fase !== 'grupos' && m.estado === 'finalizado'
+        && m.golesLocal !== null && m.golesVisitante !== null) {
+      ov[m.id] = { golesLocal: m.golesLocal, golesVisitante: m.golesVisitante };
+    }
+  }
+  return ov;
+}
+
+/** Marca como real cada partido del cuadro que ya tiene resultado oficial. */
+export function marcarReales(rondas: RondasSim, matches: Match[]): RondasSim {
+  const jugados = new Set(
+    matches
+      .filter(m => m.fase !== 'grupos' && m.estado === 'finalizado')
+      .map(m => m.id),
+  );
+  function marcar(ps: RondasSim['dieciseisavos']): RondasSim['dieciseisavos'] {
+    return ps.map(p => (jugados.has(p.id) ? { ...p, real: true } : p));
+  }
+  return {
+    dieciseisavos: marcar(rondas.dieciseisavos),
+    octavos: marcar(rondas.octavos),
+    cuartos: marcar(rondas.cuartos),
+    semifinal: marcar(rondas.semifinal),
+    final: marcar(rondas.final),
+    tercer_puesto: marcar(rondas.tercer_puesto),
+  };
+}

@@ -6,6 +6,7 @@ interface SimuladorBracketProps {
   rondas: RondasSim;
   overrides: OverridesSim;
   onChange: (matchId: string, resultado: ResultadoSim | null) => void;
+  readOnly?: boolean;
 }
 
 const COLUMNAS: Array<{ key: keyof Omit<RondasSim, 'tercer_puesto'>; label: string }> = [
@@ -17,7 +18,7 @@ const COLUMNAS: Array<{ key: keyof Omit<RondasSim, 'tercer_puesto'>; label: stri
 ];
 
 /** Cuadro de eliminatoria editable: 16avos hasta la final, encadenados en vivo. */
-export function SimuladorBracket({ rondas, overrides, onChange }: SimuladorBracketProps) {
+export function SimuladorBracket({ rondas, overrides, onChange, readOnly }: SimuladorBracketProps) {
   const final = rondas.final[0];
   const campeon = final?.ganador
     ? final.ganador === 'local'
@@ -45,6 +46,7 @@ export function SimuladorBracket({ rondas, overrides, onChange }: SimuladorBrack
                     partido={p}
                     override={overrides[p.id]}
                     eliminatoria
+                    readOnly={readOnly}
                     onChange={(resultado) => onChange(p.id, resultado)}
                   />
                 </div>
@@ -62,6 +64,7 @@ export function SimuladorBracket({ rondas, overrides, onChange }: SimuladorBrack
               partido={tercero}
               override={overrides[tercero.id]}
               eliminatoria
+              readOnly={readOnly}
               onChange={(resultado) => onChange(tercero.id, resultado)}
             />
           </div>

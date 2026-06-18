@@ -8,6 +8,8 @@ interface SimuladorMatchInputProps {
   override?: ResultadoSim;
   /** Partido de eliminatoria: un empate habilita los penales para definir ganador. */
   eliminatoria?: boolean;
+  /** Solo lectura: muestra banderas y nombre sin inputs (para el bracket proyectado). */
+  readOnly?: boolean;
   onChange: (resultado: ResultadoSim | null) => void;
 }
 
@@ -18,7 +20,7 @@ function aEntero(valor: string): number | null {
 }
 
 /** Fila de un partido del simulador: editable si falta jugarse, o resultado real (fijo) si ya terminó. */
-export function SimuladorMatchInput({ partido, override, eliminatoria, onChange }: SimuladorMatchInputProps) {
+export function SimuladorMatchInput({ partido, override, eliminatoria, readOnly, onChange }: SimuladorMatchInputProps) {
   const [local, setLocal] = useState(override?.golesLocal?.toString() ?? '');
   const [visitante, setVisitante] = useState(override?.golesVisitante?.toString() ?? '');
   const [penLocal, setPenLocal] = useState(override?.penalesLocal?.toString() ?? '');
@@ -68,6 +70,25 @@ export function SimuladorMatchInput({ partido, override, eliminatoria, onChange 
           <div className={styles.cardFilaV}>
             <span className={styles.cardEquipoV}>
               {partido.visitanteCode && <Flag code={partido.visitanteCode} title={partido.visitante} />}
+              <span className={styles.nombreV}>{partido.visitante}</span>
+            </span>
+          </div>
+        </div>
+      );
+    }
+
+    if (readOnly) {
+      return (
+        <div className={styles.cardV}>
+          <div className={styles.cardFilaV}>
+            <span className={styles.cardEquipoV}>
+              <Flag code={partido.localCode} title={partido.local} />
+              <span className={styles.nombreV}>{partido.local}</span>
+            </span>
+          </div>
+          <div className={styles.cardFilaV}>
+            <span className={styles.cardEquipoV}>
+              <Flag code={partido.visitanteCode} title={partido.visitante} />
               <span className={styles.nombreV}>{partido.visitante}</span>
             </span>
           </div>

@@ -562,4 +562,34 @@ a.card:hover {
   .partidoNombre {
     font-size: 12px;
   }
+
+  /* Sesiones GP: ocultar fecha en pantallas muy pequeñas */
+  .gpSesionFecha {
+    display: none;
+  }
+
+  /* Hero más compacto */
+  .hero {
+    padding: var(--space-4) var(--space-3);
+  }
+
+  /* Cards: menos padding lateral */
+  .card {
+    border-radius: var(--radius);
+  }
+
+  /* Podio: nombres más pequeños */
+  .podioPiloto {
+    font-size: 11px;
+  }
+
+  .podioEquipo {
+    font-size: 8px;
+  }
+
+  /* Tira: label en la misma fila que los chips */
+  .strip {
+    flex-direction: row;
+    align-items: center;
+  }
 }

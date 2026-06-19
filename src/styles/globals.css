@@ -84,6 +84,12 @@ h3 {
   padding-inline: var(--space-4);
 }
 
+@media (max-width: 380px) {
+  .container {
+    padding-inline: var(--space-3);
+  }
+}
+
 /* Kicker: etiqueta en mayúsculas estilo broadcast (siempre en mono) */
 .kicker {
   font-family: var(--font-mono);

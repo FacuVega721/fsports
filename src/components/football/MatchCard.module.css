@@ -220,3 +220,40 @@
   color: var(--text-dim);
   font-weight: 600;
 }
+
+/* ── Mobile ── */
+@media (max-width: 480px) {
+  .card {
+    grid-template-columns: 46px 1fr;
+    padding: var(--space-2) var(--space-3);
+    gap: var(--space-1) var(--space-2);
+  }
+
+  .nombre {
+    font-size: 13px;
+  }
+
+  .goles {
+    font-size: 14px;
+    min-width: 16px;
+  }
+
+  .meta {
+    font-size: 10px;
+  }
+
+  .hora {
+    font-size: 12px;
+  }
+
+  .verLink {
+    min-height: 36px;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .canal {
+    font-size: 9px;
+    padding: 2px 5px;
+  }
+}

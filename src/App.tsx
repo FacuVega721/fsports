@@ -3,6 +3,8 @@ import { Route, Routes, useLocation } from 'react-router-dom';
 import { Footer } from './components/layout/Footer';
 import { Header } from './components/layout/Header';
 import { ErrorBoundary } from './components/ui/ErrorBoundary';
+import { AdminProvider } from './contexts/AdminContext';
+import AdminPage from './pages/AdminPage';
 import ContentPage from './pages/ContentPage';
 import F1Page from './pages/F1Page';
 import FootballPage from './pages/FootballPage';
@@ -27,6 +29,7 @@ function AnimatedRoutes() {
         <Route path="/contenido" element={<ContentPage />} />
         <Route path="/futbol/partido/:id" element={<MatchPage />} />
         <Route path="/terminos" element={<TerminosPage />} />
+        <Route path="/admin" element={<AdminPage />} />
         {/* Cualquier ruta desconocida vuelve a la portada: nunca una página rota */}
         <Route path="*" element={<HomePage />} />
       </Routes>
@@ -36,12 +39,12 @@ function AnimatedRoutes() {
 
 export default function App() {
   return (
-    <>
+    <AdminProvider>
       <Header />
       <ErrorBoundary>
         <AnimatedRoutes />
       </ErrorBoundary>
       <Footer />
-    </>
+    </AdminProvider>
   );
 }

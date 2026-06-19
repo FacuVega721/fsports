@@ -1,5 +1,7 @@
 import { useMemo, useState } from 'react';
+import { Navigate } from 'react-router-dom';
 import { EditablePost } from '../components/content/EditablePost';
+import { useAdmin } from '../contexts/AdminContext';
 import { EmptyState } from '../components/ui/EmptyState';
 import { ErrorState } from '../components/ui/ErrorState';
 import { SkeletonCard } from '../components/ui/SkeletonCard';
@@ -37,6 +39,7 @@ function filtrarMatches(matches: Match[], filtro: FiltroFutbol): Match[] {
  * No está enlazada desde la navegación — acceso directo por URL (/contenido).
  */
 export default function ContentPage() {
+  const { isAdmin, loadingAuth } = useAdmin();
   const [deporte, setDeporte] = useState<Deporte>('futbol');
   const [filtroFutbol, setFiltroFutbol] = useState<FiltroFutbol>('hoy');
   const matches = useMatches();
@@ -47,6 +50,9 @@ export default function ContentPage() {
     () => filtrarMatches(matches.data ?? [], filtroFutbol),
     [matches.data, filtroFutbol],
   );
+
+  if (loadingAuth) return null;
+  if (!isAdmin) return <Navigate to="/admin" replace />;
 
   return (
     <div className={`container ${styles.pagina}`}>

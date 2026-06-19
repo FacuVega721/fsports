@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { CheckCircle, Copy, LogOut, ShieldCheck } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { CheckCircle, Copy, Flag, Home, LogOut, ShieldCheck, Tv } from 'lucide-react';
 import { useAdmin } from '../contexts/AdminContext';
 import { useMatches, useF1Next, useF1Last } from '../hooks/useData';
 import { postAgenda, postProximaF1, postResultadoF1 } from '../lib/social';
@@ -72,6 +73,14 @@ function Dashboard() {
           Cerrar sesión
         </button>
       </header>
+
+      {/* Nav rápida al sitio */}
+      <nav className={styles.siteNav}>
+        <Link to="/" className={styles.siteNavLink}><Home size={13} />Inicio</Link>
+        <Link to="/futbol" className={styles.siteNavLink}><Flag size={13} />Fútbol</Link>
+        <Link to="/f1" className={styles.siteNavLink}><Tv size={13} />Fórmula 1</Link>
+        <Link to="/contenido" className={styles.siteNavLink}><Copy size={13} />Contenido</Link>
+      </nav>
 
       {/* Contenido */}
       <div className={styles.content}>

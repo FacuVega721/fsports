@@ -1,6 +1,7 @@
 import type { CSSProperties } from 'react';
 import { Link } from 'react-router-dom';
 import { Tv } from 'lucide-react';
+import { useAdmin } from '../../contexts/AdminContext';
 import { CANALES } from '../../data/sedes';
 import { postFinal } from '../../lib/social';
 import type { Match } from '../../lib/types';
@@ -22,6 +23,7 @@ interface MatchCardProps {
 }
 
 export function MatchCard({ match, index = 0, onSelectGroup, onSelectPais, onVerDetalle }: MatchCardProps) {
+  const { isAdmin } = useAdmin();
   const enVivo = match.estado === 'en_vivo';
   const entretiempo = match.estado === 'entretiempo';
   const finalizado = match.estado === 'finalizado';
@@ -118,7 +120,7 @@ export function MatchCard({ match, index = 0, onSelectGroup, onSelectPais, onVer
         <div className={styles.metaRow}>
           {meta && <p className={styles.meta}>{meta}</p>}
           <div className={styles.acciones} onClick={(e) => e.stopPropagation()}>
-            {finalizado && (
+            {finalizado && isAdmin && (
               <CopyButton iconOnly text={postFinal(match)} label="Copiar resultado para X" />
             )}
             {(finalizado || enJuego) && (

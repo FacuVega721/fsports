@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { useAdmin } from '../contexts/AdminContext';
 import { EstadisticasTorneo } from '../components/football/EstadisticasTorneo';
 import { SimuladorBracket } from '../components/football/SimuladorBracket';
 import { Goleadores } from '../components/football/Goleadores';
@@ -88,6 +89,7 @@ function filtrarFixture(matches: Match[], tab: TabFixture): Match[] {
 }
 
 export default function FootballPage() {
+  const { isAdmin } = useAdmin();
   const [seccion, setSeccion] = useState<Seccion>('fixture');
   const [tabFixture, setTabFixture] = useState<TabFixture>('hoy');
   const [vistaElim, setVistaElim] = useState<VistaElim>('cuadro');
@@ -336,7 +338,7 @@ export default function FootballPage() {
                 active={tabFixture}
                 onChange={(id) => setTabFixture(id as TabFixture)}
               />
-              {tabFixture !== 'resultados' && fixtureFiltrado.length > 0 && (
+              {tabFixture !== 'resultados' && fixtureFiltrado.length > 0 && isAdmin && (
                 <CopyButton
                   text={postAgenda(fixtureFiltrado, tabFixture === 'hoy')}
                   label="Copiar agenda"

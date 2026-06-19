@@ -18,12 +18,11 @@
  */
 
 import { BUILD_TOKEN } from './token.generated';
+import { ADMIN_PIN as BUILD_ADMIN_PIN, ADMIN_SECRET as BUILD_ADMIN_SECRET } from './admin.generated';
 
 interface Env {
   ASSETS: { fetch: (request: Request) => Promise<Response> };
   FOOTBALL_DATA_TOKEN?: string;
-  ADMIN_PIN?: string;
-  ADMIN_SECRET?: string;
 }
 
 const FOOTBALL_BASE = 'https://api.football-data.org/v4';
@@ -128,8 +127,8 @@ export default {
 
     // ── 2) Admin: login ───────────────────────────────────────────────────────
     if (pathname === '/admin/login' && method === 'POST') {
-      const pin = env.ADMIN_PIN ?? '';
-      const secret = env.ADMIN_SECRET ?? '';
+      const pin = BUILD_ADMIN_PIN;
+      const secret = BUILD_ADMIN_SECRET;
       if (!pin || !secret) return jsonResponse({ ok: false, error: 'not_configured' }, 503);
 
       let body: { pin?: string } = {};
@@ -152,7 +151,7 @@ export default {
 
     // ── 3) Admin: verify ──────────────────────────────────────────────────────
     if (pathname === '/admin/verify' && method === 'GET') {
-      const secret = env.ADMIN_SECRET ?? '';
+      const secret = BUILD_ADMIN_SECRET;
       if (!secret) return jsonResponse({ ok: false });
       const raw = getCookie(request, ADMIN_COOKIE);
       if (!raw) return jsonResponse({ ok: false });

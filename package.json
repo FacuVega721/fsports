@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "node scripts/gen-token.mjs && tsc && vite build",
+    "build": "node scripts/gen-token.mjs && node scripts/gen-admin.mjs && tsc && vite build",
     "ship": "node scripts/ship.mjs",
     "preview": "vite preview"
   },

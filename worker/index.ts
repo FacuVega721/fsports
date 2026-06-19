@@ -27,7 +27,8 @@ interface Env {
 
 const FOOTBALL_BASE = 'https://api.football-data.org/v4';
 const PREFIX = '/api/football';
-const RUTA_PERMITIDA = '/competitions/WC';
+// Rutas permitidas en el proxy: Mundial + detalle/H2H de partido individual.
+const RUTAS_PERMITIDAS = ['/competitions/WC', '/matches/'];
 
 const ADMIN_COOKIE = 'fsports_admin';
 const TOKEN_EXPIRY_MS = 8 * 60 * 60 * 1000; // 8 horas
@@ -103,7 +104,7 @@ export default {
     if (pathname.startsWith(PREFIX)) {
       const upstreamPath = pathname.slice(PREFIX.length) || '/';
 
-      if (!upstreamPath.startsWith(RUTA_PERMITIDA)) return forbidden();
+      if (!RUTAS_PERMITIDAS.some((r) => upstreamPath.startsWith(r))) return forbidden();
 
       const secFetchSite = request.headers.get('Sec-Fetch-Site');
       if (secFetchSite !== null && secFetchSite !== 'same-origin') return forbidden();

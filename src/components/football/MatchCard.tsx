@@ -128,11 +128,11 @@ export function MatchCard({ match, index = 0, onSelectGroup, onSelectPais, onVer
                   className={styles.verLink}
                   onClick={() => onVerDetalle(match.id)}
                 >
-                  Ver →
+                  Detalle →
                 </button>
               ) : (
                 <Link to={`/futbol/partido/${match.id}`} className={styles.verLink}>
-                  Ver →
+                  Detalle →
                 </Link>
               )
             )}

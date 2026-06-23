@@ -4,7 +4,7 @@
  * (La imagen se obtiene con una captura de las tarjetas de la web.)
  */
 import { formatFecha } from './time';
-import type { LastRace, Match, NextRace } from './types';
+import type { EventoPartido, LastRace, Match, MatchDetail, NextRace } from './types';
 
 /** Hashtags abreviados al estilo FSports para algunos nombres largos. */
 const HASHTAG_EQUIPO: Record<string, string> = {
@@ -20,6 +20,30 @@ const HASHTAG_EQUIPO: Record<string, string> = {
   'RD del Congo': 'CongoDR',
 };
 
+/**
+ * Nombres en inglés por código ISO, para hashtags de mayor interacción en X.
+ * X suele mostrar la bandera del país automáticamente junto a estos hashtags,
+ * por eso NO se agrega el emoji de bandera al lado (quedaría duplicado).
+ */
+const HASHTAG_PAIS_EN: Record<string, string> = {
+  ar: 'Argentina', br: 'Brazil', mx: 'Mexico', us: 'USA', ca: 'Canada',
+  uy: 'Uruguay', co: 'Colombia', ec: 'Ecuador', py: 'Paraguay', cl: 'Chile',
+  pe: 'Peru', ve: 'Venezuela', bo: 'Bolivia',
+  es: 'Spain', fr: 'France', 'gb-eng': 'England', de: 'Germany', it: 'Italy',
+  pt: 'Portugal', nl: 'Netherlands', be: 'Belgium', hr: 'Croatia', ch: 'Switzerland',
+  at: 'Austria', dk: 'Denmark', se: 'Sweden', no: 'Norway', pl: 'Poland',
+  'gb-sct': 'Scotland', 'gb-wls': 'Wales', rs: 'Serbia', tr: 'Turkey', ua: 'Ukraine',
+  cz: 'Czechia', sk: 'Slovakia', si: 'Slovenia', hu: 'Hungary', ro: 'Romania',
+  gr: 'Greece', al: 'Albania', ge: 'Georgia',
+  ma: 'Morocco', sn: 'Senegal', tn: 'Tunisia', dz: 'Algeria', eg: 'Egypt',
+  ng: 'Nigeria', gh: 'Ghana', cm: 'Cameroon', ci: 'IvoryCoast', za: 'SouthAfrica',
+  cv: 'CapeVerde', cd: 'DRCongo',
+  jp: 'Japan', kr: 'SouthKorea', au: 'Australia', sa: 'SaudiArabia', ir: 'Iran',
+  qa: 'Qatar', iq: 'Iraq', jo: 'Jordan', uz: 'Uzbekistan',
+  nz: 'NewZealand', cr: 'CostaRica', pa: 'Panama', hn: 'Honduras', jm: 'Jamaica',
+  ht: 'Haiti', cw: 'Curacao', ba: 'BosniaHerzegovina',
+};
+
 function quitarAcentos(s: string): string {
   return s.normalize('NFD').replace(/[̀-ͯ]/g, '');
 }
@@ -27,6 +51,13 @@ function quitarAcentos(s: string): string {
 /** "México" → "#Mexico", "Corea del Sur" → "#Corea" */
 export function hashtagEquipo(nombre: string): string {
   const base = HASHTAG_EQUIPO[nombre] ?? quitarAcentos(nombre).replace(/[^A-Za-z0-9]/g, '');
+  return `#${base}`;
+}
+
+/** Hashtag en inglés por código ISO ("ar" → "#Argentina"); cae al nombre en español si no está mapeado. */
+export function hashtagPaisEN(code: string, fallbackNombreEs: string): string {
+  const en = HASHTAG_PAIS_EN[code.trim().toLowerCase()];
+  const base = en ?? quitarAcentos(fallbackNombreEs).replace(/[^A-Za-z0-9]/g, '');
   return `#${base}`;
 }
 
@@ -43,11 +74,7 @@ function horaPunto(hora: string): string {
 }
 
 function linea(m: Match): string {
-  const fl = flagEmoji(m.localCode);
-  const fv = flagEmoji(m.visitanteCode);
-  return `${horaPunto(m.hora)} | ${hashtagEquipo(m.local)} ${fl} 🆚 ${hashtagEquipo(m.visitante)} ${fv}`
-    .replace(/\s+/g, ' ')
-    .trim();
+  return `${horaPunto(m.hora)} | ${hashtagPaisEN(m.localCode, m.local)} 🆚 ${hashtagPaisEN(m.visitanteCode, m.visitante)}`;
 }
 
 /**
@@ -68,6 +95,45 @@ export function postAgenda(matches: Match[], hoy = true): string {
 export function postFinal(m: Match): string {
   const marcador = `${hashtagEquipo(m.local)} ${m.golesLocal ?? 0}-${m.golesVisitante ?? 0} ${hashtagEquipo(m.visitante)}`;
   return `⚽ FINAL | #FifaWorldCup 🏆\n\n${marcador}\n\n#Mundial2026 #FifaWorldCup`;
+}
+
+/** "Messi", "Messi" → "Messi x2" (agrupa goles del mismo jugador). */
+function golesPorEquipo(eventos: EventoPartido[], lado: 'local' | 'visitante'): string {
+  const conteo = new Map<string, number>();
+  for (const ev of eventos) {
+    if (ev.tipo !== 'gol' || ev.equipo !== lado || !ev.jugador) continue;
+    conteo.set(ev.jugador, (conteo.get(ev.jugador) ?? 0) + 1);
+  }
+  return [...conteo.entries()]
+    .map(([jugador, n]) => (n > 1 ? `${jugador} x${n}` : jugador))
+    .join(', ');
+}
+
+/**
+ * Posteo de RESULTADO completo (estilo FSports): encabezado + marcador + goleadores
+ * autocompletados desde la API, con un espacio para el comentario editorial que
+ * se escribe a mano antes de copiar.
+ */
+export function postResultadoCompleto(m: MatchDetail): string {
+  const marcador = `${hashtagPaisEN(m.localCode, m.local)} ${m.golesLocal ?? 0}-${m.golesVisitante ?? 0} ${hashtagPaisEN(m.visitanteCode, m.visitante)}`;
+
+  const golesLocal = golesPorEquipo(m.eventos, 'local');
+  const golesVisitante = golesPorEquipo(m.eventos, 'visitante');
+  const partes: string[] = [];
+  if (golesLocal) partes.push(`${golesLocal}${m.localTla ? ` (${m.localTla})` : ''}`);
+  if (golesVisitante) partes.push(`${golesVisitante}${m.visitanteTla ? ` (${m.visitanteTla})` : ''}`);
+  const lineaGoleadores = partes.length > 0 ? `⚽️ ${partes.join(', ')}` : '';
+
+  return [
+    '⏱️ FINAL | #FifaWorldCup 2026🏆',
+    '',
+    marcador,
+    ...(lineaGoleadores ? [lineaGoleadores] : []),
+    '',
+    '[Escribí aquí tu comentario]',
+    '',
+    '#Mundial2026',
+  ].join('\n');
 }
 
 /** "México" → "#Mexico" para nombres de GP de F1. */

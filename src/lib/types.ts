@@ -306,6 +306,9 @@ export interface MatchH2H {
 export interface MatchDetail extends Match {
   eventos: EventoPartido[];
   h2h: MatchH2H[];
+  /** Código de 3 letras (TLA) de cada selección, para posteos ("ARG", "FRA"); vacío si no hay dato */
+  localTla: string;
+  visitanteTla: string;
 }
 
 /**

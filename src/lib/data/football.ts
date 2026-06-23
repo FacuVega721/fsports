@@ -409,7 +409,13 @@ export async function getMatchDetailApi(id: string): Promise<MatchDetail | null>
       };
     });
 
-  return { ...base, eventos, h2h };
+  return {
+    ...base,
+    eventos,
+    h2h,
+    localTla: (raw.homeTeam?.tla ?? '').toUpperCase(),
+    visitanteTla: (raw.awayTeam?.tla ?? '').toUpperCase(),
+  };
 }
 
 export async function getStandingsApi(): Promise<StandingGroup[]> {

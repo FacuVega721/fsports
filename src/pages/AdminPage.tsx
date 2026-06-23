@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { CheckCircle, Copy, Flag, Home, LogOut, ShieldCheck, Tv } from 'lucide-react';
+import { EditablePost } from '../components/content/EditablePost';
 import { useAdmin } from '../contexts/AdminContext';
-import { useMatches, useF1Next, useF1Last } from '../hooks/useData';
-import { postAgenda, postProximaF1, postResultadoF1 } from '../lib/social';
+import { useMatches, useMatchDetail, useF1Next, useF1Last } from '../hooks/useData';
+import { postAgenda, postProximaF1, postResultadoCompleto, postResultadoF1 } from '../lib/social';
 import { hoyArg } from '../lib/time';
 import { Logo } from '../components/ui/Logo';
 import styles from './AdminPage.module.css';
@@ -40,6 +41,20 @@ function CopiarBloque({ label, texto }: { label: string; texto: string }) {
   );
 }
 
+// ── Resultado de partido: marcador + goleadores automáticos, comentario editable ──
+
+function ResultadoTool({ matchId }: { matchId: string }) {
+  const query = useMatchDetail(matchId);
+  if (query.isPending || !query.data) return null;
+  const m = query.data;
+  return (
+    <EditablePost
+      titulo={`${m.local} ${m.golesLocal ?? 0}-${m.golesVisitante ?? 0} ${m.visitante}`}
+      texto={postResultadoCompleto(m)}
+    />
+  );
+}
+
 // ── Dashboard (vista autenticada) ─────────────────────────────────────────────
 
 function Dashboard() {
@@ -50,6 +65,7 @@ function Dashboard() {
   const hoy = hoyArg();
 
   const matchesHoy = (matches.data ?? []).filter((m) => m.fecha === hoy);
+  const finalizadosHoy = matchesHoy.filter((m) => m.estado === 'finalizado');
   const agendaPost = matchesHoy.length > 0 ? postAgenda(matchesHoy) : null;
   const previaF1Post = proxima.data ? postProximaF1(proxima.data) : null;
   const resultadoF1Post = ultima.data ? postResultadoF1(ultima.data) : null;
@@ -121,6 +137,16 @@ function Dashboard() {
             </>
           )}
         </section>
+
+        {/* Resultado de partido: marcador + goleadores automático, comentario editable */}
+        {finalizadosHoy.length > 0 && (
+          <section className={styles.seccion}>
+            <h2 className={styles.seccionTitle}>Resultado de partido</h2>
+            {finalizadosHoy.map((m) => (
+              <ResultadoTool key={m.id} matchId={m.id} />
+            ))}
+          </section>
+        )}
 
       </div>
     </div>

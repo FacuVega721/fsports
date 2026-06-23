@@ -206,6 +206,6 @@ export const demoSource: DataSource = {
   getF1Teams: async () => [],
   getMatchDetail: async (id) => {
     const m = MATCHES.find((m) => m.id === id);
-    return m ? { ...m, eventos: [], h2h: [] } : null;
+    return m ? { ...m, eventos: [], h2h: [], localTla: '', visitanteTla: '' } : null;
   },
 };

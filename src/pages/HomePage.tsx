@@ -5,6 +5,7 @@ import { Logo } from '../components/ui/Logo';
 import { Flag } from '../components/ui/Flag';
 import { LiveDot } from '../components/ui/LiveDot';
 import { SkeletonCard } from '../components/ui/SkeletonCard';
+import { TerminoAyuda } from '../components/ui/TerminoAyuda';
 import { MatchModal } from '../components/football/MatchModal';
 import { useMatches, useF1Next, useF1Last } from '../hooks/useData';
 import { useHoraLocal } from '../hooks/useHoraLocal';
@@ -30,8 +31,12 @@ function ChipPartido({ match: m, onVerDetalle }: { match: Match; onVerDetalle: (
         {conScore ? `${m.golesLocal ?? '-'}–${m.golesVisitante ?? '-'}` : local.hora}
       </span>
       <Flag code={m.visitanteCode} title={m.visitante} />
-      {m.estado === 'entretiempo' && <span className={styles.chipBadge}>ET</span>}
-      {m.estado === 'finalizado' && <span className={styles.chipBadge}>FIN</span>}
+      {m.estado === 'entretiempo' && (
+        <span className={styles.chipBadge}><TerminoAyuda texto="Entretiempo">ET</TerminoAyuda></span>
+      )}
+      {m.estado === 'finalizado' && (
+        <span className={styles.chipBadge}><TerminoAyuda texto="Partido finalizado">FIN</TerminoAyuda></span>
+      )}
       {m.estado === 'en_vivo' && m.minuto != null && (
         <span className={styles.chipMin}>{m.minuto}'</span>
       )}
@@ -59,9 +64,9 @@ function PartidoFila({ match: m, onVerDetalle }: { match: Match; onVerDetalle: (
         {enVivo ? (
           <><LiveDot />{m.minuto != null && <span className={styles.estadoMin}>{m.minuto}'</span>}</>
         ) : entretiempo ? (
-          <span className={styles.estadoEt}>ET</span>
+          <span className={styles.estadoEt}><TerminoAyuda texto="Entretiempo">ET</TerminoAyuda></span>
         ) : finalizado ? (
-          <span className={styles.estadoFin}>FIN</span>
+          <span className={styles.estadoFin}><TerminoAyuda texto="Partido finalizado">FIN</TerminoAyuda></span>
         ) : (
           <span className={styles.estadoHora}>
             {local.hora}

@@ -3,6 +3,7 @@ import { X } from 'lucide-react';
 import { Flag } from '../ui/Flag';
 import { LiveDot } from '../ui/LiveDot';
 import { SkeletonCard } from '../ui/SkeletonCard';
+import { TerminoAyuda } from '../ui/TerminoAyuda';
 import { useMatchDetail } from '../../hooks/useData';
 import { useHoraLocal } from '../../hooks/useHoraLocal';
 import { formatFecha } from '../../lib/time';
@@ -37,12 +38,16 @@ function BadgeEstado({ match: m }: { match: MatchDetail }) {
     return (
       <span className={styles.badgeVivo}>
         <LiveDot />
-        VIVO {m.minuto != null ? `${m.minuto}'` : ''}
+        <TerminoAyuda texto="Partido en vivo">VIVO</TerminoAyuda> {m.minuto != null ? `${m.minuto}'` : ''}
       </span>
     );
   }
-  if (m.estado === 'entretiempo') return <span className={styles.badgeEt}>ET</span>;
-  if (m.estado === 'finalizado') return <span className={styles.badgeFin}>FIN</span>;
+  if (m.estado === 'entretiempo') {
+    return <span className={styles.badgeEt}><TerminoAyuda texto="Entretiempo">ET</TerminoAyuda></span>;
+  }
+  if (m.estado === 'finalizado') {
+    return <span className={styles.badgeFin}><TerminoAyuda texto="Partido finalizado">FIN</TerminoAyuda></span>;
+  }
   return null;
 }
 

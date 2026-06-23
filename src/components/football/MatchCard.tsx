@@ -9,6 +9,7 @@ import type { Match } from '../../lib/types';
 import { CopyButton } from '../ui/CopyButton';
 import { Flag } from '../ui/Flag';
 import { LiveDot } from '../ui/LiveDot';
+import { TerminoAyuda } from '../ui/TerminoAyuda';
 import styles from './MatchCard.module.css';
 
 interface MatchCardProps {
@@ -82,16 +83,16 @@ export function MatchCard({ match, index = 0, onSelectGroup, onSelectPais, onVer
           <>
             <span className={styles.vivoLabel}>
               <LiveDot />
-              VIVO
+              <TerminoAyuda texto="Partido en vivo">VIVO</TerminoAyuda>
             </span>
             <span className={styles.minuto}>{match.minuto !== null ? `${match.minuto}’` : ''}</span>
           </>
         ) : entretiempo ? (
-          <span className={styles.entretiempo} title="Entretiempo">
-            ENT
+          <span className={styles.entretiempo}>
+            <TerminoAyuda texto="Entretiempo">ENT</TerminoAyuda>
           </span>
         ) : finalizado ? (
-          <span className={styles.fin}>FIN</span>
+          <span className={styles.fin}><TerminoAyuda texto="Partido finalizado">FIN</TerminoAyuda></span>
         ) : (
           <span className={styles.hora}>
             {horaLocal.hora}

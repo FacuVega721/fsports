@@ -4,6 +4,7 @@ import { Flag } from '../components/ui/Flag';
 import { LiveDot } from '../components/ui/LiveDot';
 import { ErrorState } from '../components/ui/ErrorState';
 import { SkeletonCard } from '../components/ui/SkeletonCard';
+import { TerminoAyuda } from '../components/ui/TerminoAyuda';
 import { useMatchDetail } from '../hooks/useData';
 import { useHoraLocal } from '../hooks/useHoraLocal';
 import { formatFecha } from '../lib/time';
@@ -15,12 +16,16 @@ function BadgeEstado({ match }: { match: MatchDetail }) {
     return (
       <span className={styles.badgeVivo}>
         <LiveDot />
-        VIVO {match.minuto != null ? `${match.minuto}'` : ''}
+        <TerminoAyuda texto="Partido en vivo">VIVO</TerminoAyuda> {match.minuto != null ? `${match.minuto}'` : ''}
       </span>
     );
   }
-  if (match.estado === 'entretiempo') return <span className={styles.badgeEt}>ET</span>;
-  if (match.estado === 'finalizado') return <span className={styles.badgeFin}>FIN</span>;
+  if (match.estado === 'entretiempo') {
+    return <span className={styles.badgeEt}><TerminoAyuda texto="Entretiempo">ET</TerminoAyuda></span>;
+  }
+  if (match.estado === 'finalizado') {
+    return <span className={styles.badgeFin}><TerminoAyuda texto="Partido finalizado">FIN</TerminoAyuda></span>;
+  }
   return null;
 }
 

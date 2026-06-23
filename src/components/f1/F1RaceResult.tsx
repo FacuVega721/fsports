@@ -4,6 +4,7 @@ import type { QualyResultRow, RaceFull, RaceResultRow, ResultadoEstado } from '.
 import { formatFecha } from '../../lib/time';
 import { Flag } from '../ui/Flag';
 import { Tabs } from '../ui/Tabs';
+import { TerminoAyuda } from '../ui/TerminoAyuda';
 import styles from './F1RaceResult.module.css';
 
 interface F1RaceResultProps {
@@ -15,6 +16,13 @@ const CLASE_ESTADO: Partial<Record<ResultadoEstado, string>> = {
   dns: styles.dns,
   dsq: styles.dsq,
   nc: styles.nc,
+};
+
+const DEF_ESTADO: Partial<Record<ResultadoEstado, string>> = {
+  dnf: 'Abandonó la carrera',
+  dns: 'No largó la carrera',
+  dsq: 'Descalificado',
+  nc: 'No clasificado',
 };
 
 /** Tabla de clasificación (sirve para Carrera y Sprint). */
@@ -49,7 +57,9 @@ function Clasificacion({ rows }: { rows: RaceResultRow[] }) {
               <td className={styles.num}>{r.vueltas ?? '—'}</td>
               <td className={styles.tiempo}>
                 {r.estado !== 'ok' && CLASE_ESTADO[r.estado] && (
-                  <span className={`${styles.badge} ${CLASE_ESTADO[r.estado]}`}>{r.posTexto}</span>
+                  <span className={`${styles.badge} ${CLASE_ESTADO[r.estado]}`}>
+                    <TerminoAyuda texto={DEF_ESTADO[r.estado] ?? ''}>{r.posTexto}</TerminoAyuda>
+                  </span>
                 )}
                 {r.tiempo}
               </td>
@@ -189,8 +199,7 @@ export function F1RaceResult({ race }: F1RaceResultProps) {
       )}
 
       <p className={styles.nota}>
-        <FlagIcon size={11} aria-hidden="true" /> Larg. = posición de largada · DNF = abandono ·
-        DNS = no largó
+        <FlagIcon size={11} aria-hidden="true" /> Larg. = posición de largada
       </p>
     </section>
   );

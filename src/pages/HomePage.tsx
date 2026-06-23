@@ -251,9 +251,12 @@ export default function HomePage() {
         {/* FÚTBOL */}
         <section className={styles.seccion}>
           <div className={styles.seccionCabecera}>
-            <span className="kicker">FIFA World Cup 2026</span>
-            <Link to="/futbol" className={styles.seccionLink}>
-              Ver todo <ChevronRight size={12} aria-hidden="true" />
+            <div className={styles.seccionTitulos}>
+              <span className="kicker">FIFA World Cup 2026</span>
+              <p className={styles.seccionDesc}>Partidos, grupos, eliminatoria y goleadores del Mundial.</p>
+            </div>
+            <Link to="/futbol" className={styles.seccionBtn}>
+              Ver todo <ChevronRight size={13} aria-hidden="true" />
             </Link>
           </div>
 
@@ -263,7 +266,6 @@ export default function HomePage() {
             <div className={styles.card}>
               <div className={styles.cardHeader}>
                 <span className={styles.cardLabel}>{fichaLabel}</span>
-                <Link to="/futbol" className={styles.cardLink}>Ver fixture →</Link>
               </div>
               {matchesMostrar.map((m) => (
                 <PartidoFila key={m.id} match={m} onVerDetalle={setModalMatchId} />
@@ -274,14 +276,21 @@ export default function HomePage() {
               <p className={styles.vacio}>No hay partidos próximamente.</p>
             </div>
           )}
+
+          <Link to="/futbol" className={styles.seccionCtaFull}>
+            Ver fixture completo del Mundial <ChevronRight size={14} aria-hidden="true" />
+          </Link>
         </section>
 
         {/* F1 */}
         <section className={styles.seccion}>
           <div className={styles.seccionCabecera}>
-            <span className="kicker">Fórmula 1</span>
-            <Link to="/f1" className={styles.seccionLink}>
-              Ver todo <ChevronRight size={12} aria-hidden="true" />
+            <div className={styles.seccionTitulos}>
+              <span className="kicker">Fórmula 1</span>
+              <p className={styles.seccionDesc}>Calendario, resultados y campeonato de la temporada.</p>
+            </div>
+            <Link to="/f1" className={styles.seccionBtn}>
+              Ver todo <ChevronRight size={13} aria-hidden="true" />
             </Link>
           </div>
 
@@ -296,6 +305,10 @@ export default function HomePage() {
           ) : ultima.data ? (
             <UltimoGP carrera={ultima.data} />
           ) : null}
+
+          <Link to="/f1" className={styles.seccionCtaFull}>
+            Ver calendario completo de F1 <ChevronRight size={14} aria-hidden="true" />
+          </Link>
         </section>
 
       </div>

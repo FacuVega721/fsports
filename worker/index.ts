@@ -27,8 +27,11 @@ interface Env {
 
 const FOOTBALL_BASE = 'https://api.football-data.org/v4';
 const PREFIX = '/api/football';
-// Rutas permitidas en el proxy: Mundial + detalle/H2H de partido individual.
-const RUTAS_PERMITIDAS = ['/competitions/WC', '/matches/'];
+// Rutas permitidas en el proxy: patrones exactos (no prefijos imprecisos).
+const RUTAS_PERMITIDAS: RegExp[] = [
+  /^\/competitions\/WC(\/[A-Za-z0-9]*)?$/,
+  /^\/matches\/\d+(\/head2head)?$/,
+];
 
 const ADMIN_COOKIE = 'fsports_admin';
 const TOKEN_EXPIRY_MS = 8 * 60 * 60 * 1000; // 8 horas
@@ -104,10 +107,10 @@ export default {
     if (pathname.startsWith(PREFIX)) {
       const upstreamPath = pathname.slice(PREFIX.length) || '/';
 
-      if (!RUTAS_PERMITIDAS.some((r) => upstreamPath.startsWith(r))) return forbidden();
+      if (!RUTAS_PERMITIDAS.some((r) => r.test(upstreamPath))) return forbidden();
 
       const secFetchSite = request.headers.get('Sec-Fetch-Site');
-      if (secFetchSite !== null && secFetchSite !== 'same-origin') return forbidden();
+      if (secFetchSite !== 'same-origin') return forbidden();
 
       const target = `${FOOTBALL_BASE}${upstreamPath}${url.search}`;
       try {
@@ -137,7 +140,10 @@ export default {
         body = (await request.json()) as { pin?: string };
       } catch { /* body vacío */ }
 
-      if (!body.pin || body.pin !== pin) {
+      const pinMatches = body.pin
+        ? (await hmacHex(secret, body.pin)) === (await hmacHex(secret, pin))
+        : false;
+      if (!pinMatches) {
         return jsonResponse({ ok: false }, 401);
       }
 
@@ -156,8 +162,12 @@ export default {
       if (!secret) return jsonResponse({ ok: false });
       const raw = getCookie(request, ADMIN_COOKIE);
       if (!raw) return jsonResponse({ ok: false });
-      const ok = await verificarToken(decodeURIComponent(raw), secret);
-      return jsonResponse({ ok });
+      try {
+        const ok = await verificarToken(raw, secret); // getCookie() ya decodifica
+        return jsonResponse({ ok });
+      } catch {
+        return jsonResponse({ ok: false });
+      }
     }
 
     // ── 4) Admin: logout ──────────────────────────────────────────────────────

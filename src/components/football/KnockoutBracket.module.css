@@ -1,3 +1,10 @@
+.envoltorio {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+/* Mobile: rondas apiladas, sin conectores (no entran en una pantalla angosta) */
 .cuadro {
   display: flex;
   flex-direction: column;
@@ -11,11 +18,18 @@
 }
 
 .cabecera {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   padding: var(--space-3) var(--space-4);
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   border-left: 3px solid var(--gold);
+}
+
+.trofeoIcono {
+  color: var(--gold-bright);
 }
 
 .partidos {
@@ -24,23 +38,176 @@
   gap: var(--space-3);
 }
 
-/* Desktop: rondas lado a lado, como un cuadro de llaves */
-@media (min-width: 760px) {
+/* ── Caja de partido ── */
+.caja {
+  position: relative;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.fila {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  min-width: 0;
+}
+
+.fila + .fila {
+  border-top: 1px solid var(--border);
+}
+
+.equipoNombre {
+  flex: 1;
+  min-width: 0;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-dim);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.golBox {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-dim);
+  min-width: 14px;
+  text-align: right;
+}
+
+.horaBox {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-faint);
+  white-space: nowrap;
+}
+
+.ganador .equipoNombre {
+  color: var(--text);
+  font-weight: 700;
+}
+
+.ganador .golBox {
+  color: var(--gold-bright);
+}
+
+.ganador {
+  background: rgba(212, 175, 106, 0.06);
+}
+
+.perdedor {
+  opacity: 0.5;
+}
+
+/* Final: tratamiento especial */
+.cajaFinal {
+  border-color: rgba(212, 175, 106, 0.4);
+  box-shadow: var(--glow-gold);
+}
+
+/* Tercer puesto: tarjeta aparte, sin conectores (no es parte del camino al título) */
+.tercerPuesto {
+  max-width: 260px;
+}
+
+.cabeceraTercero {
+  padding: var(--space-2) var(--space-4);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius) var(--radius) 0 0;
+  border-left: 3px solid var(--medal-bronze, #a0693a);
+}
+
+.tercerPuesto .caja {
+  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+}
+
+/* Conectores: solo visibles en desktop, ver media query */
+.conectores {
+  display: none;
+}
+
+.linea {
+  position: absolute;
+  left: 50%;
+  width: 2px;
+  background: rgba(255, 42, 42, 0.35);
+  transform: translateX(-50%);
+}
+
+/* ── Desktop: cuadro de llaves real con conectores ── */
+@media (min-width: 860px) {
   .cuadro {
-    flex-direction: row;
-    gap: var(--space-4);
+    --bracket-gap: 28px;
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 220px;
+    column-gap: var(--bracket-gap);
+    align-items: stretch;
     overflow-x: auto;
     padding-bottom: var(--space-3);
-    scroll-snap-type: x proximity;
   }
 
   .columna {
-    flex: 0 0 300px;
-    scroll-snap-align: start;
+    overflow: visible;
   }
 
-  /* La final y el tercer puesto, columnas más angostas y centradas verticalmente */
-  .columna:nth-last-child(-n + 2) {
-    justify-content: flex-start;
+  .partidos {
+    position: relative;
+    flex: 1;
+    justify-content: space-around;
+    gap: 0;
+    overflow: visible;
+  }
+
+  .caja {
+    height: 58px;
+    flex-shrink: 0;
+  }
+
+  .fila {
+    flex: 1;
+    min-height: 0;
+  }
+
+  /* Conector horizontal: del borde derecho de cada partido hacia la siguiente ronda */
+  .columna:not(:last-child) .caja::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: calc(-1 * var(--bracket-gap) / 2);
+    width: calc(var(--bracket-gap) / 2);
+    height: 2px;
+    background: rgba(255, 42, 42, 0.35);
+  }
+
+  /* Conector horizontal: del borde izquierdo de cada partido hacia la ronda anterior */
+  .columna:not(:first-child) .caja::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: calc(-1 * var(--bracket-gap) / 2);
+    width: calc(var(--bracket-gap) / 2);
+    height: 2px;
+    background: rgba(255, 42, 42, 0.35);
+  }
+
+  /* Línea vertical que une cada par, en el medio del espacio entre rondas */
+  .conectores {
+    display: block;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: calc(-1 * var(--bracket-gap));
+    width: var(--bracket-gap);
+    pointer-events: none;
+  }
+
+  .tercerPuesto {
+    margin-top: var(--space-2);
   }
 }

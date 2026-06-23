@@ -169,6 +169,23 @@
   flex-shrink: 0;
 }
 
+.ganadorV {
+  background: rgba(212, 175, 106, 0.06);
+}
+
+.ganadorV .nombreV {
+  color: var(--text);
+  font-weight: 700;
+}
+
+.ganadorV .scoreV {
+  color: var(--gold-bright);
+}
+
+.perdedorV {
+  opacity: 0.5;
+}
+
 .inputV {
   width: 26px;
   text-align: center;

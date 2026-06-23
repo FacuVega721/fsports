@@ -52,11 +52,90 @@
 }
 
 .llave {
+  position: relative;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   overflow: hidden;
   box-shadow: var(--shadow-card);
+}
+
+.llaveFinal {
+  border-color: rgba(212, 175, 106, 0.4);
+  box-shadow: var(--glow-gold);
+}
+
+.colHeaderFinal {
+  color: var(--gold-bright);
+}
+
+.conectores {
+  display: none;
+}
+
+.linea {
+  position: absolute;
+  left: 50%;
+  width: 2px;
+  background: rgba(255, 42, 42, 0.35);
+  transform: translateX(-50%);
+}
+
+/* ── Cuadro con conectores reales (solo readOnly: alto de tarjeta uniforme) ── */
+@media (min-width: 860px) {
+  .cuadroConectado {
+    --bracket-gap: var(--space-4);
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 220px;
+    align-items: stretch;
+  }
+
+  .cuadroConectado .columna {
+    flex: initial;
+    overflow: visible;
+  }
+
+  .cuadroConectado .llaves {
+    position: relative;
+    gap: 0;
+    overflow: visible;
+  }
+
+  .cuadroConectado .llave {
+    height: 58px;
+    flex-shrink: 0;
+  }
+
+  .cuadroConectado .columna:not(:last-child) .llave::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: calc(-1 * var(--bracket-gap) / 2);
+    width: calc(var(--bracket-gap) / 2);
+    height: 2px;
+    background: rgba(255, 42, 42, 0.35);
+  }
+
+  .cuadroConectado .columna:not(:first-child) .llave::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: calc(-1 * var(--bracket-gap) / 2);
+    width: calc(var(--bracket-gap) / 2);
+    height: 2px;
+    background: rgba(255, 42, 42, 0.35);
+  }
+
+  .cuadroConectado .conectores {
+    display: block;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: calc(-1 * var(--bracket-gap));
+    width: var(--bracket-gap);
+    pointer-events: none;
+  }
 }
 
 .tercero {

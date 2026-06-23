@@ -38,16 +38,18 @@ export function SimuladorMatchInput({ partido, override, eliminatoria, readOnly,
   /* ── Layout vertical para bracket (eliminatoria) ── */
   if (eliminatoria) {
     if (partido.real) {
+      const localGana = partido.ganador === 'local';
+      const visitanteGana = partido.ganador === 'visitante';
       return (
         <div className={styles.cardV}>
-          <div className={styles.cardFilaV}>
+          <div className={`${styles.cardFilaV} ${localGana ? styles.ganadorV : ''} ${visitanteGana ? styles.perdedorV : ''}`}>
             <span className={styles.cardEquipoV}>
               <Flag code={partido.localCode} title={partido.local} />
               <span className={styles.nombreV} title={partido.local}>{partido.local}</span>
             </span>
             <strong className={styles.scoreV}>{partido.golesLocal}</strong>
           </div>
-          <div className={styles.cardFilaV}>
+          <div className={`${styles.cardFilaV} ${visitanteGana ? styles.ganadorV : ''} ${localGana ? styles.perdedorV : ''}`}>
             <span className={styles.cardEquipoV}>
               <Flag code={partido.visitanteCode} title={partido.visitante} />
               <span className={styles.nombreV} title={partido.visitante}>{partido.visitante}</span>

@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react';
 import type { OverridesSim, ResultadoSim, RondasSim } from '../../lib/simulator/types';
 import { SimuladorMatchInput } from './SimuladorMatchInput';
 import styles from './SimuladorBracket.module.css';
@@ -17,6 +18,32 @@ const COLUMNAS: Array<{ key: keyof Omit<RondasSim, 'tercer_puesto'>; label: stri
   { key: 'final', label: 'Final' },
 ];
 
+/**
+ * Líneas conectoras entre una ronda y la siguiente (solo en modo readOnly,
+ * donde cada tarjeta tiene alto uniforme — sin eso la posición en % no
+ * coincide). Misma técnica que KnockoutBracket: con `justify-content:
+ * space-around` en .llaves, el partido N+1 cae centrado matemáticamente
+ * entre sus dos partidos previos.
+ */
+function Conectores({ cantidadPartidos }: { cantidadPartidos: number }) {
+  const pares = Math.floor(cantidadPartidos / 2);
+  return (
+    <div className={styles.conectores} aria-hidden="true">
+      {Array.from({ length: pares }, (_, i) => {
+        const centroA = ((2 * (2 * i) + 1) / (2 * cantidadPartidos)) * 100;
+        const centroB = ((2 * (2 * i + 1) + 1) / (2 * cantidadPartidos)) * 100;
+        return (
+          <span
+            key={i}
+            className={styles.linea}
+            style={{ top: `${centroA}%`, height: `${centroB - centroA}%` } as CSSProperties}
+          />
+        );
+      })}
+    </div>
+  );
+}
+
 /** Cuadro de eliminatoria editable: 16avos hasta la final, encadenados en vivo. */
 export function SimuladorBracket({ rondas, overrides, onChange, readOnly }: SimuladorBracketProps) {
   const final = rondas.final[0];
@@ -35,13 +62,15 @@ export function SimuladorBracket({ rondas, overrides, onChange, readOnly }: Simu
         </p>
       )}
 
-      <div className={styles.cuadro}>
-        {COLUMNAS.map((col) => (
+      <div className={`${styles.cuadro} ${readOnly ? styles.cuadroConectado : ''}`}>
+        {COLUMNAS.map((col, i) => (
           <div key={col.key} className={styles.columna}>
-            <div className={styles.colHeader}>{col.label}</div>
+            <div className={`${styles.colHeader} ${col.key === 'final' ? styles.colHeaderFinal : ''}`}>
+              {col.label}
+            </div>
             <div className={styles.llaves}>
               {rondas[col.key].map((p) => (
-                <div key={p.id} className={styles.llave}>
+                <div key={p.id} className={`${styles.llave} ${col.key === 'final' ? styles.llaveFinal : ''}`}>
                   <SimuladorMatchInput
                     partido={p}
                     override={overrides[p.id]}
@@ -51,6 +80,9 @@ export function SimuladorBracket({ rondas, overrides, onChange, readOnly }: Simu
                   />
                 </div>
               ))}
+              {readOnly && i < COLUMNAS.length - 1 && (
+                <Conectores cantidadPartidos={rondas[col.key].length} />
+              )}
             </div>
           </div>
         ))}

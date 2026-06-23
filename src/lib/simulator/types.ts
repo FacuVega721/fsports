@@ -38,6 +38,8 @@ export interface MatchSimVista {
   real: boolean;
   /** Si ambos equipos ya están determinados (no "Por definir"). */
   definido: boolean;
+  /** Ganador (solo eliminatoria); ausente/null en partidos de grupos o sin definir. */
+  ganador?: 'local' | 'visitante' | null;
 }
 
 /** Un partido de eliminatoria simulado, encadenado ronda a ronda a partir de 16avos. */

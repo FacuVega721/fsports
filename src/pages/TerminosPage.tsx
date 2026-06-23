@@ -91,10 +91,8 @@ export default function TerminosPage() {
         <div className={styles.seccion}>
           <h2>7. Privacidad y datos personales</h2>
           <p>
-            FSports no solicita registro de usuarios ni almacena direcciones de correo
-            electrónico. No realizamos envíos de spam ni compartimos información con
-            terceros de ningún tipo. Las novedades del sitio se anuncian exclusivamente
-            a través de nuestras redes sociales.
+            El tratamiento de datos personales y el uso de cookies se detalla en nuestra{' '}
+            <Link to="/privacidad">Política de privacidad</Link>.
           </p>
         </div>
 

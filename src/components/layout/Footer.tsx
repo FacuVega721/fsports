@@ -76,6 +76,10 @@ export function Footer() {
             <Link to="/terminos" className={styles.legal}>
               Términos y condiciones
             </Link>
+            {' · '}
+            <Link to="/privacidad" className={styles.legal}>
+              Privacidad
+            </Link>
             {' · '}© FSports {new Date().getFullYear()}
           </p>
         </div>

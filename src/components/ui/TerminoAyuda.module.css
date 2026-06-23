@@ -1,20 +1,13 @@
-.wrap {
-  position: relative;
-  display: inline-flex;
-  vertical-align: baseline;
-}
-
 .gatillo {
+  display: inline-flex;
   cursor: help;
   border-bottom: 1px dotted currentColor;
   -webkit-tap-highlight-color: transparent;
 }
 
 .globo {
-  position: absolute;
-  bottom: calc(100% + 6px);
-  left: 50%;
-  transform: translateX(-50%);
+  position: fixed;
+  transform: translate(-50%, -100%);
   background: var(--bg-elevated);
   border: 1px solid rgba(212, 175, 106, 0.35);
   border-radius: var(--radius-sm);
@@ -27,17 +20,20 @@
   color: var(--text);
   white-space: nowrap;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
-  z-index: 50;
+  z-index: 999;
+  pointer-events: none;
   animation: globo-in 0.12s ease-out;
+}
+
+.globoAbajo {
+  transform: translate(-50%, 0);
 }
 
 @keyframes globo-in {
   from {
     opacity: 0;
-    transform: translateX(-50%) translateY(3px);
   }
   to {
     opacity: 1;
-    transform: translateX(-50%) translateY(0);
   }
 }

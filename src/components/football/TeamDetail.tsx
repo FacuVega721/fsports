@@ -87,7 +87,6 @@ export function TeamDetail({ team, matches, onBack }: TeamDetailProps) {
                         {j.dorsal !== null && <span className={styles.dorsal}>{j.dorsal}</span>}
                         <span className={styles.jugadorNombre}>{j.nombre}</span>
                       </span>
-                      {j.edad !== null && <span className={styles.edad}>{j.edad} años</span>}
                     </li>
                   ))}
                 </ul>

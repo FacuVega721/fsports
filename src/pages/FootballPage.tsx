@@ -29,7 +29,7 @@ import styles from './Page.module.css';
 type Seccion = 'fixture' | 'grupos' | 'eliminatoria' | 'goleadores' | 'paises' | 'simulador';
 type TabFixture = 'hoy' | 'resultados' | 'proximos';
 type VistaElim = 'cuadro' | 'listado';
-type SubEstadisticas = 'resumen' | 'goleadores' | 'ranking' | 'planteles';
+type SubEstadisticas = 'resumen' | 'goleadores' | 'ranking';
 
 const MENSAJES_VACIO: Record<TabFixture, { titulo: string; detalle: string }> = {
   hoy: {
@@ -210,7 +210,6 @@ export default function FootballPage() {
                 { id: 'resumen', label: 'Resumen' },
                 { id: 'goleadores', label: 'Goleadores' },
                 { id: 'ranking', label: 'Ranking' },
-                { id: 'planteles', label: 'Planteles' },
               ]}
               active={subEstadisticas}
               onChange={(id) => setSubEstadisticas(id as SubEstadisticas)}
@@ -223,19 +222,6 @@ export default function FootballPage() {
                   <ErrorState titulo="Goleadores no disponibles" onRetry={() => scorers.refetch()} />
                 ) : (
                   <Goleadores scorers={scorers.data ?? []} />
-                )
-              ) : subEstadisticas === 'planteles' ? (
-                teams.isPending ? (
-                  <SkeletonCard count={2} alto={200} />
-                ) : teams.isError ? (
-                  <ErrorState titulo="Planteles no disponibles" onRetry={() => teams.refetch()} />
-                ) : (
-                  <EstadisticasTorneo
-                    matches={matches.data ?? []}
-                    standings={standings.data ?? []}
-                    teams={teams.data ?? []}
-                    vista="planteles"
-                  />
                 )
               ) : subEstadisticas === 'ranking' ? (
                 standings.isPending ? (

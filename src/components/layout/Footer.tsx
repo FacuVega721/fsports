@@ -1,4 +1,6 @@
 import { Link } from 'react-router-dom';
+import { useTimezone } from '../../contexts/TimezoneContext';
+import { esOffsetArgentina, etiquetaZona } from '../../lib/time';
 import { Logo } from '../ui/Logo';
 import styles from './Footer.module.css';
 
@@ -29,6 +31,9 @@ function IconTikTok() {
 }
 
 export function Footer() {
+  const tz = useTimezone();
+  const esArg = esOffsetArgentina(tz);
+
   return (
     <footer className={styles.footer}>
       <div className={`container ${styles.inner}`}>
@@ -68,7 +73,11 @@ export function Footer() {
         </div>
 
         <div className={styles.notas}>
-          <p>Todos los horarios en hora argentina (UTC-3).</p>
+          <p>
+            {esArg
+              ? 'Todos los horarios en hora argentina (UTC-3).'
+              : `Horarios ajustados a tu zona horaria (${etiquetaZona(tz)}).`}
+          </p>
           <p>
             Datos con fines informativos. Los resultados pueden presentar demoras.
           </p>

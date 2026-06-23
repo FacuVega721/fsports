@@ -7,6 +7,7 @@ import { LiveDot } from '../components/ui/LiveDot';
 import { SkeletonCard } from '../components/ui/SkeletonCard';
 import { MatchModal } from '../components/football/MatchModal';
 import { useMatches, useF1Next, useF1Last } from '../hooks/useData';
+import { useHoraLocal } from '../hooks/useHoraLocal';
 import { enRango, formatFecha, hoyArg } from '../lib/time';
 import type { Match, NextRace, LastRace } from '../lib/types';
 import styles from './HomePage.module.css';
@@ -16,6 +17,7 @@ function ChipPartido({ match: m, onVerDetalle }: { match: Match; onVerDetalle: (
   const enJuego = m.estado === 'en_vivo' || m.estado === 'entretiempo';
   const conScore = enJuego || m.estado === 'finalizado';
   const clickable = conScore;
+  const local = useHoraLocal(m.fecha, m.hora);
   return (
     <button
       type="button"
@@ -25,7 +27,7 @@ function ChipPartido({ match: m, onVerDetalle }: { match: Match; onVerDetalle: (
       {enJuego && <LiveDot />}
       <Flag code={m.localCode} title={m.local} />
       <span className={conScore ? styles.chipScore : styles.chipHora}>
-        {conScore ? `${m.golesLocal ?? '-'}–${m.golesVisitante ?? '-'}` : m.hora}
+        {conScore ? `${m.golesLocal ?? '-'}–${m.golesVisitante ?? '-'}` : local.hora}
       </span>
       <Flag code={m.visitanteCode} title={m.visitante} />
       {m.estado === 'entretiempo' && <span className={styles.chipBadge}>ET</span>}
@@ -45,6 +47,7 @@ function PartidoFila({ match: m, onVerDetalle }: { match: Match; onVerDetalle: (
   const enJuego = enVivo || entretiempo;
   const conMarcador = enJuego || finalizado;
   const Tag = conMarcador ? 'button' : 'div';
+  const local = useHoraLocal(m.fecha, m.hora);
 
   return (
     <Tag
@@ -60,7 +63,10 @@ function PartidoFila({ match: m, onVerDetalle }: { match: Match; onVerDetalle: (
         ) : finalizado ? (
           <span className={styles.estadoFin}>FIN</span>
         ) : (
-          <span className={styles.estadoHora}>{m.hora}</span>
+          <span className={styles.estadoHora}>
+            {local.hora}
+            {local.distinta && <sup className={styles.diaDistinto}>{local.fecha > m.fecha ? '+1' : '-1'}</sup>}
+          </span>
         )}
       </div>
 
@@ -90,6 +96,18 @@ function PartidoFila({ match: m, onVerDetalle }: { match: Match; onVerDetalle: (
   );
 }
 
+/* ── Fila de sesión de F1 (FP1, Clasificación, Carrera...), con hora local ── */
+function SesionFila({ sesion: s }: { sesion: { tipo: string; fecha: string; hora: string } }) {
+  const local = useHoraLocal(s.fecha, s.hora);
+  return (
+    <div className={styles.gpSesion}>
+      <span className={styles.gpSesionNombre}>{s.tipo}</span>
+      <span className={styles.gpSesionFecha}>{formatFecha(local.fecha)}</span>
+      <span className={styles.gpSesionHora}>{local.hora}</span>
+    </div>
+  );
+}
+
 /* ── Card del próximo GP ── */
 function ProximoGP({ gp }: { gp: NextRace }) {
   const inicioFinde = gp.horarios?.[0]?.fecha ?? gp.fecha;
@@ -111,11 +129,7 @@ function ProximoGP({ gp }: { gp: NextRace }) {
         {gp.horarios && gp.horarios.length > 0 && (
           <div className={styles.gpSesiones}>
             {gp.horarios.map((s) => (
-              <div key={s.tipo} className={styles.gpSesion}>
-                <span className={styles.gpSesionNombre}>{s.tipo}</span>
-                <span className={styles.gpSesionFecha}>{formatFecha(s.fecha)}</span>
-                <span className={styles.gpSesionHora}>{s.hora}</span>
-              </div>
+              <SesionFila key={s.tipo} sesion={s} />
             ))}
           </div>
         )}

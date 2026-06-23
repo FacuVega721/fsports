@@ -4,6 +4,7 @@ import { Flag } from '../ui/Flag';
 import { LiveDot } from '../ui/LiveDot';
 import { SkeletonCard } from '../ui/SkeletonCard';
 import { useMatchDetail } from '../../hooks/useData';
+import { useHoraLocal } from '../../hooks/useHoraLocal';
 import { formatFecha } from '../../lib/time';
 import type { EventoPartido, MatchDetail } from '../../lib/types';
 import styles from './MatchModal.module.css';
@@ -73,6 +74,7 @@ function FilaIncidencia({ ev }: { ev: EventoPartido }) {
 
 function ModalContent({ match: m }: { match: MatchDetail }) {
   const conMarcador = m.estado !== 'programado';
+  const horaLocal = useHoraLocal(m.fecha, m.hora);
   const meta = metaModal(m);
   const incidencias = m.eventos.filter(
     (e) => e.tipo === 'gol' || e.tipo === 'tarjeta_roja',
@@ -99,7 +101,7 @@ function ModalContent({ match: m }: { match: MatchDetail }) {
               {m.golesLocal ?? 0} – {m.golesVisitante ?? 0}
             </span>
           ) : (
-            <span className={styles.hora}>{m.hora}</span>
+            <span className={styles.hora}>{horaLocal.hora}</span>
           )}
           <BadgeEstado match={m} />
         </div>
@@ -151,6 +153,7 @@ function ModalContent({ match: m }: { match: MatchDetail }) {
 
 export function MatchModal({ matchId, onClose }: MatchModalProps) {
   const query = useMatchDetail(matchId);
+  const fechaLocal = useHoraLocal(query.data?.fecha ?? '', query.data?.hora ?? '00:00').fecha;
 
   useEffect(() => {
     document.body.style.overflow = 'hidden';
@@ -168,7 +171,7 @@ export function MatchModal({ matchId, onClose }: MatchModalProps) {
         {/* Cabecera del modal */}
         <div className={styles.header}>
           <span className={styles.fecha}>
-            {query.data ? formatFecha(query.data.fecha) : ' '}
+            {query.data ? formatFecha(fechaLocal) : ' '}
           </span>
           <button
             type="button"

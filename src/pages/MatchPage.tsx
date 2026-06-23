@@ -5,6 +5,7 @@ import { LiveDot } from '../components/ui/LiveDot';
 import { ErrorState } from '../components/ui/ErrorState';
 import { SkeletonCard } from '../components/ui/SkeletonCard';
 import { useMatchDetail } from '../hooks/useData';
+import { useHoraLocal } from '../hooks/useHoraLocal';
 import { formatFecha } from '../lib/time';
 import type { EventoPartido, MatchDetail } from '../lib/types';
 import styles from './MatchPage.module.css';
@@ -82,6 +83,8 @@ function metaPartido(match: MatchDetail): string {
 export default function MatchPage() {
   const { id } = useParams<{ id: string }>();
   const query = useMatchDetail(id ?? null);
+  // El hook va antes de los returns tempranos para no violar las reglas de hooks.
+  const horaLocal = useHoraLocal(query.data?.fecha ?? '', query.data?.hora ?? '00:00');
 
   if (query.isPending) {
     return (
@@ -121,7 +124,7 @@ export default function MatchPage() {
                 {m.golesLocal ?? 0} – {m.golesVisitante ?? 0}
               </span>
             ) : (
-              <span className={styles.horaGrande}>{m.hora}</span>
+              <span className={styles.horaGrande}>{horaLocal.hora}</span>
             )}
             <BadgeEstado match={m} />
           </div>
@@ -134,7 +137,7 @@ export default function MatchPage() {
 
         {(meta || m.fecha) && (
           <p className={styles.metaInfo}>
-            {m.fecha && <span>{formatFecha(m.fecha)}</span>}
+            {m.fecha && <span>{formatFecha(horaLocal.fecha)}</span>}
             {meta && <span>{meta}</span>}
           </p>
         )}

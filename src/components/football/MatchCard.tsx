@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Tv } from 'lucide-react';
 import { useAdmin } from '../../contexts/AdminContext';
 import { CANALES } from '../../data/sedes';
+import { useHoraLocal } from '../../hooks/useHoraLocal';
 import { postFinal } from '../../lib/social';
 import type { Match } from '../../lib/types';
 import { CopyButton } from '../ui/CopyButton';
@@ -24,6 +25,7 @@ interface MatchCardProps {
 
 export function MatchCard({ match, index = 0, onSelectGroup, onSelectPais, onVerDetalle }: MatchCardProps) {
   const { isAdmin } = useAdmin();
+  const horaLocal = useHoraLocal(match.fecha, match.hora);
   const enVivo = match.estado === 'en_vivo';
   const entretiempo = match.estado === 'entretiempo';
   const finalizado = match.estado === 'finalizado';
@@ -91,7 +93,12 @@ export function MatchCard({ match, index = 0, onSelectGroup, onSelectPais, onVer
         ) : finalizado ? (
           <span className={styles.fin}>FIN</span>
         ) : (
-          <span className={styles.hora}>{match.hora}</span>
+          <span className={styles.hora}>
+            {horaLocal.hora}
+            {horaLocal.distinta && (
+              <sup className={styles.diaDistinto}>{horaLocal.fecha > match.fecha ? '+1' : '-1'}</sup>
+            )}
+          </span>
         )}
       </div>
 

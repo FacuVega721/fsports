@@ -4,6 +4,7 @@ import { Footer } from './components/layout/Footer';
 import { Header } from './components/layout/Header';
 import { ErrorBoundary } from './components/ui/ErrorBoundary';
 import { AdminProvider } from './contexts/AdminContext';
+import { TimezoneProvider } from './contexts/TimezoneContext';
 import AdminPage from './pages/AdminPage';
 import ContentPage from './pages/ContentPage';
 import F1Page from './pages/F1Page';
@@ -41,12 +42,14 @@ function AnimatedRoutes() {
 
 export default function App() {
   return (
-    <AdminProvider>
-      <Header />
-      <ErrorBoundary>
-        <AnimatedRoutes />
-      </ErrorBoundary>
-      <Footer />
-    </AdminProvider>
+    <TimezoneProvider>
+      <AdminProvider>
+        <Header />
+        <ErrorBoundary>
+          <AnimatedRoutes />
+        </ErrorBoundary>
+        <Footer />
+      </AdminProvider>
+    </TimezoneProvider>
   );
 }

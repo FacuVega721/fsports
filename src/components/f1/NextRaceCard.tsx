@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { CalendarDays, ChevronRight, MapPin, Trophy, X } from 'lucide-react';
-import type { NextRace } from '../../lib/types';
+import type { NextRace, SesionF1 } from '../../lib/types';
 import { enRango, formatFecha, formatRangoFechas } from '../../lib/time';
+import { useHoraLocal } from '../../hooks/useHoraLocal';
 import { Flag } from '../ui/Flag';
 import { LiveDot } from '../ui/LiveDot';
 import styles from './NextRaceCard.module.css';
@@ -35,6 +36,18 @@ function CountdownBadge({ fecha, hora }: { fecha: string; hora: string }) {
       <b>{pad(cd.minutos)}</b><em>m</em>{' '}
       <b>{pad(cd.segundos)}</b><em>s</em>
     </span>
+  );
+}
+
+/* ── Fila de sesión (FP1, Clasificación, Carrera...), con hora local ── */
+function SesionFila({ sesion: s }: { sesion: SesionF1 }) {
+  const local = useHoraLocal(s.fecha, s.hora);
+  return (
+    <li className={s.tipo === 'Carrera' ? styles.principal : undefined}>
+      <span className={styles.sesionTipo}>{s.tipo}</span>
+      <span className={styles.sesionFecha}>{formatFecha(local.fecha)}</span>
+      <span className={styles.sesionHora}>{local.hora}</span>
+    </li>
   );
 }
 
@@ -89,11 +102,7 @@ function NextRaceModal({ race, onClose }: { race: NextRace; onClose: () => void 
         {race.horarios && race.horarios.length > 0 && (
           <ul className={styles.modalSesiones}>
             {race.horarios.map((s) => (
-              <li key={s.tipo} className={s.tipo === 'Carrera' ? styles.principal : undefined}>
-                <span className={styles.sesionTipo}>{s.tipo}</span>
-                <span className={styles.sesionFecha}>{formatFecha(s.fecha)}</span>
-                <span className={styles.sesionHora}>{s.hora}</span>
-              </li>
+              <SesionFila key={s.tipo} sesion={s} />
             ))}
           </ul>
         )}

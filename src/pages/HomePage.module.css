@@ -383,6 +383,12 @@ a.card:hover {
   text-align: center;
 }
 
+.diaDistinto {
+  font-size: 8px;
+  color: var(--gold);
+  margin-left: 1px;
+}
+
 /* Col 4: flecha */
 .partidoArrow {
   color: var(--text-faint);

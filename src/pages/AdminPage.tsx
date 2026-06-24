@@ -3,8 +3,16 @@ import { Link } from 'react-router-dom';
 import { CheckCircle, Copy, Flag, Home, LogOut, ShieldCheck, Tv } from 'lucide-react';
 import { EditablePost } from '../components/content/EditablePost';
 import { useAdmin } from '../contexts/AdminContext';
-import { useMatches, useMatchDetail, useF1Next, useF1Last } from '../hooks/useData';
-import { postAgenda, postProximaF1, postResultadoCompleto, postResultadoF1 } from '../lib/social';
+import { useMatches, useMatchDetail, useF1Next, useF1Last, useF1Race } from '../hooks/useData';
+import {
+  postAgenda,
+  postHorarioF1,
+  postPoleF1,
+  postProximaF1,
+  postResultadoCompleto,
+  postResultadoF1,
+  postResultadoF1Completo,
+} from '../lib/social';
 import { hoyArg } from '../lib/time';
 import { Logo } from '../components/ui/Logo';
 import styles from './AdminPage.module.css';
@@ -62,12 +70,17 @@ function Dashboard() {
   const matches = useMatches();
   const proxima = useF1Next();
   const ultima = useF1Last();
+  const raceFull = useF1Race(proxima.data?.ronda ?? null);
   const hoy = hoyArg();
 
   const matchesHoy = (matches.data ?? []).filter((m) => m.fecha === hoy);
   const finalizadosHoy = matchesHoy.filter((m) => m.estado === 'finalizado');
   const agendaPost = matchesHoy.length > 0 ? postAgenda(matchesHoy) : null;
   const previaF1Post = proxima.data ? postProximaF1(proxima.data) : null;
+  const horarioF1Post = proxima.data?.horarios?.length ? postHorarioF1(proxima.data) : null;
+  const poleF1Post = raceFull.data?.pole ? postPoleF1(raceFull.data) : null;
+  const resultadoF1CompletoPost =
+    raceFull.data && raceFull.data.resultados.length > 0 ? postResultadoF1Completo(raceFull.data) : null;
   const resultadoF1Post = ultima.data ? postResultadoF1(ultima.data) : null;
 
   return (
@@ -128,9 +141,23 @@ function Dashboard() {
                 />
               )}
 
+              {horarioF1Post && (
+                <CopiarBloque
+                  label={`Horarios del finde · ${proxima.data?.gp}`}
+                  texto={horarioF1Post}
+                />
+              )}
+
+              {poleF1Post && (
+                <CopiarBloque
+                  label={`Pole position · ${raceFull.data?.gp}`}
+                  texto={poleF1Post}
+                />
+              )}
+
               {resultadoF1Post && (
                 <CopiarBloque
-                  label={`Resultado F1 · ${ultima.data?.gp}`}
+                  label={`Resultado F1 (resumen) · ${ultima.data?.gp}`}
                   texto={resultadoF1Post}
                 />
               )}
@@ -145,6 +172,17 @@ function Dashboard() {
             {finalizadosHoy.map((m) => (
               <ResultadoTool key={m.id} matchId={m.id} />
             ))}
+          </section>
+        )}
+
+        {/* Resultado de F1 completo: podio + vuelta rápida automático, comentario editable */}
+        {resultadoF1CompletoPost && (
+          <section className={styles.seccion}>
+            <h2 className={styles.seccionTitle}>Resultado de carrera (F1)</h2>
+            <EditablePost
+              titulo={`Resultado · ${raceFull.data?.gp}`}
+              texto={resultadoF1CompletoPost}
+            />
           </section>
         )}
 

@@ -4,7 +4,7 @@
  * (La imagen se obtiene con una captura de las tarjetas de la web.)
  */
 import { formatFecha } from './time';
-import type { EventoPartido, LastRace, Match, MatchDetail, NextRace } from './types';
+import type { EventoPartido, LastRace, Match, MatchDetail, NextRace, RaceFull } from './types';
 
 /** Hashtags abreviados al estilo FSports para algunos nombres largos. */
 const HASHTAG_EQUIPO: Record<string, string> = {
@@ -136,18 +136,46 @@ export function postResultadoCompleto(m: MatchDetail): string {
   ].join('\n');
 }
 
-/** "México" → "#Mexico" para nombres de GP de F1. */
-function hashtagGP(gp: string): string {
-  return `#${quitarAcentos(gp).replace(/[^A-Za-z0-9]/g, '')}`;
+/** Nombres en inglés del GP por código de país del circuito, para mayor alcance en X. */
+const HASHTAG_GP_EN: Record<string, string> = {
+  bh: 'BahrainGP', sa: 'SaudiArabianGP', au: 'AustralianGP', jp: 'JapaneseGP',
+  cn: 'ChineseGP', us: 'MiamiGP', it: 'EmiliaRomagnaGP', mc: 'MonacoGP',
+  ca: 'CanadianGP', es: 'SpanishGP', at: 'AustrianGP', gb: 'BritishGP',
+  hu: 'HungarianGP', be: 'BelgianGP', nl: 'DutchGP', az: 'AzerbaijanGP',
+  sg: 'SingaporeGP', mx: 'MexicoGP', br: 'SaoPauloGP', qa: 'QatarGP',
+  ae: 'AbuDhabiGP',
+};
+
+/** "at" → "#AustrianGP"; cae al nombre del GP en español si no está mapeado. */
+function hashtagGPEN(code: string, fallbackGp: string): string {
+  const en = HASHTAG_GP_EN[code.trim().toLowerCase()];
+  const base = en ?? quitarAcentos(fallbackGp).replace(/[^A-Za-z0-9]/g, '');
+  return `#${base}`;
 }
 
-/** Posteo de PREVIA de la próxima carrera de F1. */
+/** Posteo de PREVIA (teaser corto) de la próxima carrera de F1. */
 export function postProximaF1(race: NextRace): string {
   const bandera = flagEmoji(race.code);
-  return `🏎️ Próximo GP: ${race.gp} ${bandera} 🏁\n\n📍 ${race.circuito}\n🗓️ ${formatFecha(race.fecha)} - ${race.hora.replace(':', '.')}hs (ARG)\n\n#F1 ${hashtagGP(race.gp)}`;
+  return `🏎️ Próximo GP: ${race.gp} ${bandera} 🏁\n\n📍 ${race.circuito}\n🗓️ ${formatFecha(race.fecha)} - ${race.hora.replace(':', '.')}hs (ARG)\n\n#F1 ${hashtagGPEN(race.code, race.gp)}`;
 }
 
-/** Posteo de RESULTADO (podio) de la última carrera de F1. */
+/** Posteo con el HORARIO COMPLETO del fin de semana (todas las sesiones), para postear apenas se confirma el calendario. */
+export function postHorarioF1(race: NextRace): string {
+  const bandera = flagEmoji(race.code);
+  const sesiones = (race.horarios ?? [])
+    .map((s) => `${s.tipo} | ${formatFecha(s.fecha)} - ${s.hora.replace(':', '.')}hs`)
+    .join('\n');
+  return `🏎️ Horarios del finde | ${race.gp} ${bandera}\n\n${sesiones}\n\n(Hora ARG) #F1 ${hashtagGPEN(race.code, race.gp)}`;
+}
+
+/** Posteo de POLE POSITION, para publicar apenas termina la clasificación. */
+export function postPoleF1(race: RaceFull): string {
+  if (!race.pole) return '';
+  const bandera = flagEmoji(race.code);
+  return `🟣 POLE POSITION | ${race.gp} ${bandera}\n\n${race.pole.piloto} (${race.pole.equipo})\n⏱️ ${race.pole.tiempo}\n\n#F1 ${hashtagGPEN(race.code, race.gp)}`;
+}
+
+/** Posteo de RESULTADO (podio) de la última carrera de F1 — versión corta, para el resumen de Home. */
 export function postResultadoF1(race: LastRace): string {
   const bandera = flagEmoji(race.code);
   const medallas = ['🥇', '🥈', '🥉'];
@@ -155,5 +183,34 @@ export function postResultadoF1(race: LastRace): string {
     .slice(0, 3)
     .map((r, i) => `${medallas[i]} ${r.piloto} (${r.equipo})`)
     .join('\n');
-  return `🏁 Resultados ${race.gp} ${bandera} 🏎️\n\n${podio}\n\n#F1 ${hashtagGP(race.gp)}`;
+  return `🏁 Resultados ${race.gp} ${bandera} 🏎️\n\n${podio}\n\n#F1 ${hashtagGPEN(race.code, race.gp)}`;
+}
+
+/**
+ * Posteo de RESULTADO completo de la carrera: podio + vuelta rápida autocompletados,
+ * con un espacio para el comentario editorial antes de copiar (mismo criterio que
+ * postResultadoCompleto de fútbol).
+ */
+export function postResultadoF1Completo(race: RaceFull): string {
+  const bandera = flagEmoji(race.code);
+  const medallas = ['🥇', '🥈', '🥉'];
+  const podio = race.resultados
+    .filter((r) => r.pos !== null && r.pos <= 3)
+    .sort((a, b) => (a.pos as number) - (b.pos as number))
+    .map((r) => `${medallas[(r.pos as number) - 1]} ${r.piloto} (${r.equipo})`)
+    .join('\n');
+  const vueltaRapida = race.vueltaRapida
+    ? `⚡ Vuelta rápida: ${race.vueltaRapida.piloto} (${race.vueltaRapida.tiempo})`
+    : '';
+
+  return [
+    `🏁 RESULTADOS | ${race.gp} ${bandera}`,
+    '',
+    podio,
+    ...(vueltaRapida ? [vueltaRapida] : []),
+    '',
+    '[Escribí aquí tu comentario]',
+    '',
+    `#F1 ${hashtagGPEN(race.code, race.gp)}`,
+  ].join('\n');
 }

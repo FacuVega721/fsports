@@ -1,10 +1,23 @@
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
-import { CheckCircle, Copy, Flag, Home, LogOut, ShieldCheck, Tv } from 'lucide-react';
+import {
+  CheckCircle,
+  Clock,
+  Copy,
+  Flag,
+  Gauge,
+  Home,
+  LogOut,
+  ShieldCheck,
+  Trophy,
+  Tv,
+} from 'lucide-react';
 import { EditablePost } from '../components/content/EditablePost';
 import { useAdmin } from '../contexts/AdminContext';
 import { useMatches, useMatchDetail, useF1Next, useF1Last, useF1Race } from '../hooks/useData';
 import {
+  largoX,
+  LIMITE_X,
   postAgenda,
   postHorarioF1,
   postPoleF1,
@@ -13,14 +26,17 @@ import {
   postResultadoF1,
   postResultadoF1Completo,
 } from '../lib/social';
-import { hoyArg } from '../lib/time';
+import { formatFecha, hoyArg } from '../lib/time';
 import { Logo } from '../components/ui/Logo';
 import styles from './AdminPage.module.css';
 
-// ── Botón de copiar con feedback visual ───────────────────────────────────────
+// ── Vista previa estilo X, con contador de caracteres ─────────────────────────
 
-function CopiarBloque({ label, texto }: { label: string; texto: string }) {
+function XPreviewCard({ label, texto, momento }: { label: string; texto: string; momento?: string }) {
   const [copiado, setCopiado] = useState(false);
+  const largo = largoX(texto);
+  const sobrepasado = largo > LIMITE_X;
+  const cerca = !sobrepasado && largo > LIMITE_X - 20;
 
   async function copiar() {
     await navigator.clipboard.writeText(texto);
@@ -29,9 +45,29 @@ function CopiarBloque({ label, texto }: { label: string; texto: string }) {
   }
 
   return (
-    <div className={styles.tool}>
-      <div className={styles.toolHeader}>
-        <span className={styles.toolLabel}>{label}</span>
+    <div className={styles.xCard}>
+      <div className={styles.xCardLabel}>
+        <span>{label}</span>
+        {momento && <span className={styles.xCardMomento}>{momento}</span>}
+      </div>
+
+      <div className={styles.xBody}>
+        <div className={styles.xAvatar}>FS</div>
+        <div className={styles.xContenido}>
+          <div className={styles.xHeader}>
+            <span className={styles.xNombre}>FSports</span>
+            <span className={styles.xHandle}>@oficialfsports</span>
+          </div>
+          <p className={styles.xTexto}>{texto}</p>
+        </div>
+      </div>
+
+      <div className={styles.xFooter}>
+        <span
+          className={`${styles.xContador} ${sobrepasado ? styles.xContadorOver : cerca ? styles.xContadorCerca : ''}`}
+        >
+          {largo} / {LIMITE_X}
+        </span>
         <button
           type="button"
           className={`${styles.copiarBtn} ${copiado ? styles.copiadoOk : ''}`}
@@ -44,8 +80,35 @@ function CopiarBloque({ label, texto }: { label: string; texto: string }) {
           )}
         </button>
       </div>
-      <pre className={styles.preview}>{texto}</pre>
     </div>
+  );
+}
+
+// ── Placeholder para herramientas que todavía no tienen datos ────────────────
+
+function ProximamenteCard({ titulo, detalle }: { titulo: string; detalle: string }) {
+  return (
+    <div className={styles.proximamente}>
+      <Clock size={15} className={styles.proximamenteIcono} aria-hidden="true" />
+      <div>
+        <p className={styles.proximamenteTitulo}>{titulo}</p>
+        <p className={styles.proximamenteDetalle}>{detalle}</p>
+      </div>
+    </div>
+  );
+}
+
+// ── Sección por categoría (Fútbol / F1), con encabezado propio ───────────────
+
+function Categoria({ icono, titulo, children }: { icono: ReactNode; titulo: string; children: ReactNode }) {
+  return (
+    <section className={styles.categoria}>
+      <h2 className={styles.categoriaTitulo}>
+        {icono}
+        {titulo}
+      </h2>
+      <div className={styles.categoriaBody}>{children}</div>
+    </section>
   );
 }
 
@@ -76,12 +139,18 @@ function Dashboard() {
   const matchesHoy = (matches.data ?? []).filter((m) => m.fecha === hoy);
   const finalizadosHoy = matchesHoy.filter((m) => m.estado === 'finalizado');
   const agendaPost = matchesHoy.length > 0 ? postAgenda(matchesHoy) : null;
+
   const previaF1Post = proxima.data ? postProximaF1(proxima.data) : null;
   const horarioF1Post = proxima.data?.horarios?.length ? postHorarioF1(proxima.data) : null;
   const poleF1Post = raceFull.data?.pole ? postPoleF1(raceFull.data) : null;
   const resultadoF1CompletoPost =
     raceFull.data && raceFull.data.resultados.length > 0 ? postResultadoF1Completo(raceFull.data) : null;
   const resultadoF1Post = ultima.data ? postResultadoF1(ultima.data) : null;
+
+  const sesionQuali = proxima.data?.horarios?.find((s) => s.tipo === 'Clasificación');
+  const sesionCarrera = proxima.data?.horarios?.find((s) => s.tipo === 'Carrera');
+
+  const cargando = matches.isPending || proxima.isPending || ultima.isPending;
 
   return (
     <div className={styles.dashboard}>
@@ -113,79 +182,66 @@ function Dashboard() {
 
       {/* Contenido */}
       <div className={styles.content}>
-
-        {/* Posts para redes */}
-        <section className={styles.seccion}>
-          <h2 className={styles.seccionTitle}>Posts para redes sociales</h2>
-
-          {matches.isPending || proxima.isPending || ultima.isPending ? (
-            <p className={styles.empty}>Cargando datos...</p>
-          ) : (
-            <>
+        {cargando ? (
+          <p className={styles.empty}>Cargando datos...</p>
+        ) : (
+          <>
+            {/* ── FÚTBOL ── */}
+            <Categoria icono={<Trophy size={14} aria-hidden="true" />} titulo="Fútbol">
               {agendaPost ? (
-                <CopiarBloque
-                  label={`Agenda del día · ${matchesHoy.length} partido${matchesHoy.length !== 1 ? 's' : ''}`}
-                  texto={agendaPost}
-                />
+                <XPreviewCard label={`Agenda del día · ${matchesHoy.length} partido${matchesHoy.length !== 1 ? 's' : ''}`} texto={agendaPost} />
               ) : (
-                <div className={styles.emptyTool}>
-                  <p>Agenda del día</p>
-                  <span>No hay partidos hoy.</span>
-                </div>
+                <ProximamenteCard
+                  titulo="Agenda del día"
+                  detalle="Se habilita automáticamente cuando hay partidos programados para hoy."
+                />
               )}
 
+              {finalizadosHoy.length > 0 && finalizadosHoy.map((m) => (
+                <ResultadoTool key={m.id} matchId={m.id} />
+              ))}
+            </Categoria>
+
+            {/* ── FÓRMULA 1 ── */}
+            <Categoria icono={<Gauge size={14} aria-hidden="true" />} titulo="Fórmula 1">
               {previaF1Post && (
-                <CopiarBloque
-                  label={`Previa F1 · ${proxima.data?.gp}`}
-                  texto={previaF1Post}
-                />
+                <XPreviewCard label={`Previa · ${proxima.data?.gp}`} texto={previaF1Post} />
               )}
 
               {horarioF1Post && (
-                <CopiarBloque
-                  label={`Horarios del finde · ${proxima.data?.gp}`}
-                  texto={horarioF1Post}
-                />
+                <XPreviewCard label={`Horarios del finde · ${proxima.data?.gp}`} texto={horarioF1Post} />
               )}
 
-              {poleF1Post && (
-                <CopiarBloque
-                  label={`Pole position · ${raceFull.data?.gp}`}
-                  texto={poleF1Post}
+              {poleF1Post ? (
+                <XPreviewCard label={`Pole position · ${raceFull.data?.gp}`} texto={poleF1Post} />
+              ) : sesionQuali ? (
+                <ProximamenteCard
+                  titulo="Pole position"
+                  detalle={`Se habilita después de la clasificación · ${formatFecha(sesionQuali.fecha)}, ${sesionQuali.hora}hs`}
                 />
-              )}
+              ) : null}
+
+              {resultadoF1CompletoPost ? (
+                <section className={styles.subseccion}>
+                  <h3 className={styles.subseccionTitle}>Resultado de carrera</h3>
+                  <EditablePost
+                    titulo={`Resultado · ${raceFull.data?.gp}`}
+                    texto={resultadoF1CompletoPost}
+                  />
+                </section>
+              ) : sesionCarrera ? (
+                <ProximamenteCard
+                  titulo="Resultado de carrera (completo)"
+                  detalle={`Se habilita después de la carrera · ${formatFecha(sesionCarrera.fecha)}, ${sesionCarrera.hora}hs`}
+                />
+              ) : null}
 
               {resultadoF1Post && (
-                <CopiarBloque
-                  label={`Resultado F1 (resumen) · ${ultima.data?.gp}`}
-                  texto={resultadoF1Post}
-                />
+                <XPreviewCard label={`Resultado (resumen) · ${ultima.data?.gp}`} texto={resultadoF1Post} />
               )}
-            </>
-          )}
-        </section>
-
-        {/* Resultado de partido: marcador + goleadores automático, comentario editable */}
-        {finalizadosHoy.length > 0 && (
-          <section className={styles.seccion}>
-            <h2 className={styles.seccionTitle}>Resultado de partido</h2>
-            {finalizadosHoy.map((m) => (
-              <ResultadoTool key={m.id} matchId={m.id} />
-            ))}
-          </section>
+            </Categoria>
+          </>
         )}
-
-        {/* Resultado de F1 completo: podio + vuelta rápida automático, comentario editable */}
-        {resultadoF1CompletoPost && (
-          <section className={styles.seccion}>
-            <h2 className={styles.seccionTitle}>Resultado de carrera (F1)</h2>
-            <EditablePost
-              titulo={`Resultado · ${raceFull.data?.gp}`}
-              texto={resultadoF1CompletoPost}
-            />
-          </section>
-        )}
-
       </div>
     </div>
   );

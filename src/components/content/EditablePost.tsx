@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { largoX, LIMITE_X } from '../../lib/social';
 import { CopyButton } from '../ui/CopyButton';
 import styles from './EditablePost.module.css';
 
@@ -12,6 +13,9 @@ interface EditablePostProps {
 /** Tarjeta con el texto de un posteo, editable antes de copiar. */
 export function EditablePost({ titulo, texto }: EditablePostProps) {
   const [valor, setValor] = useState(texto);
+  const largo = largoX(valor);
+  const sobrepasado = largo > LIMITE_X;
+  const cerca = !sobrepasado && largo > LIMITE_X - 20;
 
   return (
     <div className={styles.post}>
@@ -26,6 +30,9 @@ export function EditablePost({ titulo, texto }: EditablePostProps) {
         rows={6}
         aria-label={`Texto del posteo: ${titulo}`}
       />
+      <span className={`${styles.contador} ${sobrepasado ? styles.contadorOver : cerca ? styles.contadorCerca : ''}`}>
+        {largo} / {LIMITE_X}
+      </span>
     </div>
   );
 }

@@ -3,7 +3,7 @@
  * Arma el texto en el formato de FSports, listo para copiar y pegar.
  * (La imagen se obtiene con una captura de las tarjetas de la web.)
  */
-import { formatFecha } from './time';
+import { formatFecha, formatFechaCorta } from './time';
 import type { EventoPartido, LastRace, Match, MatchDetail, NextRace, RaceFull } from './types';
 
 /** Hashtags abreviados al estilo FSports para algunos nombres largos. */
@@ -47,6 +47,23 @@ const HASHTAG_PAIS_EN: Record<string, string> = {
 function quitarAcentos(s: string): string {
   return s.normalize('NFD').replace(/[̀-ͯ]/g, '');
 }
+
+const EMOJI_RE = /[\u{1F1E6}-\u{1F1FF}\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{2190}-\u{21FF}\u{2B00}-\u{2BFF}]/u;
+
+/**
+ * Largo aproximado de un texto según el conteo "ponderado" de X (cada emoji
+ * pesa 2, el resto pesa 1 por carácter). No replica el algoritmo exacto de X,
+ * pero evita subestimar el largo real frente al límite de 280.
+ */
+export function largoX(texto: string): number {
+  let total = 0;
+  for (const caracter of texto) {
+    total += EMOJI_RE.test(caracter) ? 2 : 1;
+  }
+  return total;
+}
+
+export const LIMITE_X = 280;
 
 /** "México" → "#Mexico", "Corea del Sur" → "#Corea" */
 export function hashtagEquipo(nombre: string): string {
@@ -159,13 +176,23 @@ export function postProximaF1(race: NextRace): string {
   return `🏎️ Próximo GP: ${race.gp} ${bandera} 🏁\n\n📍 ${race.circuito}\n🗓️ ${formatFecha(race.fecha)} - ${race.hora.replace(':', '.')}hs (ARG)\n\n#F1 ${hashtagGPEN(race.code, race.gp)}`;
 }
 
+/** Nombres abreviados de sesión, para que el posteo de horarios entre en el límite de X. */
+const SESION_CORTA: Record<string, string> = {
+  'Práctica Libre 1': 'FP1',
+  'Práctica Libre 2': 'FP2',
+  'Práctica Libre 3': 'FP3',
+  'Clasificación Sprint': 'Sprint Quali',
+  'Carrera Sprint': 'Sprint',
+  Clasificación: 'Quali',
+};
+
 /** Posteo con el HORARIO COMPLETO del fin de semana (todas las sesiones), para postear apenas se confirma el calendario. */
 export function postHorarioF1(race: NextRace): string {
   const bandera = flagEmoji(race.code);
   const sesiones = (race.horarios ?? [])
-    .map((s) => `${s.tipo} | ${formatFecha(s.fecha)} - ${s.hora.replace(':', '.')}hs`)
+    .map((s) => `${SESION_CORTA[s.tipo] ?? s.tipo}: ${formatFechaCorta(s.fecha)} - ${s.hora.replace(':', '.')}hs`)
     .join('\n');
-  return `🏎️ Horarios del finde | ${race.gp} ${bandera}\n\n${sesiones}\n\n(Hora ARG) #F1 ${hashtagGPEN(race.code, race.gp)}`;
+  return `🏎️ Horarios del finde | ${race.gp} ${bandera}\n\n${sesiones}\n\n(ARG) #F1 ${hashtagGPEN(race.code, race.gp)}`;
 }
 
 /** Posteo de POLE POSITION, para publicar apenas termina la clasificación. */

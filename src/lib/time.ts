@@ -46,6 +46,17 @@ export function formatFecha(fecha: string): string {
   return `${DIAS[d.getUTCDay()]} ${dia} de ${MESES[mes - 1]}`;
 }
 
+const DIAS_CORTOS = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+
+/** Formatea una fecha YYYY-MM-DD como "Vie 26/6" (versión compacta, para posteos). */
+export function formatFechaCorta(fecha: string): string {
+  const partes = fecha.split('-').map(Number);
+  if (partes.length !== 3 || partes.some(isNaN)) return fecha;
+  const [anio, mes, dia] = partes;
+  const d = new Date(Date.UTC(anio, mes - 1, dia));
+  return `${DIAS_CORTOS[d.getUTCDay()]} ${dia}/${mes}`;
+}
+
 /** Formatea un rango de fechas YYYY-MM-DD como "12 al 14 de junio" (o "30 de jun. al 1 de jul." si cruza de mes). */
 export function formatRangoFechas(inicio: string, fin: string): string {
   const pInicio = inicio.split('-').map(Number);

@@ -9,6 +9,7 @@ import { EmptyState } from '../components/ui/EmptyState';
 import { ErrorState } from '../components/ui/ErrorState';
 import { SkeletonCard } from '../components/ui/SkeletonCard';
 import { Tabs } from '../components/ui/Tabs';
+import { useSeo } from '../hooks/useSeo';
 import {
   useF1Calendar,
   useF1Constructors,
@@ -25,6 +26,11 @@ type SeccionF1 = 'calendario' | 'resultados' | 'equipos' | 'campeonato';
 const VALID_TABS: SeccionF1[] = ['calendario', 'resultados', 'equipos', 'campeonato'];
 
 export default function F1Page() {
+  useSeo(
+    'Fórmula 1 — Calendario, Resultados y Campeonato',
+    'Calendario de carreras, resultados, clasificación y campeonato de pilotos y constructores de la F1.',
+    '/f1',
+  );
   const [searchParams] = useSearchParams();
   const tabParam = searchParams.get('tab') as SeccionF1 | null;
   const initialTab = tabParam && VALID_TABS.includes(tabParam) ? tabParam : 'calendario';

@@ -18,6 +18,7 @@ import { ErrorState } from '../components/ui/ErrorState';
 import { SkeletonCard } from '../components/ui/SkeletonCard';
 import { Tabs } from '../components/ui/Tabs';
 import { useMatches, useScorers, useStandings, useTeams } from '../hooks/useData';
+import { useSeo } from '../hooks/useSeo';
 import { dataSource } from '../lib/data';
 import { mejoresTerceros } from '../lib/simulator/terceros';
 import { marcarReales, overridesReales, simularTorneo } from '../lib/simulator/simular';
@@ -89,6 +90,11 @@ function filtrarFixture(matches: Match[], tab: TabFixture): Match[] {
 }
 
 export default function FootballPage() {
+  useSeo(
+    'Mundial 2026 — Fixture, Grupos y Resultados',
+    'Fixture completo, tabla de grupos, eliminatoria, goleadores y selecciones del Mundial 2026.',
+    '/futbol',
+  );
   const { isAdmin } = useAdmin();
   const [seccion, setSeccion] = useState<Seccion>('fixture');
   const [tabFixture, setTabFixture] = useState<TabFixture>('hoy');

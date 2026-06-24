@@ -9,6 +9,7 @@ import { TerminoAyuda } from '../components/ui/TerminoAyuda';
 import { MatchModal } from '../components/football/MatchModal';
 import { useMatches, useF1Next, useF1Last } from '../hooks/useData';
 import { useHoraLocal } from '../hooks/useHoraLocal';
+import { useSeo } from '../hooks/useSeo';
 import { enRango, formatFecha, hoyArg } from '../lib/time';
 import type { Match, NextRace, LastRace } from '../lib/types';
 import styles from './HomePage.module.css';
@@ -192,6 +193,11 @@ function UltimoGP({ carrera }: { carrera: LastRace }) {
 
 /* ── HOME ── */
 export default function HomePage() {
+  useSeo(
+    'Mundial 2026 y Fórmula 1 en vivo',
+    'Resultados, fixture y calendario del Mundial 2026 y la Fórmula 1, al instante y con otro estilo.',
+    '/',
+  );
   const matches = useMatches();
   const proxima = useF1Next();
   const ultima = useF1Last();

@@ -1,7 +1,13 @@
 import { Link } from 'react-router-dom';
+import { useSeo } from '../hooks/useSeo';
 import styles from './TerminosPage.module.css';
 
 export default function TerminosPage() {
+  useSeo(
+    'Términos y condiciones',
+    'Términos y condiciones de uso de FSports.',
+    '/terminos',
+  );
   return (
     <div className={`container ${styles.pagina}`}>
       <Link to="/" className={styles.volver}>← Volver al inicio</Link>

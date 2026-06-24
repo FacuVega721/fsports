@@ -1,7 +1,13 @@
 import { Link } from 'react-router-dom';
+import { useSeo } from '../hooks/useSeo';
 import styles from './TerminosPage.module.css';
 
 export default function PrivacidadPage() {
+  useSeo(
+    'Política de privacidad',
+    'Política de privacidad de FSports.',
+    '/privacidad',
+  );
   return (
     <div className={`container ${styles.pagina}`}>
       <Link to="/" className={styles.volver}>← Volver al inicio</Link>

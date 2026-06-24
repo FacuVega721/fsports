@@ -2,3 +2,5 @@ User-agent: *
 Allow: /
 Disallow: /admin
 Disallow: /contenido
+
+Sitemap: https://oficialfsports.com/sitemap.xml

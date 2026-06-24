@@ -70,30 +70,70 @@ const RUTA_META: Record<string, { titulo: string; descripcion: string }> = {
   },
 };
 
+/** Reescribe title/OG/canonical del HTML base con el meta dado. Sin cache de
+ * borde: cada ruta tiene meta distinto, no se puede compartir la respuesta
+ * cacheada de otra ruta bajo la misma URL base. */
+function reescribirMeta(base: Response, titulo: string, descripcion: string, pathname: string): Response {
+  const tituloCompleto = `${titulo} · FSports`;
+  const urlCompleta = `https://oficialfsports.com${pathname}`;
+
+  const transformado = new HTMLRewriter()
+    .on('title', { element(el) { el.setInnerContent(tituloCompleto); } })
+    .on('meta[name="description"]', { element(el) { el.setAttribute('content', descripcion); } })
+    .on('meta[property="og:title"]', { element(el) { el.setAttribute('content', tituloCompleto); } })
+    .on('meta[property="og:description"]', { element(el) { el.setAttribute('content', descripcion); } })
+    .on('meta[property="og:url"]', { element(el) { el.setAttribute('content', urlCompleta); } })
+    .on('meta[name="twitter:title"]', { element(el) { el.setAttribute('content', tituloCompleto); } })
+    .on('meta[name="twitter:description"]', { element(el) { el.setAttribute('content', descripcion); } })
+    .on('link[rel="canonical"]', { element(el) { el.setAttribute('href', urlCompleta); } })
+    .transform(base);
+
+  const respuesta = new Response(transformado.body, transformado);
+  respuesta.headers.set('Cache-Control', 'no-store');
+  return respuesta;
+}
+
 async function servirParaBot(request: Request, env: Env, pathname: string): Promise<Response> {
   const meta = RUTA_META[pathname];
   const base = await env.ASSETS.fetch(new Request(new URL('/', request.url)));
   if (!meta) return base;
+  return reescribirMeta(base, meta.titulo, meta.descripcion, pathname);
+}
 
-  const titulo = `${meta.titulo} · FSports`;
-  const urlCompleta = `https://oficialfsports.com${pathname}`;
+interface FdMatchMini {
+  homeTeam?: { name?: string };
+  awayTeam?: { name?: string };
+  status?: string;
+  score?: { fullTime?: { home?: number | null; away?: number | null } };
+}
 
-  const transformado = new HTMLRewriter()
-    .on('title', { element(el) { el.setInnerContent(titulo); } })
-    .on('meta[name="description"]', { element(el) { el.setAttribute('content', meta.descripcion); } })
-    .on('meta[property="og:title"]', { element(el) { el.setAttribute('content', titulo); } })
-    .on('meta[property="og:description"]', { element(el) { el.setAttribute('content', meta.descripcion); } })
-    .on('meta[property="og:url"]', { element(el) { el.setAttribute('content', urlCompleta); } })
-    .on('meta[name="twitter:title"]', { element(el) { el.setAttribute('content', titulo); } })
-    .on('meta[name="twitter:description"]', { element(el) { el.setAttribute('content', meta.descripcion); } })
-    .on('link[rel="canonical"]', { element(el) { el.setAttribute('href', urlCompleta); } })
-    .transform(base);
+/** Detalle de partido (/futbol/partido/:id): título dinámico con los equipos reales. */
+async function servirPartidoParaBot(request: Request, env: Env, id: string): Promise<Response> {
+  const pathname = `/futbol/partido/${id}`;
+  const base = await env.ASSETS.fetch(new Request(new URL('/', request.url)));
 
-  // Sin cache de borde: cada ruta tiene meta distinto, no se puede compartir
-  // la respuesta cacheada de otra ruta bajo la misma URL base.
-  const respuesta = new Response(transformado.body, transformado);
-  respuesta.headers.set('Cache-Control', 'no-store');
-  return respuesta;
+  let titulo = 'Partido — Mundial 2026';
+  let descripcion = 'Detalle de partido de la Copa Mundial 2026.';
+  try {
+    const res = await fetch(`${FOOTBALL_BASE}/matches/${id}`, {
+      headers: { 'X-Auth-Token': resolverToken(env) },
+    });
+    if (res.ok) {
+      const data = (await res.json()) as FdMatchMini;
+      const local = data.homeTeam?.name;
+      const visitante = data.awayTeam?.name;
+      if (local && visitante) {
+        const marcador =
+          data.status === 'FINISHED' && data.score?.fullTime
+            ? ` ${data.score.fullTime.home ?? 0}-${data.score.fullTime.away ?? 0}`
+            : '';
+        titulo = `${local}${marcador} vs ${visitante} — Mundial 2026`;
+        descripcion = `Resultado, goles y estadísticas de ${local} vs ${visitante} en la Copa Mundial 2026.`;
+      }
+    }
+  } catch { /* sin datos del partido: se usa el título genérico */ }
+
+  return reescribirMeta(base, titulo, descripcion, pathname);
 }
 
 // ── Helpers de token HMAC ─────────────────────────────────────────────────────
@@ -243,6 +283,8 @@ export default {
     // ── 5) Bots de SEO/redes: HTML con meta correcto por ruta, sin JS ─────────
     const userAgent = request.headers.get('User-Agent') ?? '';
     if (method === 'GET' && BOT_UA.test(userAgent)) {
+      const idPartido = pathname.match(/^\/futbol\/partido\/(\d+)$/)?.[1];
+      if (idPartido) return servirPartidoParaBot(request, env, idPartido);
       return servirParaBot(request, env, pathname);
     }
 

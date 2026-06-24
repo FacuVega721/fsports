@@ -7,6 +7,7 @@ import { SkeletonCard } from '../components/ui/SkeletonCard';
 import { TerminoAyuda } from '../components/ui/TerminoAyuda';
 import { useMatchDetail } from '../hooks/useData';
 import { useHoraLocal } from '../hooks/useHoraLocal';
+import { useSeo } from '../hooks/useSeo';
 import { formatFecha } from '../lib/time';
 import type { EventoPartido, MatchDetail } from '../lib/types';
 import styles from './MatchPage.module.css';
@@ -88,8 +89,15 @@ function metaPartido(match: MatchDetail): string {
 export default function MatchPage() {
   const { id } = useParams<{ id: string }>();
   const query = useMatchDetail(id ?? null);
-  // El hook va antes de los returns tempranos para no violar las reglas de hooks.
+  // Los hooks van antes de los returns tempranos para no violar las reglas de hooks.
   const horaLocal = useHoraLocal(query.data?.fecha ?? '', query.data?.hora ?? '00:00');
+  useSeo(
+    query.data ? `${query.data.local} vs ${query.data.visitante}` : 'Partido — Mundial 2026',
+    query.data
+      ? `Resultado, goles y estadísticas de ${query.data.local} vs ${query.data.visitante} en la Copa Mundial 2026.`
+      : 'Detalle de partido de la Copa Mundial 2026.',
+    `/futbol/partido/${id ?? ''}`,
+  );
 
   if (query.isPending) {
     return (

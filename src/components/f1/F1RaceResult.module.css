@@ -76,6 +76,91 @@
   color: var(--text-dim);
 }
 
+/* Podio destacado (1-2-3), igual al de la Home */
+.podio {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: var(--space-3);
+  align-items: end;
+}
+
+.cajon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 3px;
+  padding: var(--space-4) var(--space-2);
+  border-radius: var(--radius);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-top-width: 3px;
+}
+
+.oro {
+  border-top-color: var(--medal-gold);
+  background: linear-gradient(180deg, rgba(232, 196, 102, 0.16), var(--surface) 55%);
+  box-shadow: 0 0 0 1px rgba(232, 196, 102, 0.3), 0 4px 28px rgba(232, 196, 102, 0.12);
+  padding-top: var(--space-6);
+  padding-bottom: var(--space-5);
+}
+
+.plata {
+  border-top-color: var(--medal-silver);
+  background: linear-gradient(180deg, rgba(194, 197, 207, 0.1), var(--surface) 55%);
+}
+
+.bronce {
+  border-top-color: var(--medal-bronze);
+  background: linear-gradient(180deg, rgba(192, 129, 79, 0.12), var(--surface) 55%);
+}
+
+.posicion {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 30px;
+  line-height: 1;
+  color: var(--text);
+}
+
+.oro .posicion {
+  color: var(--medal-gold);
+  font-size: 38px;
+}
+
+.podioPiloto {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 1.2;
+}
+
+.podioEquipo {
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+.podioTiempo {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--gold-bright);
+  margin-top: var(--space-1);
+}
+
+@media (max-width: 480px) {
+  .podio {
+    gap: var(--space-2);
+  }
+
+  .podioPiloto {
+    font-size: 12.5px;
+  }
+
+  .podioTiempo {
+    font-size: 10px;
+  }
+}
+
 /* Tabla */
 .scroll {
   overflow-x: auto;

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import type { CSSProperties } from 'react';
 import { Flag as FlagIcon, Timer, Trophy, Zap } from 'lucide-react';
 import type { QualyResultRow, RaceFull, RaceResultRow, ResultadoEstado } from '../../lib/types';
 import { formatFecha } from '../../lib/time';
@@ -68,6 +69,40 @@ function Clasificacion({ rows }: { rows: RaceResultRow[] }) {
           ))}
         </tbody>
       </table>
+    </div>
+  );
+}
+
+const CLASE_PUESTO: Record<number, string> = {
+  1: styles.oro,
+  2: styles.plata,
+  3: styles.bronce,
+};
+
+/** Podio 1-2-3 destacado de la carrera, igual al de la Home. */
+function Podio({ rows }: { rows: RaceResultRow[] }) {
+  const podio = rows.filter((r) => r.estado === 'ok' && r.pos !== null && r.pos <= 3);
+  // Orden visual del podio: 2 — 1 — 3 (el ganador al centro y más alto)
+  const ordenVisual = [2, 1, 3]
+    .map((pos) => podio.find((r) => r.pos === pos))
+    .filter((r): r is NonNullable<typeof r> => r !== undefined);
+
+  if (ordenVisual.length === 0) return null;
+
+  return (
+    <div className={styles.podio}>
+      {ordenVisual.map((r, i) => (
+        <div
+          key={r.pos}
+          className={`${styles.cajon} ${CLASE_PUESTO[r.pos!] ?? ''} stagger`}
+          style={{ '--i': i } as CSSProperties}
+        >
+          <span className={styles.posicion}>{r.pos}</span>
+          <span className={styles.podioPiloto}>{r.piloto}</span>
+          <span className={styles.podioEquipo}>{r.equipo}</span>
+          <span className={styles.podioTiempo}>{r.tiempo}</span>
+        </div>
+      ))}
     </div>
   );
 }
@@ -194,6 +229,7 @@ export function F1RaceResult({ race }: F1RaceResultProps) {
               )}
             </div>
           )}
+          <Podio rows={race.resultados} />
           <Clasificacion rows={race.resultados} />
         </>
       )}

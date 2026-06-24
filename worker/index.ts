@@ -78,7 +78,7 @@ async function servirParaBot(request: Request, env: Env, pathname: string): Prom
   const titulo = `${meta.titulo} · FSports`;
   const urlCompleta = `https://oficialfsports.com${pathname}`;
 
-  return new HTMLRewriter()
+  const transformado = new HTMLRewriter()
     .on('title', { element(el) { el.setInnerContent(titulo); } })
     .on('meta[name="description"]', { element(el) { el.setAttribute('content', meta.descripcion); } })
     .on('meta[property="og:title"]', { element(el) { el.setAttribute('content', titulo); } })
@@ -88,6 +88,12 @@ async function servirParaBot(request: Request, env: Env, pathname: string): Prom
     .on('meta[name="twitter:description"]', { element(el) { el.setAttribute('content', meta.descripcion); } })
     .on('link[rel="canonical"]', { element(el) { el.setAttribute('href', urlCompleta); } })
     .transform(base);
+
+  // Sin cache de borde: cada ruta tiene meta distinto, no se puede compartir
+  // la respuesta cacheada de otra ruta bajo la misma URL base.
+  const respuesta = new Response(transformado.body, transformado);
+  respuesta.headers.set('Cache-Control', 'no-store');
+  return respuesta;
 }
 
 // ── Helpers de token HMAC ─────────────────────────────────────────────────────

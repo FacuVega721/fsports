@@ -1,7 +1,7 @@
 /**
  * Worker de FSports.
  *
- * Hace tres cosas:
+ * Hace cuatro cosas:
  *  1) Sirve el sitio estático (la carpeta dist/ vía el binding ASSETS).
  *  2) Actúa de PROXY para football-data.org en la ruta /api/football/*.
  *     El navegador no puede llamar a football-data.org directamente (CORS),
@@ -11,6 +11,9 @@
  *  3) Autenticación de admin en /admin/login, /admin/verify, /admin/logout.
  *     El PIN se valida contra la variable ADMIN_PIN (nunca en el bundle);
  *     el secreto de firma HMAC vive en ADMIN_SECRET.
+ *  4) Para crawlers (Google/Bing/redes sociales) reescribe el <title>/OG del
+ *     HTML estático según la ruta, porque esos bots no ejecutan JavaScript y
+ *     nunca verían los cambios que hace useSeo() del lado del cliente.
  *
  * Protecciones del proxy:
  *  - Solo acepta rutas del Mundial (/competitions/WC/*). Cualquier otro path → 403.
@@ -35,6 +38,57 @@ const RUTAS_PERMITIDAS: RegExp[] = [
 
 const ADMIN_COOKIE = 'fsports_admin';
 const TOKEN_EXPIRY_MS = 8 * 60 * 60 * 1000; // 8 horas
+
+// ── SEO para bots: meta tags correctos por ruta sin ejecutar JS ───────────────
+// Los crawlers de redes sociales (Twitterbot, facebookexternalhit, WhatsApp...)
+// NO ejecutan JavaScript, así que nunca ven los <title>/OG que la SPA actualiza
+// con useSeo(). Para esos bots (y para el primer pase, sin JS, de Google/Bing)
+// el Worker reescribe el HTML estático con el meta correcto de cada ruta.
+
+const BOT_UA = /bot|crawler|spider|facebookexternalhit|twitterbot|whatsapp|slackbot|discordbot|linkedinbot|telegrambot|embedly|quora link preview|pinterest|vkshare/i;
+
+const RUTA_META: Record<string, { titulo: string; descripcion: string }> = {
+  '/': {
+    titulo: 'Mundial 2026 y Fórmula 1 en vivo',
+    descripcion: 'Resultados, fixture y calendario del Mundial 2026 y la Fórmula 1, al instante y con otro estilo.',
+  },
+  '/futbol': {
+    titulo: 'Mundial 2026 — Fixture, Grupos y Resultados',
+    descripcion: 'Fixture completo, tabla de grupos, eliminatoria, goleadores y selecciones del Mundial 2026.',
+  },
+  '/f1': {
+    titulo: 'Fórmula 1 — Calendario, Resultados y Campeonato',
+    descripcion: 'Calendario de carreras, resultados, clasificación y campeonato de pilotos y constructores de la F1.',
+  },
+  '/terminos': {
+    titulo: 'Términos y condiciones',
+    descripcion: 'Términos y condiciones de uso de FSports.',
+  },
+  '/privacidad': {
+    titulo: 'Política de privacidad',
+    descripcion: 'Política de privacidad de FSports.',
+  },
+};
+
+async function servirParaBot(request: Request, env: Env, pathname: string): Promise<Response> {
+  const meta = RUTA_META[pathname];
+  const base = await env.ASSETS.fetch(new Request(new URL('/', request.url)));
+  if (!meta) return base;
+
+  const titulo = `${meta.titulo} · FSports`;
+  const urlCompleta = `https://oficialfsports.com${pathname}`;
+
+  return new HTMLRewriter()
+    .on('title', { element(el) { el.setInnerContent(titulo); } })
+    .on('meta[name="description"]', { element(el) { el.setAttribute('content', meta.descripcion); } })
+    .on('meta[property="og:title"]', { element(el) { el.setAttribute('content', titulo); } })
+    .on('meta[property="og:description"]', { element(el) { el.setAttribute('content', meta.descripcion); } })
+    .on('meta[property="og:url"]', { element(el) { el.setAttribute('content', urlCompleta); } })
+    .on('meta[name="twitter:title"]', { element(el) { el.setAttribute('content', titulo); } })
+    .on('meta[name="twitter:description"]', { element(el) { el.setAttribute('content', meta.descripcion); } })
+    .on('link[rel="canonical"]', { element(el) { el.setAttribute('href', urlCompleta); } })
+    .transform(base);
+}
 
 // ── Helpers de token HMAC ─────────────────────────────────────────────────────
 
@@ -180,7 +234,13 @@ export default {
       });
     }
 
-    // ── 5) Sitio estático (SPA fallback) ──────────────────────────────────────
+    // ── 5) Bots de SEO/redes: HTML con meta correcto por ruta, sin JS ─────────
+    const userAgent = request.headers.get('User-Agent') ?? '';
+    if (method === 'GET' && BOT_UA.test(userAgent)) {
+      return servirParaBot(request, env, pathname);
+    }
+
+    // ── 6) Sitio estático (SPA fallback) ──────────────────────────────────────
     return env.ASSETS.fetch(request);
   },
 };

@@ -5,8 +5,8 @@ import styles from './Header.module.css';
 
 export function Header() {
   const { pathname } = useLocation();
-  // En la portada no mostramos el header: la página ya es la marca en grande.
-  if (pathname === '/') return null;
+  // En la portada y en /links no mostramos el header: son páginas sin navegación.
+  if (pathname === '/' || pathname === '/links') return null;
 
   return (
     <header className={styles.header}>

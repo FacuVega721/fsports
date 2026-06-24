@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useTimezone } from '../../contexts/TimezoneContext';
 import { esOffsetArgentina, etiquetaZona } from '../../lib/time';
 import { Logo } from '../ui/Logo';
@@ -31,8 +31,12 @@ function IconTikTok() {
 }
 
 export function Footer() {
+  const { pathname } = useLocation();
   const tz = useTimezone();
   const esArg = esOffsetArgentina(tz);
+
+  // /links es una página de bio para redes: solo el contenido centrado, sin footer de navegación.
+  if (pathname === '/links') return null;
 
   return (
     <footer className={styles.footer}>

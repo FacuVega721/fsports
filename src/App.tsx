@@ -10,6 +10,7 @@ import ContentPage from './pages/ContentPage';
 import F1Page from './pages/F1Page';
 import FootballPage from './pages/FootballPage';
 import HomePage from './pages/HomePage';
+import LinksPage from './pages/LinksPage';
 import MatchPage from './pages/MatchPage';
 import PrivacidadPage from './pages/PrivacidadPage';
 import TerminosPage from './pages/TerminosPage';
@@ -33,6 +34,7 @@ function AnimatedRoutes() {
         <Route path="/terminos" element={<TerminosPage />} />
         <Route path="/privacidad" element={<PrivacidadPage />} />
         <Route path="/admin" element={<AdminPage />} />
+        <Route path="/links" element={<LinksPage />} />
         {/* Cualquier ruta desconocida vuelve a la portada: nunca una página rota */}
         <Route path="*" element={<HomePage />} />
       </Routes>

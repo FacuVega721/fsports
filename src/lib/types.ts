@@ -176,8 +176,8 @@ export interface CircuitoHistoria {
   inaugurado: number;
   /** Récord de vuelta del circuito, si se conoce */
   recordVuelta?: { piloto: string; tiempo: string; anio: number };
-  /** Dato histórico o curiosidad breve */
-  dato: string;
+  /** Datos históricos o curiosidades breves (3-4 por circuito) */
+  datos: string[];
 }
 
 /** Una fila del campeonato de pilotos. */

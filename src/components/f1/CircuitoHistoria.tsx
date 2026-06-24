@@ -57,7 +57,11 @@ export function CircuitoHistoriaPanel({ historia }: CircuitoHistoriaPanelProps) 
           </div>
         )}
       </div>
-      <p className={styles.curiosidad}>{historia.dato}</p>
+      <ul className={styles.curiosidades}>
+        {historia.datos.map((d, i) => (
+          <li key={i} className={styles.curiosidad}>{d}</li>
+        ))}
+      </ul>
     </div>
   );
 }

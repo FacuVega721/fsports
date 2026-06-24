@@ -163,6 +163,21 @@ export interface NextRace {
   horarios?: SesionF1[];
   /** Pole position, si la clasificación ya se corrió (GP en curso), o null si no hay dato */
   pole?: { piloto: string; equipo: string; tiempo: string } | null;
+  /** Historia/datos del circuito (longitud, vueltas, récord...), cargada a mano. null si no está disponible. */
+  historiaCircuito?: CircuitoHistoria | null;
+}
+
+/** Datos históricos de un circuito de F1 — la API no los provee, se cargan a mano (ver data/circuitos-f1.ts). */
+export interface CircuitoHistoria {
+  longitudKm: number;
+  vueltas: number;
+  distanciaKm: number;
+  /** Año de la primera edición del GP en este circuito (o de su inauguración) */
+  inaugurado: number;
+  /** Récord de vuelta del circuito, si se conoce */
+  recordVuelta?: { piloto: string; tiempo: string; anio: number };
+  /** Dato histórico o curiosidad breve */
+  dato: string;
 }
 
 /** Una fila del campeonato de pilotos. */
@@ -251,6 +266,8 @@ export interface RaceFull {
   sprint: RaceResultRow[] | null;
   /** Clasificación completa de Qualy (Q1/Q2/Q3, todos los pilotos), o null si no hay datos */
   clasificacion: QualyResultRow[] | null;
+  /** Historia/datos del circuito (longitud, vueltas, récord...), cargada a mano. null si no está disponible. */
+  historiaCircuito: CircuitoHistoria | null;
 }
 
 /** Un piloto dentro del detalle de un equipo. */

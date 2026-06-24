@@ -3,6 +3,7 @@ import type { CSSProperties } from 'react';
 import { Flag as FlagIcon, Timer, Trophy, Zap } from 'lucide-react';
 import type { QualyResultRow, RaceFull, RaceResultRow, ResultadoEstado } from '../../lib/types';
 import { formatFecha } from '../../lib/time';
+import { CircuitoHistoriaPanel } from './CircuitoHistoria';
 import { Flag } from '../ui/Flag';
 import { Tabs } from '../ui/Tabs';
 import { TerminoAyuda } from '../ui/TerminoAyuda';
@@ -145,18 +146,19 @@ function TablaQualy({ rows }: { rows: QualyResultRow[] }) {
   );
 }
 
-type Vista = 'carrera' | 'sprint' | 'clasificacion';
+type Vista = 'carrera' | 'sprint' | 'clasificacion' | 'historia';
 
-/** Detalle de un GP: pole, vuelta rápida, clasificación y (si hubo) Sprint. */
+/** Detalle de un GP: pole, vuelta rápida, clasificación, historia del circuito y (si hubo) Sprint. */
 export function F1RaceResult({ race }: F1RaceResultProps) {
   const hayResultados = race.resultados.length > 0;
   const haySprint = !!race.sprint && race.sprint.length > 0;
   const hayClasificacion = !!race.clasificacion && race.clasificacion.length > 0;
   const [vista, setVista] = useState<Vista>(
-    hayResultados ? 'carrera' : hayClasificacion ? 'clasificacion' : 'sprint',
+    hayResultados ? 'carrera' : hayClasificacion ? 'clasificacion' : haySprint ? 'sprint' : 'historia',
   );
   const enSprint = haySprint && vista === 'sprint';
   const enClasificacion = hayClasificacion && vista === 'clasificacion';
+  const enHistoria = vista === 'historia';
 
   return (
     <section className={styles.detalle}>
@@ -175,20 +177,21 @@ export function F1RaceResult({ race }: F1RaceResultProps) {
         </p>
       </header>
 
-      {(hayResultados || haySprint || hayClasificacion) && (
-        <Tabs
-          label="Sesión del fin de semana"
-          tabs={[
-            ...(hayResultados ? [{ id: 'carrera', label: 'Carrera' }] : []),
-            ...(haySprint ? [{ id: 'sprint', label: 'Sprint' }] : []),
-            ...(hayClasificacion ? [{ id: 'clasificacion', label: 'Clasificación' }] : []),
-          ]}
-          active={vista}
-          onChange={(id) => setVista(id as Vista)}
-        />
-      )}
+      <Tabs
+        label="Sesión del fin de semana"
+        tabs={[
+          ...(hayResultados ? [{ id: 'carrera', label: 'Carrera' }] : []),
+          ...(haySprint ? [{ id: 'sprint', label: 'Sprint' }] : []),
+          ...(hayClasificacion ? [{ id: 'clasificacion', label: 'Clasificación' }] : []),
+          { id: 'historia', label: 'Historia' },
+        ]}
+        active={vista}
+        onChange={(id) => setVista(id as Vista)}
+      />
 
-      {!hayResultados && !haySprint && !hayClasificacion ? (
+      {enHistoria ? (
+        <CircuitoHistoriaPanel historia={race.historiaCircuito} />
+      ) : !hayResultados && !haySprint && !hayClasificacion ? (
         <p className={styles.notaSprint}>Todavía no hay resultados para este GP.</p>
       ) : enSprint ? (
         <>
@@ -234,9 +237,11 @@ export function F1RaceResult({ race }: F1RaceResultProps) {
         </>
       )}
 
-      <p className={styles.nota}>
-        <FlagIcon size={11} aria-hidden="true" /> Larg. = posición de largada
-      </p>
+      {!enHistoria && (
+        <p className={styles.nota}>
+          <FlagIcon size={11} aria-hidden="true" /> Larg. = posición de largada
+        </p>
+      )}
     </section>
   );
 }

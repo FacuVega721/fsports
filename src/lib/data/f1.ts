@@ -1,3 +1,4 @@
+import { HISTORIA_CIRCUITOS } from '../../data/circuitos-f1';
 import { HISTORIAL_EQUIPOS } from '../../data/equipos-f1';
 import { F1_API_BASE } from '../config';
 import { enRango, hoyArg, utcToArg } from '../time';
@@ -69,7 +70,7 @@ interface ErgastRace {
   ThirdPractice?: { date?: string; time?: string };
   Qualifying?: { date?: string; time?: string };
   SprintQualifying?: { date?: string; time?: string };
-  Circuit?: { circuitName?: string; Location?: { country?: string; locality?: string } };
+  Circuit?: { circuitId?: string; circuitName?: string; Location?: { country?: string; locality?: string } };
   Results?: ErgastResultRow[];
   SprintResults?: ErgastResultRow[];
   QualifyingResults?: Array<{
@@ -379,6 +380,7 @@ export async function getF1RaceApi(ronda: number): Promise<RaceFull | null> {
     resultados,
     sprint,
     clasificacion,
+    historiaCircuito: HISTORIA_CIRCUITOS[race.Circuit?.circuitId ?? ''] ?? null,
   };
 }
 
@@ -476,6 +478,7 @@ export async function getF1NextApi(): Promise<NextRace | null> {
     hora,
     horarios,
     pole,
+    historiaCircuito: HISTORIA_CIRCUITOS[race.Circuit?.circuitId ?? ''] ?? null,
   };
 }
 

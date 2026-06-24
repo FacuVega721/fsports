@@ -3,6 +3,7 @@ import { CalendarDays, ChevronRight, MapPin, Trophy, X } from 'lucide-react';
 import type { NextRace, SesionF1 } from '../../lib/types';
 import { enRango, formatFecha, formatRangoFechas } from '../../lib/time';
 import { useHoraLocal } from '../../hooks/useHoraLocal';
+import { CircuitoHistoriaPanel } from './CircuitoHistoria';
 import { Flag } from '../ui/Flag';
 import { LiveDot } from '../ui/LiveDot';
 import styles from './NextRaceCard.module.css';
@@ -105,6 +106,13 @@ function NextRaceModal({ race, onClose }: { race: NextRace; onClose: () => void 
               <SesionFila key={s.tipo} sesion={s} />
             ))}
           </ul>
+        )}
+
+        {race.historiaCircuito && (
+          <div className={styles.modalHistoria}>
+            <span className="kicker">Historia del circuito</span>
+            <CircuitoHistoriaPanel historia={race.historiaCircuito} />
+          </div>
         )}
 
       </div>

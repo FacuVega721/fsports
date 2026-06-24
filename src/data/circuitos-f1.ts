@@ -1,0 +1,191 @@
+import type { CircuitoHistoria } from '../lib/types';
+
+/**
+ * Datos históricos de los circuitos de F1 — EDITABLE A MANO.
+ *
+ * La API (Jolpica) no provee esta información: el endpoint de circuitos solo
+ * devuelve circuitId/nombre/ubicación y un link a Wikipedia, nada de longitud,
+ * vueltas, récord de vuelta ni trazado. Acá cargamos esos datos manualmente.
+ *
+ * La clave es el "circuitId" de la API (ej: "monaco", "spa", "interlagos").
+ * Si un circuito no está acá, no se muestra la sub-sección de Historia.
+ * Los récords de vuelta pueden quedar desactualizados con el tiempo si se
+ * bate uno nuevo — son fáciles de actualizar acá.
+ */
+export const HISTORIA_CIRCUITOS: Record<string, CircuitoHistoria> = {
+  albert_park: {
+    longitudKm: 5.278,
+    vueltas: 58,
+    distanciaKm: 306.124,
+    inaugurado: 1996,
+    recordVuelta: { piloto: 'Max Verstappen', tiempo: '1:19.813', anio: 2024 },
+    dato: 'Trazado semi-urbano alrededor del lago Albert Park, en pleno centro de Melbourne.',
+  },
+  shanghai: {
+    longitudKm: 5.451,
+    vueltas: 56,
+    distanciaKm: 305.066,
+    inaugurado: 2004,
+    recordVuelta: { piloto: 'Michael Schumacher', tiempo: '1:32.238', anio: 2004 },
+    dato: 'Su curva 1-2-3, con forma de caracol, está inspirada en el carácter chino "上" (shàng).',
+  },
+  suzuka: {
+    longitudKm: 5.807,
+    vueltas: 53,
+    distanciaKm: 307.471,
+    inaugurado: 1987,
+    recordVuelta: { piloto: 'Lewis Hamilton', tiempo: '1:30.983', anio: 2019 },
+    dato: 'Único trazado en forma de "8" del calendario, con un cruce de pista elevado en la recta principal.',
+  },
+  miami: {
+    longitudKm: 5.412,
+    vueltas: 57,
+    distanciaKm: 308.326,
+    inaugurado: 2022,
+    recordVuelta: { piloto: 'Max Verstappen', tiempo: '1:29.708', anio: 2023 },
+    dato: 'Construido en el estacionamiento del Hard Rock Stadium, sede de los Miami Dolphins.',
+  },
+  villeneuve: {
+    longitudKm: 4.361,
+    vueltas: 70,
+    distanciaKm: 305.270,
+    inaugurado: 1978,
+    recordVuelta: { piloto: 'Valtteri Bottas', tiempo: '1:13.078', anio: 2019 },
+    dato: 'Lleva el nombre de Gilles Villeneuve; su último sector se conoce como "El Muro de los Campeones".',
+  },
+  monaco: {
+    longitudKm: 3.337,
+    vueltas: 78,
+    distanciaKm: 260.286,
+    inaugurado: 1929,
+    recordVuelta: { piloto: 'Lewis Hamilton', tiempo: '1:12.909', anio: 2021 },
+    dato: 'El trazado más antiguo y emblemático de la F1: corre por las calles del Principado desde 1929.',
+  },
+  catalunya: {
+    longitudKm: 4.657,
+    vueltas: 66,
+    distanciaKm: 307.236,
+    inaugurado: 1991,
+    recordVuelta: { piloto: 'Max Verstappen', tiempo: '1:16.330', anio: 2023 },
+    dato: 'Sede habitual de los test de pretemporada; su curva 3, de alta velocidad, es referencia para medir los autos.',
+  },
+  red_bull_ring: {
+    longitudKm: 4.318,
+    vueltas: 71,
+    distanciaKm: 306.452,
+    inaugurado: 1970,
+    recordVuelta: { piloto: 'Carlos Sainz', tiempo: '1:05.619', anio: 2020 },
+    dato: 'Enclavado en los Alpes austríacos, es uno de los trazados más cortos y rápidos del calendario.',
+  },
+  silverstone: {
+    longitudKm: 5.891,
+    vueltas: 52,
+    distanciaKm: 306.198,
+    inaugurado: 1950,
+    recordVuelta: { piloto: 'Max Verstappen', tiempo: '1:27.097', anio: 2020 },
+    dato: 'Construido sobre una base aérea de la Segunda Guerra Mundial; fue sede de la primera carrera del campeonato de F1, en 1950.',
+  },
+  spa: {
+    longitudKm: 7.004,
+    vueltas: 44,
+    distanciaKm: 308.052,
+    inaugurado: 1950,
+    recordVuelta: { piloto: 'Valtteri Bottas', tiempo: '1:46.286', anio: 2018 },
+    dato: 'Uno de los circuitos más exigentes del mundo, por su longitud, desniveles y el mítico sector de Eau Rouge.',
+  },
+  hungaroring: {
+    longitudKm: 4.381,
+    vueltas: 70,
+    distanciaKm: 306.630,
+    inaugurado: 1986,
+    recordVuelta: { piloto: 'Lewis Hamilton', tiempo: '1:16.627', anio: 2020 },
+    dato: 'Fue el primer Gran Premio detrás de la Cortina de Hierro, debutando en el calendario en 1986.',
+  },
+  zandvoort: {
+    longitudKm: 4.259,
+    vueltas: 72,
+    distanciaKm: 306.587,
+    inaugurado: 1952,
+    recordVuelta: { piloto: 'Lewis Hamilton', tiempo: '1:11.097', anio: 2021 },
+    dato: 'Circuito de dunas junto al Mar del Norte, con peraltes pronunciados en varias curvas.',
+  },
+  monza: {
+    longitudKm: 5.793,
+    vueltas: 53,
+    distanciaKm: 306.720,
+    inaugurado: 1950,
+    recordVuelta: { piloto: 'Rubens Barrichello', tiempo: '1:21.046', anio: 2004 },
+    dato: 'Conocido como el "Templo de la Velocidad": tiene las rectas más largas y los promedios más altos del calendario.',
+  },
+  madring: {
+    longitudKm: 5.474,
+    vueltas: 56,
+    distanciaKm: 306.5,
+    inaugurado: 2026,
+    dato: 'Circuito híbrido (calle + trazado permanente) en el recinto ferial IFEMA de Madrid. Debuta en el calendario de F1 en 2026, por lo que todavía no tiene récord de vuelta ni historia disputada.',
+  },
+  baku: {
+    longitudKm: 6.003,
+    vueltas: 51,
+    distanciaKm: 306.049,
+    inaugurado: 2016,
+    recordVuelta: { piloto: 'Charles Leclerc', tiempo: '1:43.009', anio: 2019 },
+    dato: 'Combina un sector de altísima velocidad con un tramo estrechísimo entre los muros de la ciudad vieja de Bakú.',
+  },
+  marina_bay: {
+    longitudKm: 4.940,
+    vueltas: 62,
+    distanciaKm: 306.143,
+    inaugurado: 2008,
+    recordVuelta: { piloto: 'Charles Leclerc', tiempo: '1:41.905', anio: 2023 },
+    dato: 'Fue el primer Gran Premio nocturno de la historia de la F1, corrido íntegramente sobre las calles de Singapur.',
+  },
+  americas: {
+    longitudKm: 5.513,
+    vueltas: 56,
+    distanciaKm: 308.405,
+    inaugurado: 2012,
+    recordVuelta: { piloto: 'Charles Leclerc', tiempo: '1:36.169', anio: 2019 },
+    dato: 'Diseñado específicamente para la F1; su curva 1, en subida, está inspirada en Silverstone.',
+  },
+  rodriguez: {
+    longitudKm: 4.304,
+    vueltas: 71,
+    distanciaKm: 305.354,
+    inaugurado: 1963,
+    recordVuelta: { piloto: 'Valtteri Bottas', tiempo: '1:17.774', anio: 2021 },
+    dato: 'Su último sector pasa por dentro del estadio "Foro Sol", una de las imágenes más icónicas del calendario.',
+  },
+  interlagos: {
+    longitudKm: 4.309,
+    vueltas: 71,
+    distanciaKm: 305.879,
+    inaugurado: 1973,
+    recordVuelta: { piloto: 'Valtteri Bottas', tiempo: '1:10.540', anio: 2018 },
+    dato: 'Uno de los pocos trazados que se corre en sentido antihorario; célebre por sus remontadas y carreras con lluvia.',
+  },
+  vegas: {
+    longitudKm: 6.201,
+    vueltas: 50,
+    distanciaKm: 309.958,
+    inaugurado: 2023,
+    recordVuelta: { piloto: 'Oscar Piastri', tiempo: '1:35.490', anio: 2023 },
+    dato: 'Carrera nocturna sobre el famoso Strip de Las Vegas, con el Bellagio y la esfera Sphere de telón de fondo.',
+  },
+  losail: {
+    longitudKm: 5.380,
+    vueltas: 57,
+    distanciaKm: 308.611,
+    inaugurado: 2021,
+    recordVuelta: { piloto: 'Max Verstappen', tiempo: '1:24.319', anio: 2023 },
+    dato: 'Diseñado originalmente para MotoGP; se incorporó al calendario de F1 en 2021 y se corre de noche.',
+  },
+  yas_marina: {
+    longitudKm: 5.281,
+    vueltas: 58,
+    distanciaKm: 306.183,
+    inaugurado: 2009,
+    recordVuelta: { piloto: 'Max Verstappen', tiempo: '1:26.103', anio: 2021 },
+    dato: 'Cierra la temporada al atardecer, con un tramo final que pasa bajo techo en el hotel Yas Viceroy.',
+  },
+};

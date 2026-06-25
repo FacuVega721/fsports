@@ -4,6 +4,7 @@ import { demoSource } from './demo';
 import { manifestSource } from './fromManifest';
 import {
   getF1CalendarApi,
+  getF1CircuitHistoriaApi,
   getF1ConstructorsApi,
   getF1DriversApi,
   getF1LastApi,
@@ -32,6 +33,7 @@ const apiSource: DataSource = {
   getF1Constructors: getF1ConstructorsApi,
   getF1Calendar: getF1CalendarApi,
   getF1Race: getF1RaceApi,
+  getF1CircuitHistoria: getF1CircuitHistoriaApi,
   getF1Teams: getF1TeamsApi,
   getMatchDetail: getMatchDetailApi,
 };

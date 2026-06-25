@@ -203,6 +203,7 @@ export const demoSource: DataSource = {
   getF1Constructors: async () => CONSTRUCTORES,
   getF1Calendar: async () => [],
   getF1Race: async () => null,
+  getF1CircuitHistoria: async () => null,
   getF1Teams: async () => [],
   getMatchDetail: async (id) => {
     const m = MATCHES.find((m) => m.id === id);

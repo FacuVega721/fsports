@@ -41,7 +41,7 @@ function CountdownBadge({ fecha, hora }: { fecha: string; hora: string }) {
 }
 
 /* ── Fila de sesión (FP1, Clasificación, Carrera...), con hora local ── */
-function SesionFila({ sesion: s }: { sesion: SesionF1 }) {
+export function SesionFila({ sesion: s }: { sesion: SesionF1 }) {
   const local = useHoraLocal(s.fecha, s.hora);
   return (
     <li className={s.tipo === 'Carrera' ? styles.principal : undefined}>

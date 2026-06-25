@@ -162,6 +162,7 @@ export const manifestSource: DataSource = {
   getF1Next: async () => normalizarProximaCarrera(),
   getF1Calendar: async () => [],
   getF1Race: async () => null,
+  getF1CircuitHistoria: async () => null,
   getF1Teams: async () => [],
   getF1Drivers: async () => normalizarPilotos(),
   getF1Constructors: async () => normalizarConstructores(),

@@ -3,6 +3,7 @@ import { HISTORIAL_EQUIPOS } from '../../data/equipos-f1';
 import { F1_API_BASE } from '../config';
 import { enRango, hoyArg, utcToArg } from '../time';
 import type {
+  CircuitDetalleHistoria,
   ConstructorStanding,
   DriverStanding,
   EstadoCarrera,
@@ -287,6 +288,7 @@ export async function getF1CalendarApi(): Promise<RaceCalendar[]> {
       ronda: Number(r.round ?? 0),
       gp: nombreGp(r.raceName),
       code: codigoGp(r),
+      circuitId: r.Circuit?.circuitId ?? '',
       circuito: r.Circuit?.circuitName ?? '',
       ciudad: r.Circuit?.Location?.locality ?? '',
       fecha,
@@ -358,6 +360,16 @@ async function getPalmares(circuitId: string): Promise<PalmaresCircuito | null> 
   } catch {
     return null;
   }
+}
+
+/** Historia + palmarés de un circuito, sin depender de que la carrera ya tenga resultados (sirve para GP futuros). */
+export async function getF1CircuitHistoriaApi(circuitId: string): Promise<CircuitDetalleHistoria | null> {
+  if (!circuitId) return null;
+  const palmares = await getPalmares(circuitId);
+  return {
+    historiaCircuito: HISTORIA_CIRCUITOS[circuitId] ?? null,
+    palmares,
+  };
 }
 
 /** Detalle de una carrera por ronda (resultados + pole + vuelta rápida + sprint). */

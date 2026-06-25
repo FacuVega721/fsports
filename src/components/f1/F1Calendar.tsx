@@ -1,14 +1,16 @@
+import { useState } from 'react';
 import type { CSSProperties } from 'react';
 import { ChevronRight } from 'lucide-react';
 import type { RaceCalendar } from '../../lib/types';
 import { formatRangoFechas } from '../../lib/time';
 import { useHoraLocal } from '../../hooks/useHoraLocal';
+import { CircuitDetailModal } from './CircuitDetailModal';
 import { Flag } from '../ui/Flag';
 import styles from './F1Calendar.module.css';
 
 interface F1CalendarProps {
   races: RaceCalendar[];
-  /** Al hacer clic en un GP finalizado (abre su resultado) */
+  /** Al hacer clic en un GP finalizado o en curso (abre su resultado) */
   onSelect?: (ronda: number) => void;
 }
 
@@ -23,28 +25,28 @@ interface FilaProps {
   index: number;
   destacada: boolean;
   onSelect?: (ronda: number) => void;
+  onAbrirFuturo: (race: RaceCalendar) => void;
 }
 
-function FilaCalendario({ race: r, index, destacada, onSelect }: FilaProps) {
+function FilaCalendario({ race: r, index, destacada, onSelect, onAbrirFuturo }: FilaProps) {
   const finalizada = r.estado === 'finalizada';
-  const clickable = r.estado !== 'proxima';
+  const esFutura = r.estado === 'proxima';
   const badge = BADGE[r.estado];
   const horaLocal = useHoraLocal(r.fecha, r.hora);
 
+  function manejarClick() {
+    if (esFutura) onAbrirFuturo(r);
+    else onSelect?.(r.ronda);
+  }
+
   return (
     <article
-      className={`${styles.fila} ${destacada ? styles.destacada : ''} ${
-        clickable ? styles.clickable : ''
-      } stagger`}
+      className={`${styles.fila} ${destacada ? styles.destacada : ''} ${styles.clickable} stagger`}
       style={{ '--i': index } as CSSProperties}
-      onClick={clickable ? () => onSelect?.(r.ronda) : undefined}
-      role={clickable ? 'button' : undefined}
-      tabIndex={clickable ? 0 : undefined}
-      onKeyDown={
-        clickable
-          ? (e) => (e.key === 'Enter' || e.key === ' ') && onSelect?.(r.ronda)
-          : undefined
-      }
+      onClick={manejarClick}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && manejarClick()}
     >
       <span className={styles.ronda}>R{r.ronda}</span>
       <div className={styles.centro}>
@@ -64,7 +66,7 @@ function FilaCalendario({ race: r, index, destacada, onSelect }: FilaProps) {
         {!finalizada && <span className={styles.hora}>{horaLocal.hora}</span>}
       </div>
       <span className={`${styles.badge} ${styles[badge.clase]}`}>{badge.label}</span>
-      {clickable && <ChevronRight size={16} className={styles.chevron} aria-hidden="true" />}
+      <ChevronRight size={16} className={styles.chevron} aria-hidden="true" />
     </article>
   );
 }
@@ -73,6 +75,7 @@ function FilaCalendario({ race: r, index, destacada, onSelect }: FilaProps) {
 export function F1Calendar({ races, onSelect }: F1CalendarProps) {
   // El próximo GP a disputarse (primero 'proxima' o 'en_curso')
   const proxRonda = races.find((r) => r.estado !== 'finalizada')?.ronda;
+  const [futuraAbierta, setFuturaAbierta] = useState<RaceCalendar | null>(null);
 
   return (
     <div className={styles.lista}>
@@ -83,8 +86,12 @@ export function F1Calendar({ races, onSelect }: F1CalendarProps) {
           index={i}
           destacada={r.ronda === proxRonda}
           onSelect={onSelect}
+          onAbrirFuturo={setFuturaAbierta}
         />
       ))}
+      {futuraAbierta && (
+        <CircuitDetailModal race={futuraAbierta} onClose={() => setFuturaAbierta(null)} />
+      )}
     </div>
   );
 }

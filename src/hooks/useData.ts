@@ -73,6 +73,15 @@ export function useF1Race(ronda: number | null) {
   });
 }
 
+export function useF1CircuitHistoria(circuitId: string | null) {
+  return useQuery({
+    queryKey: ['f1-circuit-historia', DATA_MODE, circuitId],
+    queryFn: () => dataSource.getF1CircuitHistoria(circuitId as string),
+    enabled: !!circuitId,
+    staleTime: esApi ? CINCO_MINUTOS : Infinity,
+  });
+}
+
 export function useF1Teams() {
   return useQuery({
     queryKey: ['f1-teams', DATA_MODE],

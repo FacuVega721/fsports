@@ -222,6 +222,8 @@ export interface RaceCalendar {
   gp: string;
   /** Código ISO del país del GP, para la bandera */
   code: string;
+  /** circuitId de la API (ej: "monaco", "spa"), para buscar Historia/Palmarés del circuito */
+  circuitId: string;
   circuito: string;
   ciudad: string;
   /** YYYY-MM-DD en UTC-3 */
@@ -232,6 +234,12 @@ export interface RaceCalendar {
   esSprint: boolean;
   /** Horarios de todas las sesiones del fin de semana (FP1, Quali, Carrera, etc), en orden cronológico */
   horarios: SesionF1[];
+}
+
+/** Historia + palmarés de un circuito, consultados a demanda por circuitId (no atados a una ronda concreta). */
+export interface CircuitDetalleHistoria {
+  historiaCircuito: CircuitoHistoria | null;
+  palmares: PalmaresCircuito | null;
 }
 
 export type ResultadoEstado = 'ok' | 'dnf' | 'dns' | 'dsq' | 'nc';
@@ -368,6 +376,8 @@ export interface DataSource {
   getF1Calendar(): Promise<RaceCalendar[]>;
   /** Detalle de una carrera por ronda (resultados, pole, etc.) */
   getF1Race(ronda: number): Promise<RaceFull | null>;
+  /** Historia + palmarés de un circuito (para GP futuros que todavía no tienen resultados) */
+  getF1CircuitHistoria(circuitId: string): Promise<CircuitDetalleHistoria | null>;
   /** Equipos con su detalle (pilotos, puntos, etc.) */
   getF1Teams(): Promise<F1Team[]>;
   /** Detalle de un partido (eventos + H2H) */

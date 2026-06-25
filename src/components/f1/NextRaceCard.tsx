@@ -111,7 +111,7 @@ function NextRaceModal({ race, onClose }: { race: NextRace; onClose: () => void 
         {race.historiaCircuito && (
           <div className={styles.modalHistoria}>
             <span className="kicker">Historia del circuito</span>
-            <CircuitoHistoriaPanel historia={race.historiaCircuito} />
+            <CircuitoHistoriaPanel historia={race.historiaCircuito} palmares={race.palmares} />
           </div>
         )}
 

@@ -8,9 +8,11 @@ import type {
   EstadoCarrera,
   F1DriverInfo,
   F1Team,
+  GanadorCircuito,
   LastRace,
   NextRace,
   RaceCalendar,
+  PalmaresCircuito,
   QualyResultRow,
   RaceFull,
   RaceResultRow,
@@ -60,6 +62,7 @@ interface ErgastConstructor {
 }
 
 interface ErgastRace {
+  season?: string;
   round?: string;
   raceName?: string;
   date?: string;
@@ -153,6 +156,8 @@ const NOMBRE_GP: Record<string, string> = {
   'Saudi Arabian Grand Prix': 'GP de Arabia Saudita',
   'Singapore Grand Prix': 'GP de Singapur',
   'Spanish Grand Prix': 'GP de España',
+  'Styrian Grand Prix': 'GP de Estiria',
+  '70th Anniversary Grand Prix': 'GP del 70.º Aniversario',
   'United States Grand Prix': 'GP de Estados Unidos',
   'Abu Dhabi Grand Prix': 'GP de Abu Dabi',
   'São Paulo Grand Prix': 'GP de San Pablo',
@@ -329,6 +334,32 @@ function mapearClasificacion(
   }));
 }
 
+/** Palmarés histórico de un circuito: todos los ganadores, del más reciente al más antiguo. */
+async function getPalmares(circuitId: string): Promise<PalmaresCircuito | null> {
+  if (!circuitId) return null;
+  try {
+    const data = await fetchJolpica(`/circuits/${circuitId}/results/1.json?limit=100`);
+    const races = data.MRData?.RaceTable?.Races ?? [];
+    const ganadores: GanadorCircuito[] = races
+      .map((r) => {
+        const ganador = r.Results?.[0];
+        if (!ganador) return null;
+        return {
+          anio: Number(r.season ?? 0),
+          gp: nombreGp(r.raceName),
+          piloto: nombrePiloto(ganador.Driver),
+          equipo: ganador.Constructor?.name ?? '',
+        };
+      })
+      .filter((g): g is GanadorCircuito => g !== null)
+      .sort((a, b) => b.anio - a.anio);
+    if (ganadores.length === 0) return null;
+    return { ediciones: ganadores.length, ganadores };
+  } catch {
+    return null;
+  }
+}
+
 /** Detalle de una carrera por ronda (resultados + pole + vuelta rápida + sprint). */
 export async function getF1RaceApi(ronda: number): Promise<RaceFull | null> {
   const vacio = {} as ErgastResponse;
@@ -368,6 +399,7 @@ export async function getF1RaceApi(ronda: number): Promise<RaceFull | null> {
     : null;
 
   const { fecha } = utcToArg(`${race.date}T${race.time ?? '12:00:00Z'}`);
+  const palmares = await getPalmares(race.Circuit?.circuitId ?? '');
   return {
     ronda,
     gp: nombreGp(race.raceName),
@@ -381,6 +413,7 @@ export async function getF1RaceApi(ronda: number): Promise<RaceFull | null> {
     sprint,
     clasificacion,
     historiaCircuito: HISTORIA_CIRCUITOS[race.Circuit?.circuitId ?? ''] ?? null,
+    palmares,
   };
 }
 
@@ -469,6 +502,7 @@ export async function getF1NextApi(): Promise<NextRace | null> {
       : null;
   }
 
+  const palmares = await getPalmares(race.Circuit?.circuitId ?? '');
   return {
     gp: nombreGp(race.raceName),
     code: codigoGp(race),
@@ -479,6 +513,7 @@ export async function getF1NextApi(): Promise<NextRace | null> {
     horarios,
     pole,
     historiaCircuito: HISTORIA_CIRCUITOS[race.Circuit?.circuitId ?? ''] ?? null,
+    palmares,
   };
 }
 

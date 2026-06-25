@@ -69,3 +69,82 @@
   padding: var(--space-4);
   text-align: center;
 }
+
+.palmares {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-elevated);
+  overflow: hidden;
+}
+
+.palmaresHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.palmaresTitulo {
+  font-weight: 700;
+  font-size: 13px;
+  flex: 1;
+}
+
+.palmaresCount {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-faint);
+  letter-spacing: 0.04em;
+}
+
+.palmaresScroll {
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.palmaresFila {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  padding: 7px var(--space-4);
+  font-size: 12.5px;
+  border-bottom: 1px solid var(--border);
+}
+
+.palmaresFila:last-child {
+  border-bottom: none;
+}
+
+.palmaresFila:hover {
+  background: var(--surface);
+}
+
+.palmaresAnio {
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--text-faint);
+  width: 52px;
+  flex-shrink: 0;
+}
+
+.palmaresGp {
+  font-size: 9px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--brand-bright);
+}
+
+.palmaresPiloto {
+  font-weight: 600;
+  flex: 1;
+}
+
+.palmaresEquipo {
+  color: var(--text-dim);
+  font-size: 11.5px;
+}

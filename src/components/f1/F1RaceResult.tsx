@@ -190,7 +190,7 @@ export function F1RaceResult({ race }: F1RaceResultProps) {
       />
 
       {enHistoria ? (
-        <CircuitoHistoriaPanel historia={race.historiaCircuito} />
+        <CircuitoHistoriaPanel historia={race.historiaCircuito} palmares={race.palmares} />
       ) : !hayResultados && !haySprint && !hayClasificacion ? (
         <p className={styles.notaSprint}>Todavía no hay resultados para este GP.</p>
       ) : enSprint ? (

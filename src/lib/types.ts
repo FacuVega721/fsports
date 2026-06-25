@@ -165,6 +165,8 @@ export interface NextRace {
   pole?: { piloto: string; equipo: string; tiempo: string } | null;
   /** Historia/datos del circuito (longitud, vueltas, récord...), cargada a mano. null si no está disponible. */
   historiaCircuito?: CircuitoHistoria | null;
+  /** Palmarés histórico del circuito (ganadores por año), traído en vivo de la API. null si no hay datos. */
+  palmares?: PalmaresCircuito | null;
 }
 
 /** Datos históricos de un circuito de F1 — la API no los provee, se cargan a mano (ver data/circuitos-f1.ts). */
@@ -178,6 +180,21 @@ export interface CircuitoHistoria {
   recordVuelta?: { piloto: string; tiempo: string; anio: number };
   /** Datos históricos o curiosidades breves (3-4 por circuito) */
   datos: string[];
+}
+
+/** Una edición pasada del GP en un circuito (un ganador). */
+export interface GanadorCircuito {
+  anio: number;
+  /** Nombre de la carrera (ej. "GP de Austria"). Distingue ediciones dobles en un mismo año y circuito. */
+  gp: string;
+  piloto: string;
+  equipo: string;
+}
+
+/** Palmarés histórico de un circuito: todos los ganadores, del más reciente al más antiguo. */
+export interface PalmaresCircuito {
+  ediciones: number;
+  ganadores: GanadorCircuito[];
 }
 
 /** Una fila del campeonato de pilotos. */
@@ -268,6 +285,8 @@ export interface RaceFull {
   clasificacion: QualyResultRow[] | null;
   /** Historia/datos del circuito (longitud, vueltas, récord...), cargada a mano. null si no está disponible. */
   historiaCircuito: CircuitoHistoria | null;
+  /** Palmarés histórico del circuito (ganadores por año), traído en vivo de la API. null si no hay datos. */
+  palmares: PalmaresCircuito | null;
 }
 
 /** Un piloto dentro del detalle de un equipo. */

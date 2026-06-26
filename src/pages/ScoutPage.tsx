@@ -3,6 +3,7 @@ import { useSeo } from '../hooks/useSeo';
 import { ReportView } from '../components/scout/ReportView';
 import { MetricsPanel, type PlayerProfile } from '../components/scout/MetricsPanel';
 import { FlagSelect } from '../components/scout/FlagSelect';
+import { PlayerSelect } from '../components/scout/PlayerSelect';
 import { Flag } from '../components/ui/Flag';
 import { codigoBandera, paisEspanol } from '../lib/scout/banderas';
 import styles from './ScoutPage.module.css';
@@ -46,7 +47,7 @@ const GRUPOS: { value: string; label: string }[] = [
 export default function ScoutPage() {
   useSeo(
     'FSports Scout Intelligence',
-    'Mirá a cualquier jugador del Mundial con ojo de scout: métricas y percentiles a partir de datos abiertos.',
+    'Descubrí qué tan bueno es realmente cualquier jugador: sus puntos fuertes, en qué flojea, y cómo se compara con otros de su posición.',
     '/scout',
   );
 
@@ -184,11 +185,10 @@ export default function ScoutPage() {
     <div className={`container ${styles.pagina}`}>
       <header className={styles.hero}>
         <span className="kicker">Scout Intelligence</span>
-        <h1 className={styles.titulo}>Mirá a cualquier jugador con ojo de scout</h1>
+        <h1 className={styles.titulo}>Analizá jugadores con el ojo de un profesional</h1>
         <p className={styles.sub}>
-          Elegí un jugador y obtené un informe profesional en segundos, a partir
-          de datos abiertos. Muestras: Mundial 2022, Eurocopa 2024 y Copa América 2024
-          (histórico combinado o por competición).
+          Descubrí qué tan bueno es realmente: sus puntos fuertes, en qué
+          flojea, y cómo se compara con otros de su misma posición.
         </p>
       </header>
 
@@ -221,27 +221,12 @@ export default function ScoutPage() {
 
       {/* Selección de jugador */}
       <div className={styles.fila}>
-        <select
-          className={styles.selectorJugador}
+        <PlayerSelect
+          players={players}
           value={selected?.id ?? ''}
-          onChange={(e) => elegir(e.target.value)}
-          disabled={cargando || players.length === 0}
-          aria-label="Elegir jugador"
-        >
-          <option value="">
-            {cargando
-              ? 'Cargando jugadores…'
-              : players.length === 0
-                ? 'Sin jugadores'
-                : `— Elegí un jugador (${players.length}) —`}
-          </option>
-          {players.map((p) => (
-            <option key={p.id} value={p.id}>
-              {p.name} · {p.position}
-              {p.age ? ` · ${p.age} años` : ''}
-            </option>
-          ))}
-        </select>
+          onChange={elegir}
+          loading={cargando}
+        />
       </div>
 
       {cargaError && (

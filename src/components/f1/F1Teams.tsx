@@ -17,7 +17,7 @@ export function F1Teams({ teams }: F1TeamsProps) {
   if (teams.length === 0) {
     return (
       <EmptyState
-        titulo="Equipos no disponibles"
+        titulo="Escuderías no disponibles"
         detalle="El detalle de las escuderías se muestra con datos en vivo (modo API)."
       />
     );

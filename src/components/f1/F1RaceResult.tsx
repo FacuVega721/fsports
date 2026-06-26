@@ -36,7 +36,7 @@ function Clasificacion({ rows }: { rows: RaceResultRow[] }) {
           <tr>
             <th className={styles.colPos} scope="col">#</th>
             <th scope="col">Piloto</th>
-            <th scope="col">Equipo</th>
+            <th scope="col">Escudería</th>
             <th className={styles.colNum} scope="col" title="Posición de largada">Larg.</th>
             <th className={styles.colNum} scope="col" title="Vueltas">Vts</th>
             <th className={styles.colTiempo} scope="col">Tiempo / Estado</th>
@@ -117,7 +117,7 @@ function TablaQualy({ rows }: { rows: QualyResultRow[] }) {
           <tr>
             <th className={styles.colPos} scope="col">#</th>
             <th scope="col">Piloto</th>
-            <th scope="col">Equipo</th>
+            <th scope="col">Escudería</th>
             <th className={styles.colTiempo} scope="col">Q1</th>
             <th className={styles.colTiempo} scope="col">Q2</th>
             <th className={styles.colTiempo} scope="col">Q3</th>

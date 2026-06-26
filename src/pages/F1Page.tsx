@@ -67,7 +67,7 @@ export default function F1Page() {
         <span className="kicker">Fórmula 1 · Temporada {dataSource.f1Temporada}</span>
         <h1 className={styles.titulo}>Fórmula 1</h1>
         <p className={styles.subtitulo}>
-          Calendario, resultados, equipos y campeonato — hora argentina (UTC-3).
+          Calendario, resultados, escuderías y campeonato — hora argentina (UTC-3).
         </p>
       </section>
 
@@ -84,7 +84,7 @@ export default function F1Page() {
         tabs={[
           { id: 'calendario', label: 'Calendario' },
           { id: 'resultados', label: 'Resultados' },
-          { id: 'equipos', label: 'Equipos' },
+          { id: 'equipos', label: 'Escuderías' },
           { id: 'campeonato', label: 'Campeonato' },
         ]}
         active={seccion}
@@ -141,7 +141,7 @@ export default function F1Page() {
           (teams.isPending ? (
             <SkeletonCard count={6} alto={70} />
           ) : teams.isError ? (
-            <ErrorState titulo="Equipos no disponibles" onRetry={() => teams.refetch()} />
+            <ErrorState titulo="Escuderías no disponibles" onRetry={() => teams.refetch()} />
           ) : (
             <F1Teams teams={teams.data ?? []} />
           ))}

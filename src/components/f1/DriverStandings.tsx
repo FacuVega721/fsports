@@ -109,7 +109,7 @@ function Historicos() {
               <tr>
                 <th scope="col">Año</th>
                 <th scope="col">Piloto</th>
-                <th scope="col">Equipo</th>
+                <th scope="col">Escudería</th>
               </tr>
             </thead>
             <tbody>
@@ -131,7 +131,7 @@ function Historicos() {
             <thead>
               <tr>
                 <th scope="col">Año</th>
-                <th scope="col">Equipo</th>
+                <th scope="col">Escudería</th>
               </tr>
             </thead>
             <tbody>
@@ -176,7 +176,7 @@ export function DriverStandings({ pilotos, constructores }: DriverStandingsProps
           label="Tipo de campeonato"
           tabs={[
             { id: 'pilotos', label: 'Pilotos' },
-            { id: 'constructores', label: 'Equipos' },
+            { id: 'constructores', label: 'Escuderías' },
             { id: 'historicos', label: 'Históricos' },
           ]}
           active={tab}
@@ -198,7 +198,7 @@ export function DriverStandings({ pilotos, constructores }: DriverStandingsProps
           <thead>
             <tr>
               <th scope="col" aria-label="Posición">#</th>
-              <th scope="col">{tab === 'pilotos' ? 'Piloto' : 'Equipo'}</th>
+              <th scope="col">{tab === 'pilotos' ? 'Piloto' : 'Escudería'}</th>
               <th scope="col" className={styles.colDerecha}>PTS</th>
             </tr>
           </thead>

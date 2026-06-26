@@ -263,6 +263,23 @@ async function servirReportesAdmin(request: Request, env: Env): Promise<Response
   return jsonResponse({ reports: results });
 }
 
+interface ConteoEvento {
+  type: string;
+  total: number;
+}
+
+/** Señal de uso de Scout (búsquedas, perfiles vistos, informes), solo para admin. */
+async function servirStatsAdmin(request: Request, env: Env): Promise<Response> {
+  if (!(await esAdmin(request))) return jsonResponse({ error: 'forbidden' }, 403);
+  const [ultimos14, total] = await Promise.all([
+    env.DB.prepare(
+      `SELECT type, COUNT(*) as total FROM events WHERE created_at >= datetime('now', '-14 days') GROUP BY type`,
+    ).all<ConteoEvento>(),
+    env.DB.prepare(`SELECT type, COUNT(*) as total FROM events GROUP BY type`).all<ConteoEvento>(),
+  ]);
+  return jsonResponse({ ultimos14: ultimos14.results, total: total.results });
+}
+
 // ── Handler principal ─────────────────────────────────────────────────────────
 
 export default {
@@ -273,6 +290,9 @@ export default {
     // ── 0) FSports Scout Intelligence (/api/scout/*) ──────────────────────────
     if (pathname === '/api/scout/admin/reports' && method === 'GET') {
       return servirReportesAdmin(request, env);
+    }
+    if (pathname === '/api/scout/admin/stats' && method === 'GET') {
+      return servirStatsAdmin(request, env);
     }
     if (pathname.startsWith('/api/scout')) {
       return scoutApp.fetch(request, env, ctx);

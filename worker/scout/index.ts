@@ -3,7 +3,7 @@
  * Worker principal (ver worker/index.ts). Aislada en su propio router Hono
  * para no tocar el proxy/admin/SEO del sitio de fútbol/F1.
  */
-import { Hono } from 'hono';
+import { Hono, type Context } from 'hono';
 import { StatsBombSource } from './data/statsbomb';
 import { profileToPromptInput } from './format';
 import { generateScoutingReport } from './claude';
@@ -16,6 +16,18 @@ export interface ScoutEnv {
 
 const scoutApp = new Hono<{ Bindings: ScoutEnv }>().basePath('/api/scout');
 
+// Señal de uso real (búsquedas, perfiles vistos, informes nuevos/cacheados),
+// para decidir si/cuándo conviene monetizar. No bloquea la respuesta al
+// usuario: se escribe en segundo plano vía waitUntil.
+function logEvent(c: Context<{ Bindings: ScoutEnv }>, type: string): void {
+  const p = c.env.DB.prepare('INSERT INTO events (type) VALUES (?)').bind(type).run().catch(() => {});
+  try {
+    c.executionCtx.waitUntil(p);
+  } catch {
+    /* sin executionCtx disponible (ej. en tests): no se espera, no rompe nada */
+  }
+}
+
 scoutApp.get('/health', (c) => c.json({ ok: true }));
 
 // Búsqueda de jugadores por nombre + filtros (posición, nacionalidad).
@@ -26,6 +38,7 @@ scoutApp.get('/search', async (c) => {
   // Sin texto ni filtros devuelve todos (para el dropdown de jugadores del MVP).
   const source = new StatsBombSource(c.env.DB);
   const players = await source.searchPlayers(q, { positionGroup, nationality });
+  logEvent(c, 'search');
   return c.json({ players });
 });
 
@@ -51,6 +64,7 @@ scoutApp.get('/profile', async (c) => {
   const source = new StatsBombSource(c.env.DB);
   const profile = await source.getPlayerProfile(id);
   if (!profile) return c.json({ error: 'jugador no encontrado' }, 404);
+  logEvent(c, 'profile_view');
   return c.json({ profile });
 });
 
@@ -83,6 +97,7 @@ scoutApp.post('/report', async (c) => {
     .bind(playerId, locale)
     .first<{ id: string; content: string }>();
   if (cached) {
+    logEvent(c, 'report_cached');
     return c.json({ id: cached.id, content: cached.content, profile, cached: true });
   }
 
@@ -112,6 +127,7 @@ scoutApp.post('/report', async (c) => {
     )
     .run();
 
+  logEvent(c, 'report_new');
   return c.json({ id, content, profile, cached: false });
 });
 

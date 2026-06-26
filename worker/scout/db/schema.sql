@@ -46,3 +46,13 @@ CREATE TABLE IF NOT EXISTS reports (
 );
 
 CREATE INDEX IF NOT EXISTS idx_reports_player ON reports (player_id, locale);
+
+-- Señal de uso real (para decidir si/cuándo conviene monetizar). Liviano a
+-- propósito: un evento por acción clave, sin datos personales.
+CREATE TABLE IF NOT EXISTS events (
+  id         INTEGER PRIMARY KEY AUTOINCREMENT,
+  type       TEXT NOT NULL,             -- 'search' | 'profile_view' | 'report_new' | 'report_cached'
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE INDEX IF NOT EXISTS idx_events_type_date ON events (type, created_at);

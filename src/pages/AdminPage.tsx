@@ -114,6 +114,57 @@ function Categoria({ icono, titulo, children }: { icono: ReactNode; titulo: stri
   );
 }
 
+// ── Scout Intelligence: señal de uso (búsquedas, perfiles, informes) ─────────
+
+interface ConteoEvento {
+  type: string;
+  total: number;
+}
+
+const ETIQUETA_EVENTO: Record<string, string> = {
+  search: 'Búsquedas',
+  profile_view: 'Perfiles vistos',
+  report_new: 'Informes nuevos',
+  report_cached: 'Informes repetidos',
+};
+
+function ScoutStats() {
+  const [stats, setStats] = useState<{ ultimos14: ConteoEvento[]; total: ConteoEvento[] } | null>(null);
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    fetch('/api/scout/admin/stats')
+      .then((r) => {
+        if (!r.ok) throw new Error();
+        return r.json();
+      })
+      .then((d: { ultimos14: ConteoEvento[]; total: ConteoEvento[] }) => setStats(d))
+      .catch(() => setError(true));
+  }, []);
+
+  if (error || !stats) return null; // el error ya se explica en ScoutReportes, debajo
+  if (stats.total.length === 0) {
+    return <p className={styles.empty}>Todavía no hay uso registrado.</p>;
+  }
+
+  const totalPorTipo = new Map(stats.total.map((e) => [e.type, e.total]));
+  const tipos = Object.keys(ETIQUETA_EVENTO).filter((t) => totalPorTipo.has(t));
+
+  return (
+    <div className={styles.statsGrid}>
+      {tipos.map((t) => (
+        <div key={t} className={styles.statCard}>
+          <span className={styles.statValor}>
+            {stats.ultimos14.find((e) => e.type === t)?.total ?? 0}
+          </span>
+          <span className={styles.statLabel}>{ETIQUETA_EVENTO[t]}</span>
+          <span className={styles.statTotal}>{totalPorTipo.get(t)} en total</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 // ── Scout Intelligence: listado de todos los informes ya generados ───────────
 
 interface ReporteAdmin {
@@ -310,7 +361,14 @@ function Dashboard() {
 
             {/* ── SCOUT INTELLIGENCE ── */}
             <Categoria icono={<Search size={14} aria-hidden="true" />} titulo="Scout Intelligence">
-              <ScoutReportes />
+              <section className={styles.subseccion}>
+                <h3 className={styles.subseccionTitle}>Uso (últimos 14 días)</h3>
+                <ScoutStats />
+              </section>
+              <section className={styles.subseccion}>
+                <h3 className={styles.subseccionTitle}>Informes generados</h3>
+                <ScoutReportes />
+              </section>
             </Categoria>
           </>
         )}

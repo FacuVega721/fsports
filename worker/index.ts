@@ -139,6 +139,41 @@ async function servirPartidoParaBot(request: Request, env: Env, id: string): Pro
   return reescribirMeta(base, titulo, descripcion, pathname);
 }
 
+interface ScoutReportMini {
+  player_name?: string;
+}
+
+/** Informe de Scout (/r/:id): título dinámico con el nombre real del jugador. */
+async function servirInformeParaBot(
+  request: Request,
+  env: Env,
+  ctx: ExecutionContext,
+  id: string,
+): Promise<Response> {
+  const pathname = `/r/${id}`;
+  const base = await env.ASSETS.fetch(new Request(new URL('/', request.url)));
+
+  let titulo = 'Informe de scouting — Scout Intelligence';
+  let descripcion =
+    'Análisis de un jugador con datos reales: rendimiento, fortalezas y oportunidades de mejora.';
+  try {
+    const res = await scoutApp.fetch(
+      new Request(new URL(`/api/scout/r/${id}`, request.url)),
+      env,
+      ctx,
+    );
+    if (res.ok) {
+      const data = (await res.json()) as ScoutReportMini;
+      if (data.player_name) {
+        titulo = `${data.player_name} — Scout Intelligence`;
+        descripcion = `Análisis de ${data.player_name}: rendimiento, fortalezas y oportunidades de mejora, con datos reales.`;
+      }
+    }
+  } catch { /* sin datos del informe: se usa el título genérico */ }
+
+  return reescribirMeta(base, titulo, descripcion, pathname);
+}
+
 // ── Helpers de token HMAC ─────────────────────────────────────────────────────
 
 async function hmacHex(secret: string, msg: string): Promise<string> {
@@ -293,6 +328,8 @@ export default {
     if (method === 'GET' && BOT_UA.test(userAgent)) {
       const idPartido = pathname.match(/^\/futbol\/partido\/(\d+)$/)?.[1];
       if (idPartido) return servirPartidoParaBot(request, env, idPartido);
+      const idInforme = pathname.match(/^\/r\/([^/]+)$/)?.[1];
+      if (idInforme) return servirInformeParaBot(request, env, ctx, idInforme);
       return servirParaBot(request, env, pathname);
     }
 

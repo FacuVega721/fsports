@@ -7,6 +7,7 @@ import { GroupDetail } from '../components/football/GroupDetail';
 import { KnockoutBracket } from '../components/football/KnockoutBracket';
 import { MatchList } from '../components/football/MatchList';
 import { MatchModal } from '../components/football/MatchModal';
+import { MundialesHistoricos } from '../components/football/MundialesHistoricos';
 import { RankingTerceros } from '../components/football/RankingTerceros';
 import { Simulador } from '../components/football/Simulador';
 import { StandingsTable } from '../components/football/StandingsTable';
@@ -30,7 +31,7 @@ import styles from './Page.module.css';
 type Seccion = 'fixture' | 'grupos' | 'eliminatoria' | 'goleadores' | 'paises' | 'simulador';
 type TabFixture = 'hoy' | 'resultados' | 'proximos';
 type VistaElim = 'cuadro' | 'listado';
-type SubEstadisticas = 'resumen' | 'goleadores' | 'ranking';
+type SubEstadisticas = 'resumen' | 'goleadores' | 'ranking' | 'historicos';
 
 const MENSAJES_VACIO: Record<TabFixture, { titulo: string; detalle: string }> = {
   hoy: {
@@ -216,6 +217,7 @@ export default function FootballPage() {
                 { id: 'resumen', label: 'Resumen' },
                 { id: 'goleadores', label: 'Goleadores' },
                 { id: 'ranking', label: 'Ranking' },
+                { id: 'historicos', label: 'Históricos' },
               ]}
               active={subEstadisticas}
               onChange={(id) => setSubEstadisticas(id as SubEstadisticas)}
@@ -242,6 +244,8 @@ export default function FootballPage() {
                     vista="ranking"
                   />
                 )
+              ) : subEstadisticas === 'historicos' ? (
+                <MundialesHistoricos />
               ) : (
                 matches.isPending ? (
                   <SkeletonCard count={3} alto={180} />

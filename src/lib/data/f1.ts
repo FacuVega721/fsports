@@ -1,5 +1,6 @@
 import { HISTORIA_CIRCUITOS } from '../../data/circuitos-f1';
 import { HISTORIAL_EQUIPOS } from '../../data/equipos-f1';
+import { RESENA_PILOTOS } from '../../data/pilotos-f1';
 import { F1_API_BASE } from '../config';
 import { enRango, hoyArg, utcToArg } from '../time';
 import type {
@@ -47,6 +48,7 @@ import type {
  */
 
 interface ErgastDriver {
+  driverId?: string;
   givenName?: string;
   familyName?: string;
   code?: string;
@@ -59,7 +61,6 @@ interface ErgastConstructor {
   constructorId?: string;
   name?: string;
   nationality?: string;
-  url?: string;
 }
 
 interface ErgastRace {
@@ -464,7 +465,6 @@ export async function getF1TeamsApi(): Promise<F1Team[]> {
       nacionalidad: c.Constructor?.nationality ?? '',
       pos: Number(c.position ?? i + 1),
       puntos: Number(c.points ?? 0),
-      wikipedia: c.Constructor?.url ?? '',
       pilotos: pilotosPorEquipo.get(cid) ?? [],
       historial: HISTORIAL_EQUIPOS[cid] ?? '',
     };
@@ -532,12 +532,23 @@ export async function getF1NextApi(): Promise<NextRace | null> {
 export async function getF1DriversApi(): Promise<DriverStanding[]> {
   const data = await fetchJolpica('/current/driverStandings.json');
   const lista = data.MRData?.StandingsTable?.StandingsLists?.[0]?.DriverStandings ?? [];
-  return lista.map((d, i) => ({
-    pos: Number(d.position ?? i + 1),
-    nombre: `${(d.Driver?.givenName ?? '').charAt(0)}. ${d.Driver?.familyName ?? 'Piloto'}`,
-    pts: Number(d.points ?? 0),
-    equipo: d.Constructors?.[0]?.name ?? '',
-  }));
+  return lista.map((d, i) => {
+    const id = d.Driver?.driverId ?? '';
+    return {
+      pos: Number(d.position ?? i + 1),
+      nombre: `${(d.Driver?.givenName ?? '').charAt(0)}. ${d.Driver?.familyName ?? 'Piloto'}`,
+      pts: Number(d.points ?? 0),
+      equipo: d.Constructors?.[0]?.name ?? '',
+      id,
+      nombreCompleto: nombrePiloto(d.Driver),
+      code: d.Driver?.code ?? '',
+      numero: d.Driver?.permanentNumber ?? '',
+      nacionalidadCode: codigoNacionalidad(d.Driver?.nationality),
+      nacionalidad: d.Driver?.nationality ?? '',
+      edad: edadDesde(d.Driver?.dateOfBirth),
+      resena: RESENA_PILOTOS[id] ?? '',
+    };
+  });
 }
 
 export async function getF1ConstructorsApi(): Promise<ConstructorStanding[]> {

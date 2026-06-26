@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { CSSProperties } from 'react';
-import { ArrowLeft, ChevronRight, ExternalLink } from 'lucide-react';
+import { ArrowLeft, ChevronRight } from 'lucide-react';
 import type { F1Team } from '../../lib/types';
 import { EmptyState } from '../ui/EmptyState';
 import { Flag } from '../ui/Flag';
@@ -66,13 +66,6 @@ export function F1Teams({ teams }: F1TeamsProps) {
             </div>
           ))}
         </div>
-
-        {team.wikipedia && (
-          <a className={styles.wiki} href={team.wikipedia} target="_blank" rel="noopener noreferrer">
-            Más sobre {team.nombre} en Wikipedia
-            <ExternalLink size={13} aria-hidden="true" />
-          </a>
-        )}
       </div>
     );
   }

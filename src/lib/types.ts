@@ -203,6 +203,20 @@ export interface DriverStanding {
   nombre: string;
   pts: number;
   equipo: string;
+  /**
+   * Datos para la ficha de piloto (click-through). Opcionales: solo el modo
+   * `api` los provee; en `manual`/`demo` la fila se ve, pero sin detalle.
+   */
+  id?: string;
+  /** Nombre completo (sin abreviar), para la cabecera de la ficha. */
+  nombreCompleto?: string;
+  code?: string;
+  numero?: string;
+  nacionalidadCode?: string;
+  nacionalidad?: string;
+  edad?: number | null;
+  /** Reseña breve editable (la API no la provee); '' si no hay. */
+  resena?: string;
 }
 
 /** Una fila del campeonato de constructores. */
@@ -319,7 +333,6 @@ export interface F1Team {
   nacionalidad: string;
   pos: number;
   puntos: number;
-  wikipedia: string;
   pilotos: F1DriverInfo[];
   /** Reseña breve editable (la API no la provee); '' si no hay */
   historial: string;

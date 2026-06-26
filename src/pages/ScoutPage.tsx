@@ -47,7 +47,7 @@ const GRUPOS: { value: string; label: string }[] = [
 export default function ScoutPage() {
   useSeo(
     'FSports Scout Intelligence',
-    'Descubrí qué tan bueno es realmente cualquier jugador: sus puntos fuertes, en qué flojea, y cómo se compara con otros de su posición.',
+    'Descubrí la performance de cada talento de manera individual, sus puntos fuertes y oportunidades de mejora.',
     '/scout',
   );
 
@@ -187,8 +187,8 @@ export default function ScoutPage() {
         <span className="kicker">Scout Intelligence</span>
         <h1 className={styles.titulo}>Analizá jugadores con el ojo de un profesional</h1>
         <p className={styles.sub}>
-          Descubrí qué tan bueno es realmente: sus puntos fuertes, en qué
-          flojea, y cómo se compara con otros de su misma posición.
+          Descubrí la performance de cada talento de manera individual, sus
+          puntos fuertes y oportunidades de mejora.
         </p>
       </header>
 

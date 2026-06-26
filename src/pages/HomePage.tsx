@@ -328,10 +328,10 @@ export default function HomePage() {
       <Link to="/scout" className={styles.scoutCard}>
         <span className={styles.scoutBadge}>Nuevo</span>
         <span className="kicker">Scout Intelligence</span>
-        <p className={styles.scoutTitulo}>¿Qué tan bueno es tu jugador favorito?</p>
+        <p className={styles.scoutTitulo}>Analizá jugadores como un profesional</p>
         <p className={styles.scoutDesc}>
-          Sus puntos fuertes, en qué flojea y cómo se compara con otros de su
-          posición — descubrilo en segundos.
+          Revisá sus estadísticas, su desempeño en las principales
+          competencias y mucho más.
         </p>
         <span className={styles.scoutCta}>
           Probar gratis <ChevronRight size={14} aria-hidden="true" />

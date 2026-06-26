@@ -575,6 +575,68 @@ a.card:hover {
 }
 .podioP3 .podioNum { font-size: 13px; color: var(--medal-bronze, #a0693a); }
 
+/* ── Scout Intelligence (card promocional) ── */
+.scoutCard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: var(--space-4) var(--space-5);
+  background: var(--surface);
+  border: 1px solid rgba(255, 42, 42, 0.4);
+  border-radius: var(--radius-lg);
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.15s, transform 0.15s;
+}
+
+.scoutCard:hover {
+  border-color: var(--brand-bright);
+  transform: translateY(-1px);
+}
+
+.scoutBadge {
+  position: absolute;
+  top: -9px;
+  right: var(--space-4);
+  background: var(--brand);
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 999px;
+}
+
+.scoutTitulo {
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text);
+  margin-top: 2px;
+}
+
+.scoutDesc {
+  font-size: 13px;
+  color: var(--text-dim);
+  line-height: 1.5;
+  max-width: 60ch;
+}
+
+.scoutCta {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--brand-bright);
+  margin-top: 4px;
+}
+
 /* ── Responsive ── */
 @media (max-width: 720px) {
   .dashboard {

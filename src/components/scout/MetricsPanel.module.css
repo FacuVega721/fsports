@@ -1,0 +1,221 @@
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.identidad {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--border);
+}
+
+.identidad :global(.fi) {
+  font-size: 30px;
+  border-radius: 3px;
+}
+
+.identidad > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.nombre {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.meta {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-faint);
+}
+
+.cabecera h3 {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0 0 2px;
+}
+
+.cabecera p {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-faint);
+  line-height: 1.4;
+}
+
+.categoria {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.catTitulo {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--brand-bright);
+}
+
+.metricas {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.metrica {
+  display: grid;
+  grid-template-columns: 130px 1fr 44px 32px;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.etiqueta {
+  font-size: 13px;
+  color: var(--text-dim);
+  cursor: help;
+  text-decoration: underline dotted var(--text-faint);
+  text-underline-offset: 3px;
+}
+
+.barra {
+  position: relative;
+  height: 8px;
+  background: var(--bg-elevated);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.relleno {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.4s ease;
+}
+
+/* Escala semántica de percentil: verde (mejor) → neutro → naranja (peor).
+   No se usa el rojo de marca para no confundir identidad con "alerta". */
+.alto {
+  background: var(--green);
+}
+.medio {
+  background: rgba(47, 214, 114, 0.55);
+}
+.neutro {
+  background: var(--steel);
+}
+.bajo {
+  background: var(--orange);
+}
+
+.valor {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text);
+  text-align: right;
+}
+
+.pct {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-dim);
+  text-align: right;
+}
+
+/* ── Guía de lectura + leyenda de colores ──────────────────────────────── */
+.guia {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.guia p {
+  font-size: 13px;
+  color: var(--text-dim);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.guia strong {
+  color: var(--text);
+}
+
+.leyendaColores {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.leyendaColores li {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-faint);
+}
+
+.swatch {
+  width: 14px;
+  height: 8px;
+  border-radius: 999px;
+  display: inline-block;
+}
+
+/* ── Encabezados de columna ────────────────────────────────────────────── */
+.colHeaders {
+  display: grid;
+  grid-template-columns: 130px 1fr 44px 32px;
+  align-items: center;
+  gap: var(--space-3);
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--border);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-faint);
+}
+
+.colVal,
+.colPct {
+  text-align: right;
+}
+
+@media (max-width: 560px) {
+  .metrica,
+  .colHeaders {
+    grid-template-columns: 96px 1fr 38px 28px;
+    gap: var(--space-2);
+  }
+  .etiqueta {
+    font-size: 12px;
+  }
+  .colBar {
+    font-size: 9px;
+  }
+}

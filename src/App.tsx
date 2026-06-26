@@ -13,6 +13,8 @@ import HomePage from './pages/HomePage';
 import LinksPage from './pages/LinksPage';
 import MatchPage from './pages/MatchPage';
 import PrivacidadPage from './pages/PrivacidadPage';
+import ReportPage from './pages/ReportPage';
+import ScoutPage from './pages/ScoutPage';
 import TerminosPage from './pages/TerminosPage';
 
 /** Sube al tope y reproduce la transición de entrada al cambiar de ruta. */
@@ -31,6 +33,8 @@ function AnimatedRoutes() {
         <Route path="/f1" element={<F1Page />} />
         <Route path="/contenido" element={<ContentPage />} />
         <Route path="/futbol/partido/:id" element={<MatchPage />} />
+        <Route path="/scout" element={<ScoutPage />} />
+        <Route path="/r/:id" element={<ReportPage />} />
         <Route path="/terminos" element={<TerminosPage />} />
         <Route path="/privacidad" element={<PrivacidadPage />} />
         <Route path="/admin" element={<AdminPage />} />

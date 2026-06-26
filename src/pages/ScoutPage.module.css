@@ -1,0 +1,327 @@
+.pagina {
+  padding: var(--space-6) 0 var(--space-8);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  max-width: 760px;
+}
+
+.hero {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.titulo {
+  font-family: var(--font-display);
+  font-size: clamp(26px, 5vw, 40px);
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: 0.01em;
+}
+
+.sub {
+  font-size: 15px;
+  color: var(--text-dim);
+  line-height: 1.6;
+  max-width: 60ch;
+}
+
+/* ── Filtros + selector de jugador ─────────────────────────────────────── */
+.fila {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  align-items: stretch;
+}
+
+.filtro {
+  flex: 1;
+  min-width: 160px;
+  height: 46px;
+  box-sizing: border-box;
+  padding: 0 14px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+.filtro:focus {
+  outline: none;
+  border-color: var(--brand-bright);
+}
+
+.selectorJugador {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 14px 16px;
+  font-family: var(--font-body);
+  font-size: 16px;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+.selectorJugador:focus {
+  outline: none;
+  border-color: var(--brand-bright);
+}
+
+/* ── Botones de filtro (buscar / limpiar) ──────────────────────────────── */
+.buscar {
+  flex: 0 0 auto;
+  height: 46px;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 24px;
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  background: var(--brand);
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: filter 0.15s;
+}
+
+.buscar:hover {
+  filter: brightness(1.12);
+}
+
+.limpiar {
+  flex: 0 0 auto;
+  height: 46px;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 18px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-dim);
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.limpiar:hover {
+  border-color: var(--brand-bright);
+  color: var(--text);
+}
+
+/* ── Ficha del jugador elegido ─────────────────────────────────────────── */
+.ficha {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.ficha :global(.fi) {
+  font-size: 28px;
+  border-radius: 3px;
+}
+
+.fichaInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.fichaNombre {
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.fichaMeta {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-faint);
+}
+
+/* ── Selector de muestra (histórico / por competición) ─────────────────── */
+.muestras {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.muestrasLabel {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-faint);
+}
+
+.muestrasOpts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.muestra,
+.muestraActiva {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 8px 14px;
+  font-family: var(--font-body);
+  font-size: 13px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.muestra:hover {
+  border-color: var(--brand-bright);
+  color: var(--text);
+}
+
+.muestraActiva {
+  background: var(--brand);
+  border-color: var(--brand);
+  color: var(--text);
+}
+
+.muestraMin {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  opacity: 0.7;
+}
+
+.muestrasHint {
+  font-size: 12px;
+  color: var(--text-faint);
+  line-height: 1.5;
+}
+
+/* ── Controles (idioma + generar) ─────────────────────────────────────── */
+.controles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  align-items: center;
+}
+
+.toggle {
+  display: inline-flex;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.toggle button {
+  padding: 10px 16px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-dim);
+  background: var(--surface);
+  border: none;
+  cursor: pointer;
+}
+
+.toggleActivo {
+  color: var(--text) !important;
+  background: var(--brand) !important;
+}
+
+.generar {
+  flex: 1;
+  min-width: 220px;
+  padding: 12px 20px;
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  background: var(--grad-primary);
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: filter 0.15s;
+}
+
+.generar:hover:not(:disabled) {
+  filter: brightness(1.1);
+}
+
+.generar:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.error {
+  color: var(--red);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.error code {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  background: var(--surface);
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+
+.vacio {
+  color: var(--text-dim);
+  font-size: 14px;
+}
+
+/* ── Compartir informe ────────────────────────────────────────────────── */
+.compartir {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+.compartir a {
+  color: var(--brand-bright);
+  font-weight: 600;
+}
+
+.compartir button {
+  padding: 6px 12px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-dim);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.compartir button:hover {
+  border-color: var(--brand-bright);
+  color: var(--text);
+}

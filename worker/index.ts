@@ -22,10 +22,13 @@
 
 import { BUILD_TOKEN } from './token.generated';
 import { ADMIN_PIN as BUILD_ADMIN_PIN, ADMIN_SECRET as BUILD_ADMIN_SECRET } from './admin.generated';
+import scoutApp from './scout';
 
 interface Env {
   ASSETS: { fetch: (request: Request) => Promise<Response> };
   FOOTBALL_DATA_TOKEN?: string;
+  DB: D1Database;
+  KV: KVNamespace;
 }
 
 const FOOTBALL_BASE = 'https://api.football-data.org/v4';
@@ -199,9 +202,14 @@ function resolverToken(env: Env): string {
 // ── Handler principal ─────────────────────────────────────────────────────────
 
 export default {
-  async fetch(request: Request, env: Env): Promise<Response> {
+  async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
     const url = new URL(request.url);
     const { pathname, method } = { pathname: url.pathname, method: request.method };
+
+    // ── 0) FSports Scout Intelligence (/api/scout/*) ──────────────────────────
+    if (pathname.startsWith('/api/scout')) {
+      return scoutApp.fetch(request, env, ctx);
+    }
 
     // ── 1) Proxy football-data.org ────────────────────────────────────────────
     if (pathname.startsWith(PREFIX)) {

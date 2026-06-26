@@ -14,7 +14,18 @@ export function Header() {
         <NavLink to="/" className={styles.marca} aria-label="FSports — inicio">
           <Logo />
         </NavLink>
-        <SportNav />
+        <div className={styles.acciones}>
+          <NavLink
+            to="/scout"
+            title="Scout Intelligence"
+            className={({ isActive }) =>
+              isActive ? `${styles.scoutBtn} ${styles.scoutBtnActivo}` : styles.scoutBtn
+            }
+          >
+            Scout
+          </NavLink>
+          <SportNav />
+        </div>
       </div>
     </header>
   );

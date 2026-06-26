@@ -8,6 +8,21 @@
   // Conserva las variables/secrets cargadas en el dashboard (ej: FOOTBALL_DATA_TOKEN)
   // al desplegar. Sin esto, cada deploy crea una versión sin esos bindings.
   "keep_vars": true,
+  // Bindings del módulo Scout (FSports Scout Intelligence, /api/scout/* y /scout).
+  // Ver worker/scout/.
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "fsports-scout-db",
+      "database_id": "1a315538-5ef5-43fd-8478-737d54ea2a9d"
+    }
+  ],
+  "kv_namespaces": [
+    {
+      "binding": "KV",
+      "id": "fb20b5a1572841bc84953eab5f280cb0"
+    }
+  ],
   "assets": {
     "directory": "./dist",
     "binding": "ASSETS",

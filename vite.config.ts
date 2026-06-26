@@ -24,6 +24,9 @@ export default defineConfig(({ mode }) => {
           rewrite: (p) => p.replace(/^\/api\/football/, ''),
           headers: token ? { 'X-Auth-Token': token } : undefined,
         },
+        // FSports Scout necesita bindings reales (D1/KV) que solo existen bajo
+        // `wrangler dev`. Correlo aparte (puerto 8788) para probar /api/scout en local.
+        '/api/scout': 'http://127.0.0.1:8788',
       },
     },
     plugins: [

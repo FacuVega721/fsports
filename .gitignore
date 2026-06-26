@@ -1,7 +1,9 @@
 node_modules
 dist
 dev-dist
+.wrangler/
 .env.local
+.dev.vars
 *.local
 .DS_Store
 
@@ -11,3 +13,6 @@ dev-dist
 # Archivos inyectados en build (nunca se commitean)
 worker/token.generated.ts
 worker/admin.generated.ts
+
+# Scout: SQL de carga generado por la ingesta (se regenera con npm run scout:ingest)
+worker/scout/db/seed.generated.sql

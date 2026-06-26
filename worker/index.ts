@@ -234,6 +234,35 @@ function resolverToken(env: Env): string {
   return rt.length > 0 ? rt : BUILD_TOKEN;
 }
 
+/** Misma verificación de sesión que /admin/verify, reusable fuera de esa ruta. */
+async function esAdmin(request: Request): Promise<boolean> {
+  const secret = BUILD_ADMIN_SECRET;
+  if (!secret) return false;
+  const raw = getCookie(request, ADMIN_COOKIE);
+  if (!raw) return false;
+  try {
+    return await verificarToken(raw, secret);
+  } catch {
+    return false;
+  }
+}
+
+interface ReporteAdminRow {
+  id: string;
+  player_name: string;
+  locale: string;
+  created_at: string;
+}
+
+/** Listado de todos los informes de Scout ya generados, solo para admin. */
+async function servirReportesAdmin(request: Request, env: Env): Promise<Response> {
+  if (!(await esAdmin(request))) return jsonResponse({ error: 'forbidden' }, 403);
+  const { results } = await env.DB.prepare(
+    `SELECT id, player_name, locale, created_at FROM reports ORDER BY created_at DESC LIMIT 200`,
+  ).all<ReporteAdminRow>();
+  return jsonResponse({ reports: results });
+}
+
 // ── Handler principal ─────────────────────────────────────────────────────────
 
 export default {
@@ -242,6 +271,9 @@ export default {
     const { pathname, method } = { pathname: url.pathname, method: request.method };
 
     // ── 0) FSports Scout Intelligence (/api/scout/*) ──────────────────────────
+    if (pathname === '/api/scout/admin/reports' && method === 'GET') {
+      return servirReportesAdmin(request, env);
+    }
     if (pathname.startsWith('/api/scout')) {
       return scoutApp.fetch(request, env, ctx);
     }

@@ -1,13 +1,15 @@
-import { useState, type ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import {
   CheckCircle,
   Clock,
   Copy,
+  ExternalLink,
   Flag,
   Gauge,
   Home,
   LogOut,
+  Search,
   ShieldCheck,
   Trophy,
   Tv,
@@ -112,6 +114,70 @@ function Categoria({ icono, titulo, children }: { icono: ReactNode; titulo: stri
   );
 }
 
+// ── Scout Intelligence: listado de todos los informes ya generados ───────────
+
+interface ReporteAdmin {
+  id: string;
+  player_name: string;
+  locale: string;
+  created_at: string;
+}
+
+function ScoutReportes() {
+  const [reportes, setReportes] = useState<ReporteAdmin[] | null>(null);
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    fetch('/api/scout/admin/reports')
+      .then((r) => {
+        if (!r.ok) throw new Error();
+        return r.json();
+      })
+      .then((d: { reports: ReporteAdmin[] }) => setReportes(d.reports))
+      .catch(() => setError(true));
+  }, []);
+
+  if (error) {
+    return (
+      <ProximamenteCard
+        titulo="Informes generados"
+        detalle="No se pudo cargar el listado. En desarrollo local la sesión admin es simulada (sin cookie real); probá en producción."
+      />
+    );
+  }
+  if (!reportes) return <p className={styles.empty}>Cargando informes...</p>;
+  if (reportes.length === 0) {
+    return <p className={styles.empty}>Todavía no se generó ningún informe.</p>;
+  }
+
+  return (
+    <ul className={styles.reportesLista}>
+      {reportes.map((r) => (
+        <li key={r.id} className={styles.reporteRow}>
+          <div className={styles.reporteInfo}>
+            <span className={styles.reporteNombre}>{r.player_name}</span>
+            <span className={styles.reporteMeta}>
+              {r.locale.toUpperCase()} ·{' '}
+              {new Date(`${r.created_at.replace(' ', 'T')}Z`).toLocaleString('es-AR', {
+                dateStyle: 'short',
+                timeStyle: 'short',
+              })}
+            </span>
+          </div>
+          <a
+            href={`/r/${r.id}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.reporteLink}
+          >
+            Ver <ExternalLink size={12} aria-hidden="true" />
+          </a>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
 // ── Resultado de partido: marcador + goleadores automáticos, comentario editable ──
 
 function ResultadoTool({ matchId }: { matchId: string }) {
@@ -178,6 +244,7 @@ function Dashboard() {
         <Link to="/futbol" className={styles.siteNavLink}><Flag size={13} />Fútbol</Link>
         <Link to="/f1" className={styles.siteNavLink}><Tv size={13} />Fórmula 1</Link>
         <Link to="/contenido" className={styles.siteNavLink}><Copy size={13} />Contenido</Link>
+        <Link to="/scout" className={styles.siteNavLink}><Search size={13} />Scout</Link>
       </nav>
 
       {/* Contenido */}
@@ -239,6 +306,11 @@ function Dashboard() {
               {resultadoF1Post && (
                 <XPreviewCard label={`Resultado (resumen) · ${ultima.data?.gp}`} texto={resultadoF1Post} />
               )}
+            </Categoria>
+
+            {/* ── SCOUT INTELLIGENCE ── */}
+            <Categoria icono={<Search size={14} aria-hidden="true" />} titulo="Scout Intelligence">
+              <ScoutReportes />
             </Categoria>
           </>
         )}

@@ -1,3 +1,5 @@
+import { useState } from 'react';
+import { Info } from 'lucide-react';
 import { Flag } from '../ui/Flag';
 import { codigoBandera, paisEspanol } from '../../lib/scout/banderas';
 import styles from './MetricsPanel.module.css';
@@ -107,6 +109,7 @@ function valueLabel(key: string, v: number): string {
 
 export function MetricsPanel({ profile }: { profile: PlayerProfile }) {
   const grupo = GROUP_LABEL[profile.positionGroup] ?? 'su posición';
+  const [guiaAbierta, setGuiaAbierta] = useState(false);
   return (
     <section className={styles.panel}>
       <div className={styles.identidad}>
@@ -120,33 +123,46 @@ export function MetricsPanel({ profile }: { profile: PlayerProfile }) {
         </div>
       </div>
       <header className={styles.cabecera}>
-        <h3>Perfil estadístico {profile.kind === 'agg' ? '· Histórico' : `· ${profile.competition} ${profile.season}`}</h3>
+        <div className={styles.cabeceraFila}>
+          <h3>Perfil estadístico {profile.kind === 'agg' ? '· Histórico' : `· ${profile.competition} ${profile.season}`}</h3>
+          <button
+            type="button"
+            className={styles.guiaToggle}
+            onClick={() => setGuiaAbierta((v) => !v)}
+            aria-expanded={guiaAbierta}
+          >
+            <Info size={13} aria-hidden="true" />
+            Referencias
+          </button>
+        </div>
         <p>
           Muestra: {Math.round(profile.minutes)}′ en {profile.matches} partidos
           {profile.kind === 'agg' ? ` (${profile.season})` : ` · ${profile.competition} ${profile.season}`}
         </p>
       </header>
 
-      {/* Guía de lectura: qué es cada número y cada color */}
-      <div className={styles.guia}>
-        <p>
-          Cada métrica muestra el valor <strong>por 90 minutos</strong> del jugador y
-          su <strong>percentil</strong> (0–100) frente a los demás {grupo}{' '}
-          {profile.kind === 'agg'
-            ? 'de los torneos internacionales recientes'
-            : `de ${profile.competition} ${profile.season}`}
-          . Por ejemplo, un percentil de 90 significa que rinde mejor que el 90% de
-          los {grupo} en esa métrica. La barra y su color reflejan ese percentil.
-        </p>
-        <ul className={styles.leyendaColores}>
-          {LEYENDA_COLORES.map((l) => (
-            <li key={l.label}>
-              <span className={`${styles.swatch} ${TIER_CLASSES[l.cls]}`} />
-              {l.label}
-            </li>
-          ))}
-        </ul>
-      </div>
+      {/* Guía de lectura: qué es cada número y cada color (colapsada por defecto) */}
+      {guiaAbierta && (
+        <div className={styles.guia}>
+          <p>
+            Cada métrica muestra el valor <strong>por 90 minutos</strong> del jugador y
+            su <strong>percentil</strong> (0–100) frente a los demás {grupo}{' '}
+            {profile.kind === 'agg'
+              ? 'de los torneos internacionales recientes'
+              : `de ${profile.competition} ${profile.season}`}
+            . Por ejemplo, un percentil de 90 significa que rinde mejor que el 90% de
+            los {grupo} en esa métrica. La barra y su color reflejan ese percentil.
+          </p>
+          <ul className={styles.leyendaColores}>
+            {LEYENDA_COLORES.map((l) => (
+              <li key={l.label}>
+                <span className={`${styles.swatch} ${TIER_CLASSES[l.cls]}`} />
+                {l.label}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       {/* Encabezados de columna */}
       <div className={styles.colHeaders}>

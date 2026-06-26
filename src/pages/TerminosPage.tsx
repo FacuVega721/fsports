@@ -60,13 +60,33 @@ export default function TerminosPage() {
             >
               Jolpica-F1
             </a>
-            , API pública sin restricción de uso. FSports utiliza estas fuentes respetando
-            sus condiciones de servicio.
+            , API pública sin restricción de uso. Los datos utilizados en la sección Scout
+            Intelligence provienen de{' '}
+            <a
+              href="https://github.com/statsbomb/open-data"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              StatsBomb Open Data
+            </a>
+            . FSports utiliza estas fuentes respetando sus condiciones de servicio.
           </p>
         </div>
 
         <div className={styles.seccion}>
-          <h2>4. Propiedad intelectual</h2>
+          <h2>4. Scout Intelligence</h2>
+          <p>
+            Los análisis de esta sección se generan de forma automática a partir de
+            estadísticas y métricas de rendimiento obtenidas de bases de datos públicas.
+            Su finalidad es informativa y de entretenimiento: no sustituye la evaluación
+            de un scout profesional ni constituye una recomendación de fichaje,
+            transferencia o valoración deportiva. Cada informe queda disponible en una
+            página propia con un enlace único, que puede compartirse libremente.
+          </p>
+        </div>
+
+        <div className={styles.seccion}>
+          <h2>5. Propiedad intelectual</h2>
           <p>
             Los nombres, logotipos, marcas y denominaciones de competiciones deportivas
             (Copa Mundial FIFA, Fórmula 1, entre otras) son propiedad exclusiva de sus
@@ -77,7 +97,7 @@ export default function TerminosPage() {
         </div>
 
         <div className={styles.seccion}>
-          <h2>5. Uso personal</h2>
+          <h2>6. Uso personal</h2>
           <p>
             El contenido de FSports es de uso personal e intransferible. Queda prohibida
             la reproducción, distribución o uso comercial del contenido sin autorización
@@ -86,7 +106,7 @@ export default function TerminosPage() {
         </div>
 
         <div className={styles.seccion}>
-          <h2>6. Exoneración de responsabilidad</h2>
+          <h2>7. Exoneración de responsabilidad</h2>
           <p>
             FSports no se responsabiliza por daños o perjuicios derivados del uso o la
             imposibilidad de uso del sitio, ni por la exactitud de la información provista.
@@ -95,7 +115,7 @@ export default function TerminosPage() {
         </div>
 
         <div className={styles.seccion}>
-          <h2>7. Privacidad y datos personales</h2>
+          <h2>8. Privacidad y datos personales</h2>
           <p>
             El tratamiento de datos personales y el uso de cookies se detalla en nuestra{' '}
             <Link to="/privacidad">Política de privacidad</Link>.
@@ -103,7 +123,7 @@ export default function TerminosPage() {
         </div>
 
         <div className={styles.seccion}>
-          <h2>8. Compartir contenido</h2>
+          <h2>9. Compartir contenido</h2>
           <p>
             La información publicada en FSports puede compartirse libremente, incluyendo
             capturas de pantalla, siempre que se cite la fuente (FSports /
@@ -113,7 +133,7 @@ export default function TerminosPage() {
         </div>
 
         <div className={styles.seccion}>
-          <h2>9. Cambios y contacto</h2>
+          <h2>10. Cambios y contacto</h2>
           <p>
             Estos términos pueden actualizarse en cualquier momento. Para consultas o
             reportes, podés contactarnos a través de nuestras redes sociales{' '}

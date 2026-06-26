@@ -18,6 +18,24 @@
   padding: var(--space-4);
 }
 
+.historicos {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4) var(--space-4);
+}
+
+.scroll {
+  max-height: 420px;
+  overflow-y: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.scroll .tabla {
+  border: none;
+}
+
 .tabla {
   width: 100%;
   border-collapse: collapse;

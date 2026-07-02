@@ -35,6 +35,14 @@
   color: var(--text-faint);
 }
 
+/* Bajada funcional: dice qué es el sitio, no solo la marca */
+.heroValor {
+  font-family: var(--font-display);
+  font-size: 14px;
+  color: var(--text-dim);
+  max-width: 46ch;
+}
+
 /* ── Tira de hoy ── */
 .strip {
   display: flex;
@@ -582,12 +590,13 @@ a.card:hover {
   flex-direction: column;
   gap: 6px;
   padding: var(--space-4) var(--space-5);
-  background: var(--surface);
-  border: 1px solid rgba(255, 42, 42, 0.4);
+  background: linear-gradient(160deg, rgba(213, 0, 0, 0.14) 0%, var(--surface) 55%);
+  border: 1px solid rgba(255, 42, 42, 0.5);
   border-radius: var(--radius-lg);
   text-decoration: none;
   color: inherit;
-  transition: border-color 0.15s, transform 0.15s;
+  box-shadow: var(--glow-red);
+  transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s;
 }
 
 .scoutCard:hover {

@@ -240,6 +240,9 @@ export default function HomePage() {
           <Logo />
         </div>
         <p className={styles.tagline}>Fanáticos del deporte.</p>
+        <p className={styles.heroValor}>
+          Mundial 2026 y Fórmula 1 en vivo — más análisis de jugadores con IA.
+        </p>
       </header>
 
       {/* TIRA EN VIVO / HOY */}
@@ -255,6 +258,20 @@ export default function HomePage() {
           </div>
         </div>
       )}
+
+      {/* SCOUT INTELLIGENCE — arriba del dashboard, es la prioridad de crecimiento actual */}
+      <Link to="/scout" className={styles.scoutCard}>
+        <span className={styles.scoutBadge}>Nuevo</span>
+        <span className="kicker">Scout Intelligence</span>
+        <p className={styles.scoutTitulo}>Analizá jugadores como un profesional</p>
+        <p className={styles.scoutDesc}>
+          Revisá sus estadísticas, su desempeño en las principales
+          competencias y mucho más.
+        </p>
+        <span className={styles.scoutCta}>
+          Probar gratis <ChevronRight size={14} aria-hidden="true" />
+        </span>
+      </Link>
 
       {/* DASHBOARD */}
       <div className={styles.dashboard}>
@@ -323,20 +340,6 @@ export default function HomePage() {
         </section>
 
       </div>
-
-      {/* SCOUT INTELLIGENCE */}
-      <Link to="/scout" className={styles.scoutCard}>
-        <span className={styles.scoutBadge}>Nuevo</span>
-        <span className="kicker">Scout Intelligence</span>
-        <p className={styles.scoutTitulo}>Analizá jugadores como un profesional</p>
-        <p className={styles.scoutDesc}>
-          Revisá sus estadísticas, su desempeño en las principales
-          competencias y mucho más.
-        </p>
-        <span className={styles.scoutCta}>
-          Probar gratis <ChevronRight size={14} aria-hidden="true" />
-        </span>
-      </Link>
 
       {modalMatchId && (
         <MatchModal matchId={modalMatchId} onClose={() => setModalMatchId(null)} />

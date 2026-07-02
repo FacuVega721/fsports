@@ -1,0 +1,110 @@
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+
+.leyenda {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  padding-bottom: var(--space-2);
+}
+
+.leyBase,
+.leyRival {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.leyRival {
+  color: var(--text-dim);
+}
+
+.swatchBase {
+  width: 11px;
+  height: 11px;
+  border-radius: 3px;
+  background: var(--green);
+}
+
+.swatchRival {
+  width: 2px;
+  height: 14px;
+  background: var(--steel);
+}
+
+.filas {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.fila {
+  display: grid;
+  grid-template-columns: 130px 1fr 34px 34px;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.etiqueta {
+  font-size: 13px;
+  color: var(--text-dim);
+}
+
+.barra {
+  position: relative;
+  height: 9px;
+  background: var(--bg-elevated);
+  border-radius: 999px;
+}
+
+.relleno {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.5s ease;
+}
+
+/* Línea vertical plata: percentil del rival */
+.marcadorRival {
+  position: absolute;
+  top: -3px;
+  bottom: -3px;
+  width: 2px;
+  background: var(--steel);
+  transform: translateX(-1px);
+}
+
+.valBase {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
+  text-align: right;
+}
+
+.valRival {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-faint);
+  text-align: right;
+}
+
+@media (max-width: 560px) {
+  .fila {
+    grid-template-columns: 96px 1fr 30px 30px;
+    gap: var(--space-2);
+  }
+  .etiqueta {
+    font-size: 12px;
+  }
+}

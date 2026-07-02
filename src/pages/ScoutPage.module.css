@@ -3,7 +3,6 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-5);
-  max-width: 760px;
 }
 
 .hero {
@@ -27,12 +26,47 @@
   max-width: 60ch;
 }
 
-/* ── Filtros + selector de jugador ─────────────────────────────────────── */
+/* ── Controles: búsqueda + nacionalidad + orden ────────────────────────── */
 .fila {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-3);
   align-items: stretch;
+}
+
+.buscador {
+  position: relative;
+  flex: 2;
+  min-width: 220px;
+  display: flex;
+  align-items: center;
+}
+
+.buscadorIcono {
+  position: absolute;
+  left: 14px;
+  color: var(--text-faint);
+  pointer-events: none;
+}
+
+.buscadorInput {
+  width: 100%;
+  height: 46px;
+  box-sizing: border-box;
+  padding: 0 14px 0 40px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.buscadorInput:focus {
+  outline: none;
+  border-color: var(--brand-bright);
+  box-shadow: var(--glow-red);
 }
 
 .filtro {
@@ -56,118 +90,19 @@
   border-color: var(--brand-bright);
 }
 
-/* ── Botones de filtro (buscar / limpiar) ──────────────────────────────── */
-.buscar {
-  flex: 0 0 auto;
-  height: 46px;
-  box-sizing: border-box;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 24px;
-  font-family: var(--font-display);
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--text);
-  background: var(--brand);
-  border: none;
-  border-radius: var(--radius);
-  cursor: pointer;
-  transition: filter 0.15s;
-}
-
-.buscar:hover {
-  filter: brightness(1.12);
-}
-
-.limpiar {
-  flex: 0 0 auto;
-  height: 46px;
-  box-sizing: border-box;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 18px;
-  font-family: var(--font-mono);
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--text-dim);
-  background: transparent;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  cursor: pointer;
-  transition: border-color 0.15s, color 0.15s;
-}
-
-.limpiar:hover {
-  border-color: var(--brand-bright);
-  color: var(--text);
-}
-
-/* ── Ficha del jugador elegido ─────────────────────────────────────────── */
-.ficha {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  padding: var(--space-3) var(--space-4);
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-}
-
-.ficha :global(.fi) {
-  font-size: 28px;
-  border-radius: 3px;
-}
-
-.fichaInfo {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.fichaNombre {
-  font-family: var(--font-display);
-  font-size: 17px;
-  font-weight: 700;
-  color: var(--text);
-}
-
-.fichaMeta {
-  font-family: var(--font-mono);
-  font-size: 12px;
-  color: var(--text-faint);
-}
-
-/* ── Selector de muestra (histórico / por competición) ─────────────────── */
-.muestras {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-}
-
-.muestrasLabel {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--text-faint);
-}
-
-.muestrasOpts {
+/* ── Chips de posición ─────────────────────────────────────────────────── */
+.chips {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-2);
 }
 
-.muestra,
-.muestraActiva {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  padding: 8px 14px;
+.chip,
+.chipActivo {
+  padding: 8px 16px;
   font-family: var(--font-body);
   font-size: 13px;
+  font-weight: 600;
   border: 1px solid var(--border);
   border-radius: 999px;
   background: var(--surface);
@@ -176,84 +111,137 @@
   transition: all 0.15s;
 }
 
-.muestra:hover {
+.chip:hover {
   border-color: var(--brand-bright);
   color: var(--text);
 }
 
-.muestraActiva {
+.chipActivo {
   background: var(--brand);
   border-color: var(--brand);
   color: var(--text);
 }
 
-.muestraMin {
+/* ── Contador ──────────────────────────────────────────────────────────── */
+.contador {
   font-family: var(--font-mono);
   font-size: 11px;
-  opacity: 0.7;
-}
-
-.muestrasHint {
-  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
   color: var(--text-faint);
-  line-height: 1.5;
 }
 
-/* ── Controles (idioma + generar) ─────────────────────────────────────── */
-.controles {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-3);
-  align-items: center;
-}
-
-.toggle {
-  display: inline-flex;
+/* ── Tabla de resultados ───────────────────────────────────────────────── */
+.tabla {
+  background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   overflow: hidden;
+  box-shadow: var(--shadow-card);
 }
 
-.toggle button {
-  padding: 10px 16px;
+.filaTabla {
+  display: grid;
+  grid-template-columns: 36px minmax(0, 1.7fr) minmax(0, 1.1fr) 52px 96px;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-4);
+}
+
+.cabeceraTabla {
+  background: var(--bg-elevated);
+  border-bottom: 1px solid var(--border);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-faint);
+}
+
+.filaJugador {
+  border-bottom: 1px solid var(--border);
+  text-decoration: none;
+  color: inherit;
+  transition: background 0.12s;
+}
+
+.filaJugador:last-child {
+  border-bottom: none;
+}
+
+.filaJugador:hover {
+  background: var(--surface-hover);
+}
+
+.colNum {
   font-family: var(--font-mono);
   font-size: 12px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
+  color: var(--text-faint);
+  text-align: center;
+}
+
+.colPos {
+  text-align: left;
+}
+
+.colEdad {
+  font-family: var(--font-mono);
+  font-size: 13px;
   color: var(--text-dim);
-  background: var(--surface);
-  border: none;
-  cursor: pointer;
+  text-align: center;
 }
 
-.toggleActivo {
-  color: var(--text) !important;
-  background: var(--brand) !important;
+.colScore {
+  display: flex;
+  justify-content: flex-end;
 }
 
-.generar {
-  flex: 1;
-  min-width: 220px;
-  padding: 12px 20px;
+.jugadorCell {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.jugadorCell :global(.fi) {
+  font-size: 22px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.jugadorInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.jugadorNombre {
   font-family: var(--font-display);
-  font-size: 15px;
-  font-weight: 700;
+  font-size: 14px;
+  font-weight: 600;
   color: var(--text);
-  background: var(--grad-primary);
-  border: none;
-  border-radius: var(--radius);
-  cursor: pointer;
-  transition: filter 0.15s;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.generar:hover:not(:disabled) {
-  filter: brightness(1.1);
+.jugadorClub {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-faint);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.generar:disabled {
-  opacity: 0.6;
-  cursor: default;
+.badgePos {
+  font-size: 12.5px;
+  color: var(--text-dim);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .error {
@@ -270,39 +258,15 @@
   border-radius: 4px;
 }
 
-.vacio {
-  color: var(--text-dim);
-  font-size: 14px;
-}
+/* ── Responsive: en mobile, ocultar la columna de posición ─────────────── */
+@media (max-width: 560px) {
+  .filaTabla {
+    grid-template-columns: 28px minmax(0, 1fr) 44px 72px;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-3);
+  }
 
-/* ── Compartir informe ────────────────────────────────────────────────── */
-.compartir {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--space-3);
-  font-family: var(--font-mono);
-  font-size: 12px;
-}
-
-.compartir a {
-  color: var(--brand-bright);
-  font-weight: 600;
-}
-
-.compartir button {
-  padding: 6px 12px;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--text-dim);
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-}
-
-.compartir button:hover {
-  border-color: var(--brand-bright);
-  color: var(--text);
+  .colPos {
+    display: none;
+  }
 }

@@ -15,6 +15,7 @@ import MatchPage from './pages/MatchPage';
 import PrivacidadPage from './pages/PrivacidadPage';
 import ReportPage from './pages/ReportPage';
 import ScoutPage from './pages/ScoutPage';
+import ScoutPlayerPage from './pages/ScoutPlayerPage';
 import TerminosPage from './pages/TerminosPage';
 
 /** Sube al tope y reproduce la transición de entrada al cambiar de ruta. */
@@ -34,6 +35,7 @@ function AnimatedRoutes() {
         <Route path="/contenido" element={<ContentPage />} />
         <Route path="/futbol/partido/:id" element={<MatchPage />} />
         <Route path="/scout" element={<ScoutPage />} />
+        <Route path="/scout/jugador/:id" element={<ScoutPlayerPage />} />
         <Route path="/r/:id" element={<ReportPage />} />
         <Route path="/terminos" element={<TerminosPage />} />
         <Route path="/privacidad" element={<PrivacidadPage />} />

@@ -1,14 +1,13 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Search } from 'lucide-react';
 import { useSeo } from '../hooks/useSeo';
-import { ReportView } from '../components/scout/ReportView';
-import { MetricsPanel, type PlayerProfile } from '../components/scout/MetricsPanel';
 import { FlagSelect } from '../components/scout/FlagSelect';
-import { PlayerSelect } from '../components/scout/PlayerSelect';
 import { Flag } from '../components/ui/Flag';
+import { ProgressRing } from '../components/ui/ProgressRing';
+import { EmptyState } from '../components/ui/EmptyState';
 import { codigoBandera, paisEspanol } from '../lib/scout/banderas';
 import styles from './ScoutPage.module.css';
-
-type Locale = 'es' | 'en';
 
 interface PlayerSummary {
   id: string;
@@ -20,55 +19,47 @@ interface PlayerSummary {
   age: number | null;
   competition: string;
   season: string;
+  score: number;
 }
 
-interface PlayerSample {
-  id: string;
-  kind: 'comp' | 'agg';
-  competition: string;
-  season: string;
-  minutes: number;
-  matches: number;
-}
-
-function sampleLabel(s: PlayerSample): string {
-  if (s.kind === 'agg') return `Histórico (${s.season})`;
-  return `${s.competition} ${s.season}`;
-}
+type Orden = 'score' | 'edad' | 'nombre';
 
 const GRUPOS: { value: string; label: string }[] = [
-  { value: '', label: 'Selecciona posición' },
+  { value: '', label: 'Todos' },
   { value: 'GK', label: 'Arqueros' },
   { value: 'DEF', label: 'Defensores' },
-  { value: 'MID', label: 'Mediocampistas' },
+  { value: 'MID', label: 'Volantes' },
   { value: 'FWD', label: 'Delanteros' },
 ];
+
+const ORDENES: { value: Orden; label: string }[] = [
+  { value: 'score', label: 'Scout Score' },
+  { value: 'edad', label: 'Edad' },
+  { value: 'nombre', label: 'Nombre' },
+];
+
+/** Quita tildes para comparar en el filtro de texto (Mastantuono ≈ mastantuono). */
+function normalizar(s: string): string {
+  return s.normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase();
+}
 
 export default function ScoutPage() {
   useSeo(
     'FSports Scout Intelligence',
-    'Descubrí la performance de cada talento de manera individual, sus puntos fuertes y oportunidades de mejora.',
+    'Descubrí y compará el rendimiento de cada talento: sus puntos fuertes y oportunidades de mejora.',
     '/scout',
   );
 
   const [grupo, setGrupo] = useState('');
   const [nacion, setNacion] = useState('');
   const [nacionesDisp, setNacionesDisp] = useState<string[]>([]);
+  const [query, setQuery] = useState('');
+  const [orden, setOrden] = useState<Orden>('score');
   const [players, setPlayers] = useState<PlayerSummary[]>([]);
   const [cargando, setCargando] = useState(false);
   const [cargaError, setCargaError] = useState(false);
-  const [selected, setSelected] = useState<PlayerSummary | null>(null);
-  const [samples, setSamples] = useState<PlayerSample[]>([]);
-  const [sampleId, setSampleId] = useState<string>('');
-  const [locale, setLocale] = useState<Locale>('es');
-  const [report, setReport] = useState<string | null>(null);
-  const [profile, setProfile] = useState<PlayerProfile | null>(null);
-  const [reportId, setReportId] = useState<string | null>(null);
-  const [copiado, setCopiado] = useState(false);
-  const [generando, setGenerando] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
-  // Nacionalidades disponibles para el filtro (una sola vez).
+  // Nacionalidades para el filtro (una sola vez).
   useEffect(() => {
     fetch('/api/scout/nationalities')
       .then((res) => res.json())
@@ -76,12 +67,12 @@ export default function ScoutPage() {
       .catch(() => setNacionesDisp([]));
   }, []);
 
-  // Trae la lista de jugadores con los filtros dados (no auto-aplica: se dispara
-  // con el botón Buscar o al limpiar). En la carga inicial trae todos.
-  function buscar(g = grupo, n = nacion) {
+  // Trae la lista según posición + nacionalidad (server-side). El texto y el
+  // orden se aplican en el cliente para respuesta instantánea.
+  useEffect(() => {
     const params = new URLSearchParams();
-    if (g) params.set('group', g);
-    if (n) params.set('nat', n);
+    if (grupo) params.set('group', grupo);
+    if (nacion) params.set('nat', nacion);
     setCargando(true);
     setCargaError(false);
     fetch(`/api/scout/search?${params.toString()}`)
@@ -95,250 +86,124 @@ export default function ScoutPage() {
         setCargaError(true);
       })
       .finally(() => setCargando(false));
-    setSelected(null);
-    setSamples([]);
-    setSampleId('');
-    setReport(null);
-    setProfile(null);
-  }
+  }, [grupo, nacion]);
 
-  function limpiarFiltros() {
-    setGrupo('');
-    setNacion('');
-    buscar('', '');
-  }
-
-  // Carga inicial: todos los jugadores.
-  useEffect(() => {
-    buscar('', '');
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  function elegir(id: string) {
-    const p = players.find((x) => x.id === id) ?? null;
-    setSelected(p);
-    setReport(null);
-    setProfile(null);
-    setReportId(null);
-    setError(null);
-    setSamples([]);
-    setSampleId('');
-    if (!p) return;
-    // Traer las muestras del jugador (histórico + cada competición).
-    fetch(`/api/scout/samples?key=${encodeURIComponent(p.playerKey)}`)
-      .then((res) => res.json())
-      .then((d: { samples: PlayerSample[] }) => {
-        setSamples(d.samples);
-        setSampleId(d.samples[0]?.id ?? p.id); // histórico primero
-      })
-      .catch(() => setSampleId(p.id));
-  }
-
-  // El panel de métricas (percentiles desde D1) se carga solo, sin pasar por
-  // Claude: es gratis. El informe con IA queda como acción aparte (botón).
-  useEffect(() => {
-    if (!sampleId) return;
-    setReport(null);
-    setReportId(null);
-    setError(null);
-    fetch(`/api/scout/profile?id=${encodeURIComponent(sampleId)}`)
-      .then((res) => res.json())
-      .then((d: { profile?: PlayerProfile }) => setProfile(d.profile ?? null))
-      .catch(() => setProfile(null));
-  }, [sampleId]);
-
-  async function generar(loc: Locale) {
-    const targetId = sampleId || selected?.id;
-    if (!targetId) return;
-    setGenerando(true);
-    setError(null);
-    try {
-      const res = await fetch('/api/scout/report', {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ playerId: targetId, locale: loc }),
-      });
-      const data = (await res.json()) as {
-        id?: string;
-        content?: string;
-        profile?: PlayerProfile;
-        error?: string;
-      };
-      if (!res.ok || !data.content) throw new Error(data.error ?? 'Error al generar');
-      setReport(data.content);
-      setProfile(data.profile ?? null);
-      setReportId(data.id ?? null);
-      setCopiado(false);
-    } catch (e) {
-      setError(e instanceof Error ? e.message : 'Error al generar el informe');
-    } finally {
-      setGenerando(false);
-    }
-  }
-
-  function cambiarIdioma(loc: Locale) {
-    setLocale(loc);
-    if (selected && report) void generar(loc);
-  }
+  const visibles = useMemo(() => {
+    const q = normalizar(query.trim());
+    const filtrados = q
+      ? players.filter(
+          (p) => normalizar(p.name).includes(q) || normalizar(p.team).includes(q),
+        )
+      : players;
+    const ordenados = [...filtrados];
+    ordenados.sort((a, b) => {
+      if (orden === 'score') return b.score - a.score;
+      if (orden === 'edad') return (a.age ?? 999) - (b.age ?? 999);
+      return a.name.localeCompare(b.name);
+    });
+    return ordenados;
+  }, [players, query, orden]);
 
   return (
     <div className={`container ${styles.pagina}`}>
       <header className={styles.hero}>
         <span className="kicker">Scout Intelligence</span>
-        <h1 className={styles.titulo}>Analizá jugadores con el ojo de un profesional</h1>
+        <h1 className={styles.titulo}>Buscador de jugadores</h1>
         <p className={styles.sub}>
-          Descubrí la performance de cada talento de manera individual, sus
-          puntos fuertes y oportunidades de mejora.
+          Explorá el rendimiento de cada talento y abrí su ficha para ver el análisis completo.
         </p>
       </header>
 
-      {/* Filtros */}
+      {/* Controles: búsqueda + nacionalidad + orden */}
       <div className={styles.fila}>
+        <div className={styles.buscador}>
+          <Search size={16} aria-hidden="true" className={styles.buscadorIcono} />
+          <input
+            type="search"
+            className={styles.buscadorInput}
+            placeholder="Buscar por nombre o selección…"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            aria-label="Buscar jugador"
+          />
+        </div>
+        <FlagSelect value={nacion} options={nacionesDisp} onChange={setNacion} />
         <select
           className={styles.filtro}
-          value={grupo}
-          onChange={(e) => setGrupo(e.target.value)}
-          aria-label="Filtrar por posición"
+          value={orden}
+          onChange={(e) => setOrden(e.target.value as Orden)}
+          aria-label="Ordenar por"
         >
-          {GRUPOS.map((g) => (
-            <option key={g.value} value={g.value}>
-              {g.label}
+          {ORDENES.map((o) => (
+            <option key={o.value} value={o.value}>
+              Ordenar: {o.label}
             </option>
           ))}
         </select>
-
-        <FlagSelect value={nacion} options={nacionesDisp} onChange={setNacion} />
-
-        <button type="button" className={styles.buscar} onClick={() => buscar()}>
-          Buscar
-        </button>
-        {(grupo || nacion) && (
-          <button type="button" className={styles.limpiar} onClick={limpiarFiltros}>
-            Limpiar filtros
-          </button>
-        )}
       </div>
 
-      {/* Selección de jugador */}
-      <div className={styles.fila}>
-        <PlayerSelect
-          players={players}
-          value={selected?.id ?? ''}
-          onChange={elegir}
-          loading={cargando}
-        />
-      </div>
-
-      {cargaError && (
-        <p className={styles.error}>
-          No se pudieron cargar los jugadores. Si estás en desarrollo local,
-          asegurate de tener corriendo el API de Scout
-          (<code>npm run scout:dev</code> en otra terminal).
-        </p>
-      )}
-      {!cargaError && !cargando && players.length === 0 && (grupo || nacion) && (
-        <p className={styles.vacio}>
-          No hay jugadores con esos filtros. Probá con otra combinación o limpiá
-          los filtros.
-        </p>
-      )}
-
-      {selected && (
-        <div className={styles.ficha}>
-          <Flag code={codigoBandera(selected.nationality)} title={paisEspanol(selected.nationality)} />
-          <div className={styles.fichaInfo}>
-            <span className={styles.fichaNombre}>{selected.name}</span>
-            <span className={styles.fichaMeta}>
-              {paisEspanol(selected.nationality)} · {selected.position}
-              {selected.age ? ` · ${selected.age} años` : ''}
-            </span>
-          </div>
-        </div>
-      )}
-
-      {selected && samples.length > 1 && (
-        <div className={styles.muestras}>
-          <span className={styles.muestrasLabel}>
-            Analizar al jugador en:
-          </span>
-          <div className={styles.muestrasOpts}>
-            {samples.map((s) => (
-              <button
-                key={s.id}
-                type="button"
-                className={sampleId === s.id ? styles.muestraActiva : styles.muestra}
-                onClick={() => {
-                  setSampleId(s.id);
-                  setReport(null);
-                  setProfile(null);
-                  setReportId(null);
-                }}
-              >
-                {sampleLabel(s)}
-                <span className={styles.muestraMin}>{Math.round(s.minutes)}′</span>
-              </button>
-            ))}
-          </div>
-          <span className={styles.muestrasHint}>
-            <strong>Histórico</strong> combina todas sus competiciones; o elegí una
-            en particular para ver su rendimiento en ese torneo.
-          </span>
-        </div>
-      )}
-
-      {selected && (
-        <div className={styles.controles}>
-          <div className={styles.toggle}>
-            {(['es', 'en'] as Locale[]).map((loc) => (
-              <button
-                key={loc}
-                type="button"
-                className={locale === loc ? styles.toggleActivo : ''}
-                onClick={() => cambiarIdioma(loc)}
-              >
-                {loc === 'es' ? 'Español' : 'English'}
-              </button>
-            ))}
-          </div>
+      {/* Chips de posición */}
+      <div className={styles.chips}>
+        {GRUPOS.map((g) => (
           <button
+            key={g.value}
             type="button"
-            className={styles.generar}
-            disabled={generando}
-            onClick={() => generar(locale)}
+            className={grupo === g.value ? styles.chipActivo : styles.chip}
+            onClick={() => setGrupo(g.value)}
           >
-            {generando
-              ? 'Generando…'
-              : report
-                ? 'Regenerar informe'
-                : 'Generar informe'}
+            {g.label}
           </button>
-        </div>
-      )}
+        ))}
+      </div>
 
-      {error && <p className={styles.error}>{error}</p>}
-
-      {profile && <MetricsPanel profile={profile} />}
-
-      {report && (
+      {cargaError ? (
+        <p className={styles.error}>
+          No se pudieron cargar los jugadores. Si estás en desarrollo local, asegurate de
+          tener corriendo el API de Scout (<code>npm run scout:dev</code>).
+        </p>
+      ) : (
         <>
-          {reportId && (
-            <div className={styles.compartir}>
-              <a href={`/r/${reportId}`} target="_blank" rel="noopener noreferrer">
-                Ver informe en página propia ↗
-              </a>
-              <button
-                type="button"
-                onClick={() => {
-                  void navigator.clipboard
-                    .writeText(`${location.origin}/r/${reportId}`)
-                    .then(() => setCopiado(true));
-                }}
-              >
-                {copiado ? 'Enlace copiado ✓' : 'Copiar enlace'}
-              </button>
+          <div className={styles.contador}>
+            {cargando ? 'Cargando…' : `${visibles.length} jugadores`}
+          </div>
+
+          {!cargando && visibles.length === 0 ? (
+            <EmptyState
+              titulo="Sin jugadores"
+              detalle="No hay jugadores con esos filtros. Probá con otra combinación."
+            />
+          ) : (
+            <div className={styles.tabla}>
+              <div className={`${styles.filaTabla} ${styles.cabeceraTabla}`}>
+                <span className={styles.colNum}>#</span>
+                <span>Jugador</span>
+                <span className={styles.colPos}>Posición</span>
+                <span className={styles.colEdad}>Edad</span>
+                <span className={styles.colScore}>Scout Score</span>
+              </div>
+              {visibles.map((p, i) => (
+                <Link
+                  key={p.id}
+                  to={`/scout/jugador/${p.id}`}
+                  className={`${styles.filaTabla} ${styles.filaJugador}`}
+                >
+                  <span className={styles.colNum}>{i + 1}</span>
+                  <span className={styles.jugadorCell}>
+                    <Flag code={codigoBandera(p.nationality)} title={paisEspanol(p.nationality)} />
+                    <span className={styles.jugadorInfo}>
+                      <span className={styles.jugadorNombre}>{p.name}</span>
+                      <span className={styles.jugadorClub}>{p.team}</span>
+                    </span>
+                  </span>
+                  <span className={`${styles.colPos} ${styles.badgePos}`}>{p.position}</span>
+                  <span className={styles.colEdad}>{p.age ?? '—'}</span>
+                  <span className={styles.colScore}>
+                    <ProgressRing value={p.score} size={42} label="Scout Score" />
+                  </span>
+                </Link>
+              ))}
             </div>
           )}
-          <ReportView markdown={report} />
         </>
       )}
     </div>

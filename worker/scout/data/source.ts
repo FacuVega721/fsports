@@ -14,6 +14,11 @@ export interface PlayerSummary {
   age: number | null;
   competition: string;
   season: string;
+  /**
+   * Scout Score 0-100: percentil promedio del jugador vs su grupo de posición.
+   * Es un composite computado (media de sus percentiles), no un dato externo.
+   */
+  score: number;
 }
 
 /** Una muestra disponible de un jugador (histórico o una competición). */

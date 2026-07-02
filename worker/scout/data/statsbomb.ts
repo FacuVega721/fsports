@@ -27,7 +27,28 @@ interface PlayerRow {
   percentiles_json: string;
 }
 
-function toSummary(r: PlayerRow): PlayerSummary {
+/** Parsea el JSON de percentiles tolerando valores nulos/corruptos (no rompe la búsqueda). */
+function safeParse(json: string | null | undefined): Record<string, number> {
+  if (!json) return {};
+  try {
+    return JSON.parse(json) as Record<string, number>;
+  } catch {
+    return {};
+  }
+}
+
+/**
+ * Scout Score 0-100: media de los percentiles del jugador (vs su grupo de
+ * posición). Composite honesto derivado del dato ya calculado, no inventado.
+ */
+export function compositeScore(percentiles: Record<string, number>): number {
+  const valores = Object.values(percentiles);
+  if (valores.length === 0) return 0;
+  const suma = valores.reduce((a, b) => a + b, 0);
+  return Math.round(suma / valores.length);
+}
+
+function toSummary(r: PlayerRow, percentiles: Record<string, number>): PlayerSummary {
   return {
     id: r.id,
     playerKey: r.player_key,
@@ -38,6 +59,7 @@ function toSummary(r: PlayerRow): PlayerSummary {
     age: r.age ?? null,
     competition: r.competition_name,
     season: r.season_name,
+    score: compositeScore(percentiles),
   };
 }
 
@@ -62,12 +84,12 @@ export class StatsBombSource implements DataSource {
     }
     const { results } = await this.db
       .prepare(
-        `SELECT id, player_key, player_name, team_name, position, nationality, age, competition_name, season_name
+        `SELECT id, player_key, player_name, team_name, position, nationality, age, competition_name, season_name, percentiles_json
          FROM players WHERE ${where.join(' AND ')} ORDER BY player_name ASC LIMIT 1000`,
       )
       .bind(...binds)
       .all<PlayerRow>();
-    return results.map(toSummary);
+    return results.map((r) => toSummary(r, safeParse(r.percentiles_json)));
   }
 
   async listSamples(playerKey: string): Promise<PlayerSample[]> {
@@ -112,14 +134,15 @@ export class StatsBombSource implements DataSource {
       .bind(id)
       .first<PlayerRow>();
     if (!r) return null;
+    const percentiles = JSON.parse(r.percentiles_json) as Record<string, number>;
     return {
-      ...toSummary(r),
+      ...toSummary(r, percentiles),
       kind: (r as PlayerRow & { kind?: 'comp' | 'agg' }).kind ?? 'comp',
       positionGroup: r.position_group,
       minutes: r.minutes,
       matches: r.matches,
       per90: JSON.parse(r.per90_json) as Record<string, number>,
-      percentiles: JSON.parse(r.percentiles_json) as Record<string, number>,
+      percentiles,
     };
   }
 }

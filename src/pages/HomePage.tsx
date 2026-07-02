@@ -240,9 +240,6 @@ export default function HomePage() {
           <Logo />
         </div>
         <p className={styles.tagline}>Fanáticos del deporte.</p>
-        <p className={styles.heroValor}>
-          Mundial 2026 y Fórmula 1 en vivo — más análisis de jugadores con IA.
-        </p>
       </header>
 
       {/* TIRA EN VIVO / HOY */}

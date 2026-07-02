@@ -35,14 +35,6 @@
   color: var(--text-faint);
 }
 
-/* Bajada funcional: dice qué es el sitio, no solo la marca */
-.heroValor {
-  font-family: var(--font-display);
-  font-size: 14px;
-  color: var(--text-dim);
-  max-width: 46ch;
-}
-
 /* ── Tira de hoy ── */
 .strip {
   display: flex;
